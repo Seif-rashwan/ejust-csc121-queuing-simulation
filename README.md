@@ -57,8 +57,8 @@ make clean  # remove binary
 ## Team
 | Name | ID | Role |
 |---|---|---|
-| | | |
-| | | |
-| | | |
+|Seif Rashwan|120210256|--|
+|Hana Aly ElMaghraby|320240126|--|
+|Nour Ibrahim|320250325|-- |
 | | | |
 | | | |
