@@ -2,13 +2,13 @@
 #define CUSTOMERTYPE_H
 
 class customerType {
-private:
+   private:
     int customerNumber;
     int arrivalTime;
     int waitingTime;
     int transactionTime;
 
-public:
+   public:
     // Functions
     void setCustomerInfo(int customerN = 0, int arrTime = 0, int wTime = 0, int tTime = 0);
     int getWaitingTime() const;
