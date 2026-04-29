@@ -21,7 +21,7 @@ T1 customerType  →  T2 serverType + T3 Queue (parallel)  →  T4 serverListTyp
 | :--: | :--- | :---: | :--- | :--- |
 | **T1** | `customerType.cpp` + **Report** | 🟢 Light + Docs | None — start immediately | ................ |
 | **T2** | `serverType.cpp` + **Bonus UI** | 🟢 Light + Creative | `customerType.h` (T1) | ................ |
-| **T3** | `waitingCustomerQueue.cpp` | 🔴 Heavy (Core DS) | `customerType.h` (T1) · `queueADT.h` | ................ |
+| **T3** | `waitingCustomerQueue.cpp` | 🔴 Heavy (Core DS) | `customerType.h` (T1) · `queueADT.h` | Androw shonoda |
 | **T4** | `serverListType.cpp` | 🟡 Medium | `serverType.h` (T2) | ................ |
 | **T5** | `main.cpp` | 🔴 Heavy (Engine) | ALL other tasks done | ................ |
 
