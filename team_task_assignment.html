@@ -1,0 +1,307 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Sora:wght@400;500;600&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --red:#B71C1C;--red-light:#FFEBEE;--red-mid:#EF9A9A;
+    --green-light:#E8F5E9;--green:#2E7D32;
+    --amber-light:#FFF8E1;--amber:#E65100;
+    --blue-light:#E3F2FD;--blue:#1565C0;
+    --gray-light:#F5F5F5;--gray:#546E7A;
+    --border:rgba(0,0,0,0.08);
+    --text:var(--color-text-primary);
+    --text2:var(--color-text-secondary);
+    --bg:var(--color-background-primary);
+    --bg2:var(--color-background-secondary);
+  }
+  body{font-family:'Sora',sans-serif}
+
+  .page{padding:1.5rem 0}
+
+  .header{display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:2px solid var(--red)}
+  .header-badge{background:var(--red);color:#fff;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;padding:4px 10px;border-radius:4px;letter-spacing:0.05em}
+  .header-title{font-size:15px;font-weight:600;color:var(--text)}
+  .header-repo{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text2);margin-top:2px}
+
+  .flow-bar{display:flex;align-items:center;gap:0;margin-bottom:1.5rem;background:var(--bg2);border-radius:8px;padding:10px 14px;border:0.5px solid var(--border)}
+  .flow-label{font-size:11px;font-weight:500;color:var(--text2);margin-right:10px;white-space:nowrap}
+  .flow-steps{display:flex;align-items:center;flex-wrap:wrap;gap:4px}
+  .flow-step{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;padding:3px 8px;border-radius:4px;white-space:nowrap}
+  .fs-1{background:#E8F5E9;color:#1B5E20}.fs-2{background:#E8F5E9;color:#1B5E20}
+  .fs-3{background:#FFF8E1;color:#E65100}.fs-4{background:#FFF8E1;color:#E65100}
+  .fs-5{background:#FFEBEE;color:#B71C1C}
+  .flow-arrow{font-size:12px;color:var(--text2)}
+
+  .tasks{display:flex;flex-direction:column;gap:10px}
+
+  .task-card{border:0.5px solid var(--border);border-radius:10px;background:var(--bg);overflow:hidden;transition:box-shadow 0.15s}
+  .task-card:hover{box-shadow:0 2px 12px rgba(0,0,0,0.08)}
+
+  .task-header{display:flex;align-items:stretch;gap:0}
+  .task-num{width:44px;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:500;color:#fff;flex-shrink:0}
+  .task-num.diff-green{background:#2E7D32}
+  .task-num.diff-amber{background:#E65100}
+  .task-num.diff-red{background:#B71C1C}
+
+  .task-main{flex:1;padding:10px 14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .task-file{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;color:var(--text);min-width:170px}
+  .task-file .bonus{font-size:10px;color:var(--text2);margin-top:2px}
+  .diff-badge{font-size:10px;font-weight:500;padding:3px 8px;border-radius:4px;white-space:nowrap;flex-shrink:0}
+  .diff-badge.green{background:#E8F5E9;color:#1B5E20}
+  .diff-badge.amber{background:#FFF8E1;color:#E65100}
+  .diff-badge.red{background:#FFEBEE;color:#B71C1C}
+
+  .task-body{padding:10px 14px 10px 58px;border-top:0.5px solid var(--border)}
+  .task-body-inner{display:flex;gap:20px;flex-wrap:wrap}
+  .task-section{flex:1;min-width:180px}
+  .task-section-label{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.06em;color:var(--text2);margin-bottom:6px}
+  .task-desc{font-size:12px;color:var(--text);line-height:1.6}
+  .task-desc li{margin-left:14px;margin-bottom:2px}
+
+  .dep-box{display:inline-flex;align-items:center;gap:6px;background:var(--bg2);border:0.5px solid var(--border);border-radius:6px;padding:4px 8px}
+  .dep-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+  .dep-dot.none{background:#2E7D32}
+  .dep-dot.some{background:#E65100}
+  .dep-dot.all{background:#B71C1C}
+  .dep-text{font-size:11px;font-family:'IBM Plex Mono',monospace;color:var(--text)}
+
+  .assignee-row{margin-top:10px;padding-top:8px;border-top:0.5px dashed var(--border);display:flex;align-items:center;gap:8px}
+  .assignee-label{font-size:10px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:0.05em}
+  .assignee-line{flex:1;height:1px;border-bottom:1.5px dashed var(--red-mid)}
+  .assignee-hint{font-size:10px;color:var(--text2);font-style:italic}
+</style>
+
+<div class="page">
+
+  <div class="header">
+    <div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+        <span class="header-badge">CSC 121 · Spring 2026</span>
+        <span class="header-title">Queuing System Simulation — Task Assignment</span>
+      </div>
+      <div class="header-repo">github.com/Seif-rashwan/ejust-csc121-queuing-simulation</div>
+    </div>
+  </div>
+
+  <div class="flow-bar">
+    <span class="flow-label">Push order:</span>
+    <div class="flow-steps">
+      <span class="flow-step fs-1">T1 customerType</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step fs-2">T2 serverType</span>
+      <span class="flow-arrow">+</span>
+      <span class="flow-step fs-3">T3 Queue</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step fs-4">T4 serverListType</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-step fs-5">T5 main.cpp</span>
+    </div>
+  </div>
+
+  <div class="tasks">
+
+    <!-- T1 -->
+    <div class="task-card">
+      <div class="task-header">
+        <div class="task-num diff-green">1</div>
+        <div class="task-main">
+          <div class="task-file">
+            customerType.cpp
+            <div class="bonus">+ Report (final deliverable)</div>
+          </div>
+          <span class="diff-badge green">🟢 Light code + Docs</span>
+        </div>
+      </div>
+      <div class="task-body">
+        <div class="task-body-inner">
+          <div class="task-section">
+            <div class="task-section-label">Job</div>
+            <div class="task-desc">
+              <ul>
+                <li>Implement getters/setters for customer data</li>
+                <li><code>setCustomerInfo()</code>, <code>incrementWaitingTime()</code></li>
+                <li>Write the final project report (analysis of avg wait time, queue length, server count effect)</li>
+              </ul>
+            </div>
+          </div>
+          <div class="task-section" style="flex:0 0 auto;min-width:auto">
+            <div class="task-section-label">Depends on</div>
+            <div class="dep-box">
+              <div class="dep-dot none"></div>
+              <span class="dep-text">None — start immediately</span>
+            </div>
+          </div>
+        </div>
+        <div class="assignee-row">
+          <span class="assignee-label">Assignee</span>
+          <div class="assignee-line"></div>
+          <span class="assignee-hint">write your name here</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- T2 -->
+    <div class="task-card">
+      <div class="task-header">
+        <div class="task-num diff-green">2</div>
+        <div class="task-main">
+          <div class="task-file">
+            serverType.cpp
+            <div class="bonus">+ Bonus UI</div>
+          </div>
+          <span class="diff-badge green">🟢 Light code + Creative</span>
+        </div>
+      </div>
+      <div class="task-body">
+        <div class="task-body-inner">
+          <div class="task-section">
+            <div class="task-section-label">Job</div>
+            <div class="task-desc">
+              <ul>
+                <li>Implement free/busy status logic</li>
+                <li><code>decreaseTransactionTime()</code> with auto-free at 0</li>
+                <li><code>setCurrentCustomer()</code>, all getters (slide 100)</li>
+                <li>Build the bonus terminal/text UI for the simulation</li>
+              </ul>
+            </div>
+          </div>
+          <div class="task-section" style="flex:0 0 auto;min-width:auto">
+            <div class="task-section-label">Depends on</div>
+            <div class="dep-box">
+              <div class="dep-dot some"></div>
+              <span class="dep-text">customerType.h (T1)</span>
+            </div>
+          </div>
+        </div>
+        <div class="assignee-row">
+          <span class="assignee-label">Assignee</span>
+          <div class="assignee-line"></div>
+          <span class="assignee-hint">write your name here</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- T3 -->
+    <div class="task-card">
+      <div class="task-header">
+        <div class="task-num diff-red">3</div>
+        <div class="task-main">
+          <div class="task-file">waitingCustomerQueue.cpp</div>
+          <span class="diff-badge red">🔴 Heavy — core DS</span>
+        </div>
+      </div>
+      <div class="task-body">
+        <div class="task-body-inner">
+          <div class="task-section">
+            <div class="task-section-label">Job</div>
+            <div class="task-desc">
+              <ul>
+                <li>Implement circular-array <code>queueType&lt;T&gt;</code> (inherits <code>queueADT</code>)</li>
+                <li>All 7 operations: init, isEmpty, isFull, front, back, add, delete</li>
+                <li>Extend with <code>incrementWaitingTimes()</code> for all queued customers</li>
+                <li>Handle circular wrap-around correctly (slide 73-86)</li>
+              </ul>
+            </div>
+          </div>
+          <div class="task-section" style="flex:0 0 auto;min-width:auto">
+            <div class="task-section-label">Depends on</div>
+            <div class="dep-box" style="flex-direction:column;align-items:flex-start;gap:4px">
+              <div style="display:flex;align-items:center;gap:6px"><div class="dep-dot some"></div><span class="dep-text">customerType.h (T1)</span></div>
+              <div style="display:flex;align-items:center;gap:6px"><div class="dep-dot some"></div><span class="dep-text">queueADT.h (provided)</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="assignee-row">
+          <span class="assignee-label">Assignee</span>
+          <div class="assignee-line"></div>
+          <span class="assignee-hint">write your name here</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- T4 -->
+    <div class="task-card">
+      <div class="task-header">
+        <div class="task-num diff-amber">4</div>
+        <div class="task-main">
+          <div class="task-file">serverListType.cpp</div>
+          <span class="diff-badge amber">🟡 Medium</span>
+        </div>
+      </div>
+      <div class="task-body">
+        <div class="task-body-inner">
+          <div class="task-section">
+            <div class="task-section-label">Job</div>
+            <div class="task-desc">
+              <ul>
+                <li>Manage dynamic array of <code>serverType</code> objects</li>
+                <li><code>getFreeServerID()</code> — scan for first free slot</li>
+                <li><code>getNumberOfBusyServers()</code></li>
+                <li><code>updateServers()</code> — tick each busy server, log completions</li>
+                <li><code>setServerBusy()</code> — assign customer + log</li>
+              </ul>
+            </div>
+          </div>
+          <div class="task-section" style="flex:0 0 auto;min-width:auto">
+            <div class="task-section-label">Depends on</div>
+            <div class="dep-box">
+              <div class="dep-dot some"></div>
+              <span class="dep-text">serverType.h (T2)</span>
+            </div>
+          </div>
+        </div>
+        <div class="assignee-row">
+          <span class="assignee-label">Assignee</span>
+          <div class="assignee-line"></div>
+          <span class="assignee-hint">write your name here</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- T5 -->
+    <div class="task-card">
+      <div class="task-header">
+        <div class="task-num diff-red">5</div>
+        <div class="task-main">
+          <div class="task-file">main.cpp</div>
+          <span class="diff-badge red">🔴 Heavy — simulation engine</span>
+        </div>
+      </div>
+      <div class="task-body">
+        <div class="task-body-inner">
+          <div class="task-section">
+            <div class="task-section-label">Job</div>
+            <div class="task-desc">
+              <ul>
+                <li>Wire all classes together in the simulation loop</li>
+                <li>4-step clock loop (slide 103): updateServers → incrementWaiting → arrival → dispatch</li>
+                <li>Configurable constants at top of file</li>
+                <li>Output: arrivals, assignments, completions, full results summary</li>
+              </ul>
+            </div>
+          </div>
+          <div class="task-section" style="flex:0 0 auto;min-width:auto">
+            <div class="task-section-label">Depends on</div>
+            <div class="dep-box">
+              <div class="dep-dot all"></div>
+              <span class="dep-text">ALL other tasks done</span>
+            </div>
+          </div>
+        </div>
+        <div class="assignee-row">
+          <span class="assignee-label">Assignee</span>
+          <div class="assignee-line"></div>
+          <span class="assignee-hint">write your name here</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="margin-top:1.2rem;padding:10px 14px;background:var(--bg2);border-radius:8px;border:0.5px solid var(--border);display:flex;gap:20px;flex-wrap:wrap">
+    <div style="font-size:11px;color:var(--text2)"><strong style="color:var(--text)">Clone:</strong> <code style="font-family:'IBM Plex Mono',monospace;font-size:10px">git clone https://github.com/Seif-rashwan/ejust-csc121-queuing-simulation.git</code></div>
+    <div style="font-size:11px;color:var(--text2)"><strong style="color:var(--text)">Your branch:</strong> <code style="font-family:'IBM Plex Mono',monospace;font-size:10px">git checkout -b feature/task-N</code></div>
+    <div style="font-size:11px;color:var(--text2)"><strong style="color:var(--text)">Deadline:</strong> 2 weeks from assignment date</div>
+  </div>
+
+</div>
