@@ -7,14 +7,19 @@ A time-driven clock steps through each tick, managing customer arrivals, waiting
 
 ## File Structure
 ```
-queue-simulation/
+queuing system simulation/
 ├── include/
 │   ├── customerType.h          # Customer data & methods
-│   ├── serverType.h            # Single server logic
+│   ├── queueADT.h              # Queue abstract data type
 │   ├── serverListType.h        # Collection of servers
+│   ├── serverType.h            # Single server logic
 │   └── waitingCustomerQueue.h  # FIFO queue + wait-time increment
 ├── src/
-│   └── main.cpp                # Simulation loop & results
+│   ├── customerType.cpp        # Customer implementation
+│   ├── main.cpp                # Simulation loop & results
+│   ├── serverListType.cpp      # Server list implementation
+│   ├── serverType.cpp          # Server implementation
+│   └── waitingCustomerQueue.cpp # Queue implementation
 ├── Makefile
 └── README.md
 ```
