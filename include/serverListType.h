@@ -2,16 +2,17 @@
 #define SERVERLISTTYPE_H
 
 #include <iostream>
+
 #include "serverType.h"
 
 using namespace std;
 
 class serverListType {
-private:
+   private:
     int numOfServers;
-    serverType *servers; // Pointer to create a dynamic array of servers
+    serverType* servers;  // Pointer to create a dynamic array of servers
 
-public:
+   public:
     // Functions
     int getFreeServerID() const;
     int getNumberOfBusyServers() const;

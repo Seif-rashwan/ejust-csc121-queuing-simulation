@@ -2,23 +2,24 @@
 #define SERVERTYPE_H
 
 #include <string>
+
 #include "customerType.h"
 
 using namespace std;
 
 class serverType {
-private:
+   private:
     customerType currentCustomer;
     string status;
     int transactionTime;
 
-public:
+   public:
     // Functions
     bool isFree() const;
     void setBusy();
     void setFree();
     void setTransactionTime(int t);
-    void setTransactionTime(); 
+    void setTransactionTime();
     int getRemainingTransactionTime() const;
     void decreaseTransactionTime();
     void setCurrentCustomer(customerType cCustomer);
