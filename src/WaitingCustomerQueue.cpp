@@ -1,6 +1,6 @@
 #include <iostream>
 #include <cassert>
-#include "waitingCustomerQueue.h"
+#include "WaitingCustomerQueue.h"
 
 using namespace std;
 

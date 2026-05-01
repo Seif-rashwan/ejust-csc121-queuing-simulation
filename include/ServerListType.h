@@ -1,7 +1,7 @@
 #ifndef SERVERLISTTYPE_H
 #define SERVERLISTTYPE_H
 
-#include "serverType.h"
+#include "ServerType.h"
 
 class ServerListType {
 private:

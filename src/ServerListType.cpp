@@ -1,5 +1,5 @@
 #include <iostream>
-#include "serverListType.h"
+#include "ServerListType.h"
 
 using namespace std;
 

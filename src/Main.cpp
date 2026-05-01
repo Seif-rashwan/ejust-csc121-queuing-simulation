@@ -1,8 +1,8 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
-#include "serverListType.h"
-#include "waitingCustomerQueue.h"
+#include "ServerListType.h"
+#include "WaitingCustomerQueue.h"
 
 using namespace std;
 

@@ -2,7 +2,7 @@
 #define SERVERTYPE_H
 
 #include <string>
-#include "customerType.h"
+#include "CustomerType.h"
 
 using namespace std;
 

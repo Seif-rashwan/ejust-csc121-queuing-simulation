@@ -2,7 +2,7 @@
 #define WAITINGCUSTOMERQUEUE_H
 
 #include <iostream>
-#include "queueADT.h"
+#include "QueueADT.h"
 using namespace std;
 
 template <class Type>
@@ -12,7 +12,7 @@ struct nodeType {
 };
 
 template <class Type>
-class WaitingCustomerQueue : public queueADT<Type> {
+class WaitingCustomerQueue : public QueueADT<Type> {
 private:
     nodeType<Type> *queueFront; // مؤشر لأول عنصر في الطابور
     nodeType<Type> *queueRear;  // مؤشر لآخر عنصر في الطابور

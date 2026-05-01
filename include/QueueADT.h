@@ -2,7 +2,7 @@
 #define QUEUEADT_H
 
 template <class Type>
-class queueADT {
+class QueueADT {
 public:
     // يتحقق إذا كان الطابور فارغ
     virtual bool isEmptyQueue() const = 0;
@@ -26,7 +26,7 @@ public:
     virtual void deleteQueue() = 0;
 
     // Destructor
-    virtual ~queueADT() {}
+    virtual ~QueueADT() {}
 };
 
 #endif
