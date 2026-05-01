@@ -1,34 +1,38 @@
-#ifndef INCLUDE_SERVERTYPE_H_
-#define INCLUDE_SERVERTYPE_H_
+#ifndef SERVERTYPE_H
+#define SERVERTYPE_H
 
 #include <string>
-#include "CustomerType.h"
+#include "customerType.h"
 
-// Copyright 2026 E-JUST CSC 121 Project
+using namespace std;
 
-class ServerType {
+class serverType {
+private:
+    customerType currentCustomer;
+    string status;
+    int transactionTime;
+
 public:
-    // Functions
+    // دوال الاستعلام عن حالة السيرفر
     bool isFree() const;
     void setBusy();
     void setFree();
+
+    // دوال وقت الخدمة
     void setTransactionTime(int t);
     void setTransactionTime();
     int getRemainingTransactionTime() const;
     void decreaseTransactionTime();
-    void setCurrentCustomer(CustomerType current_customer);
+
+    // دوال التعامل مع العميل الحالي
+    void setCurrentCustomer(const customerType& cCustomer);
     int getCurrentCustomerNumber() const;
     int getCurrentCustomerArrivalTime() const;
     int getCurrentCustomerWaitingTime() const;
     int getCurrentCustomerTransactionTime() const;
 
     // Constructor
-    ServerType();
-
-private:
-    CustomerType current_customer;
-    std::string status;
-    int transaction_time;
+    serverType();
 };
 
-#endif  // INCLUDE_SERVERTYPE_H_
+#endif

@@ -1,9 +1,32 @@
-#ifndef INCLUDE_QUEUEADT_H_
-#define INCLUDE_QUEUEADT_H_
+#ifndef QUEUEADT_H
+#define QUEUEADT_H
 
-// Copyright 2026 E-JUST CSC 121 Project
+template <class Type>
+class queueADT {
+public:
+    // يتحقق إذا كان الطابور فارغ
+    virtual bool isEmptyQueue() const = 0;
 
-// Abstract Data Type for Queue interface
-// This file defines the queue interface that will be implemented by WaitingCustomerQueue
+    // يتحقق إذا كان الطابور ممتلئ
+    virtual bool isFullQueue() const = 0;
 
-#endif  // INCLUDE_QUEUEADT_H_
+    // تهيئة الطابور (تفريغه)
+    virtual void initializeQueue() = 0;
+
+    // إرجاع أول عنصر في الطابور
+    virtual Type front() const = 0;
+
+    // إرجاع آخر عنصر في الطابور
+    virtual Type back() const = 0;
+
+    // إضافة عنصر في نهاية الطابور
+    virtual void addQueue(const Type& queueElement) = 0;
+
+    // حذف عنصر من بداية الطابور
+    virtual void deleteQueue() = 0;
+
+    // Destructor
+    virtual ~queueADT() {}
+};
+
+#endif

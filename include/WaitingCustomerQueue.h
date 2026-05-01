@@ -1,47 +1,40 @@
-#ifndef INCLUDE_WAITINGCUSTOMERQUEUE_H_
-#define INCLUDE_WAITINGCUSTOMERQUEUE_H_
+#ifndef WAITINGCUSTOMERQUEUE_H
+#define WAITINGCUSTOMERQUEUE_H
 
-#include <queue>
-#include <stdexcept>
-#include "CustomerType.h"
+#include <iostream>
+#include "queueADT.h"
 
-// Copyright 2026 E-JUST CSC 121 Project
+using namespace std;
 
-// Extends std::queue with a helper to increment every customer's waiting time
-class WaitingCustomerQueue {
-public:
-    bool empty() const { return q.empty(); }
-    int size() const { return static_cast<int>(q.size()); }
-
-    void enqueue(const CustomerType& c) { q.push(c); }
-
-    CustomerType dequeue() {
-        if (q.empty()) throw std::runtime_error("Queue is empty");
-        CustomerType front = q.front();
-        q.pop();
-        return front;
-    }
-
-    const CustomerType& front() const {
-        if (q.empty()) throw std::runtime_error("Queue is empty");
-        return q.front();
-    }
-
-    // Called every clock tick: rebuild queue with incremented wait times
-    void incrementWaitingTimes() {
-        std::queue<CustomerType> temp;
-        while (!q.empty()) {
-            CustomerType c = q.front();
-            q.pop();
-            c.incrementWaitingTime();
-            temp.push(c);
-        }
-        q = temp;
-    }
-
-private:
-    std::queue<CustomerType> q;
+// بنية العقدة (Node) للـ Linked List
+template <class Type>
+struct nodeType {
+    Type info;
+    nodeType<Type> *link;
 };
 
-#endif  // INCLUDE_WAITINGCUSTOMERQUEUE_H_
+template <class Type>
+class waitingCustomerQueue : public queueADT<Type> {
+private:
+    nodeType<Type> *queueFront; // مؤشر لأول عنصر في الطابور
+    nodeType<Type> *queueRear;  // مؤشر لآخر عنصر في الطابور
 
+public:
+    // الدوال الأساسية الموروثة من queueADT
+    bool isEmptyQueue() const;
+    bool isFullQueue() const;
+    void initializeQueue();
+    Type front() const;
+    Type back() const;
+    void addQueue(const Type& queueElement);
+    void deleteQueue();
+
+    // الدالة الإضافية المطلوبة للـ Simulation لزيادة وقت الانتظار
+    void updateWaitingTimes();
+
+    // Constructor & Destructor
+    waitingCustomerQueue();
+    ~waitingCustomerQueue();
+};
+
+#endif
