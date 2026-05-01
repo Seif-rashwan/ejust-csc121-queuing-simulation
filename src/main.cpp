@@ -11,22 +11,22 @@
 // ──────────────────────────────────────────────
 //  Simulation parameters (edit these freely)
 // ──────────────────────────────────────────────
-const int SIM_TIME          = 100;   // total clock ticks to simulate
-const int NUM_SERVERS       = 3;     // number of servers
-const int ARRIVAL_INTERVAL  = 4;     // a new customer arrives every N ticks
-const int MIN_SERVICE_TIME  = 2;     // minimum service (transaction) time
-const int MAX_SERVICE_TIME  = 6;     // maximum service (transaction) time
+const int simTime          = 100;   // total clock ticks to simulate
+const int numServers       = 3;     // number of servers
+const int arrivalInterval  = 4;     // a new customer arrives every N ticks
+const int minServiceTime  = 2;     // minimum service (transaction) time
+const int maxServiceTime  = 6;     // maximum service (transaction) time
 // ──────────────────────────────────────────────
 
 int randomServiceTime() {
-    return MIN_SERVICE_TIME
-         + rand() % (MAX_SERVICE_TIME - MIN_SERVICE_TIME + 1);
+    return minServiceTime
+         + rand() % (maxServiceTime - minServiceTime + 1);
 }
 
 int main() {
     srand(static_cast<unsigned>(time(nullptr)));
 
-    serverListType       serverList(NUM_SERVERS);
+    serverListType       serverList(numServers);
     waitingCustomerQueue waitQueue;
 
     int customerCount   = 0;
@@ -37,24 +37,24 @@ int main() {
     std::cout << "========================================\n";
     std::cout << "   Queuing System Simulation — E-JUST  \n";
     std::cout << "========================================\n";
-    std::cout << "Servers: "  << NUM_SERVERS      << "  |  "
-              << "Sim time: " << SIM_TIME         << " ticks  |  "
-              << "Arrival every " << ARRIVAL_INTERVAL << " ticks\n\n";
+    std::cout << "Servers: "  << numServers      << "  |  "
+              << "Sim time: " << simTime         << " ticks  |  "
+              << "Arrival every " << arrivalInterval << " ticks\n\n";
 
     // ── Main simulation loop ─────────────────
-    for (int clock = 1; clock <= SIM_TIME; clock++) {
+    for (int clock = 1; clock <= simTime; clock++) {
 
         // 2.1  Update servers (decrement transaction time)
-        serverList.updateServers(std::cout, clock);
+        serverList.updateServers(std::cout);
 
         // 2.2  Increment waiting time of every queued customer
         if (!waitQueue.empty())
             waitQueue.incrementWaitingTimes();
 
         // 2.3  New customer arrives?
-        if (clock % ARRIVAL_INTERVAL == 0) {
+        if (clock % arrivalInterval == 0) {
             customerCount++;
-            customerType newCustomer(customerCount, clock, randomServiceTime());
+            customerType newCustomer(customerCount, clock, 0, randomServiceTime());
             waitQueue.enqueue(newCustomer);
             totalCustomers++;
             std::cout << "  [Clock " << clock << "] Customer #"

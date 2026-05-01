@@ -4,24 +4,17 @@
 #include <string>
 #include "customerType.h"
 
-using namespace std;
-
 class serverType {
-private:
-    customerType currentCustomer;
-    string status;
-    int transactionTime;
-
 public:
     // Functions
     bool isFree() const;
     void setBusy();
     void setFree();
     void setTransactionTime(int t);
-    void setTransactionTime(); 
+    void setTransactionTime();
     int getRemainingTransactionTime() const;
     void decreaseTransactionTime();
-    void setCurrentCustomer(customerType cCustomer);
+    void setCurrentCustomer(customerType currentCustomer);
     int getCurrentCustomerNumber() const;
     int getCurrentCustomerArrivalTime() const;
     int getCurrentCustomerWaitingTime() const;
@@ -29,6 +22,11 @@ public:
 
     // Constructor
     serverType();
+
+private:
+    customerType currentCustomer;
+    std::string status;
+    int transactionTime;
 };
 
-#endif
+#endif  // SERVERTYPE_H

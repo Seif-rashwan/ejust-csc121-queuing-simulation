@@ -2,15 +2,9 @@
 #define CUSTOMERTYPE_H
 
 class customerType {
-private:
-    int customerNumber;
-    int arrivalTime;
-    int waitingTime;
-    int transactionTime;
-
 public:
     // Functions
-    void setCustomerInfo(int customerN = 0, int arrTime = 0, int wTime = 0, int tTime = 0);
+    void setCustomerInfo(int customerNumber = 0, int arrivalTime = 0, int waitingTime = 0, int transactionTime = 0);
     int getWaitingTime() const;
     void setWaitingTime(int time);
     void incrementWaitingTime();
@@ -19,7 +13,13 @@ public:
     int getCustomerNumber() const;
 
     // Constructor
-    customerType(int customerN = 0, int arrTime = 0, int wTime = 0, int tTime = 0);
+    customerType(int customerNumber = 0, int arrivalTime = 0, int waitingTime = 0, int transactionTime = 0);
+
+private:
+    int customerNumber;
+    int arrivalTime;
+    int waitingTime;
+    int transactionTime;
 };
 
-#endif
+#endif  // CUSTOMERTYPE_H

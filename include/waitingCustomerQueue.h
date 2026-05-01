@@ -7,12 +7,9 @@
 
 // Extends std::queue with a helper to increment every customer's waiting time
 class waitingCustomerQueue {
-private:
-    std::queue<customerType> q;
-
 public:
     bool empty() const { return q.empty(); }
-    int  size()  const { return static_cast<int>(q.size()); }
+    int size() const { return static_cast<int>(q.size()); }
 
     void enqueue(const customerType& c) { q.push(c); }
 
@@ -32,12 +29,16 @@ public:
     void incrementWaitingTimes() {
         std::queue<customerType> temp;
         while (!q.empty()) {
-            customerType c = q.front(); q.pop();
+            customerType c = q.front();
+            q.pop();
             c.incrementWaitingTime();
             temp.push(c);
         }
         q = temp;
     }
+
+private:
+    std::queue<customerType> q;
 };
 
-#endif
+#endif  // WAITING_CUSTOMER_QUEUE_H
