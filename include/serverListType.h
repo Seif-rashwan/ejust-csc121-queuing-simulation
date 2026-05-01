@@ -3,19 +3,19 @@
 
 #include "serverType.h"
 
-class serverListType {
+class ServerListType {
 private:
     int numOfServers;
-    serverType *servers; 
+    ServerType *servers; 
 
 public:
     int getFreeServerID() const;
     int getNumberOfBusyServers() const;
-    void setServerBusy(int serverID, const customerType& cCustomer);
+    void setServerBusy(int serverID, const CustomerType& cCustomer);
     void updateServers();
 
-    serverListType(int num = 1);
-    ~serverListType();
+    ServerListType(int num = 1);
+    ~ServerListType();
 };
 
 #endif

@@ -6,9 +6,9 @@
 
 using namespace std;
 
-class serverType {
+class ServerType {
 private:
-    customerType currentCustomer;
+    CustomerType currentCustomer;
     string status;
     int transactionTime;
 
@@ -25,14 +25,14 @@ public:
     void decreaseTransactionTime();
 
     // دوال التعامل مع العميل الحالي
-    void setCurrentCustomer(const customerType& cCustomer);
+    void setCurrentCustomer(const CustomerType& cCustomer);
     int getCurrentCustomerNumber() const;
     int getCurrentCustomerArrivalTime() const;
     int getCurrentCustomerWaitingTime() const;
     int getCurrentCustomerTransactionTime() const;
 
     // Constructor
-    serverType();
+    ServerType();
 };
 
 #endif

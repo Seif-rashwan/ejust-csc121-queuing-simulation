@@ -4,69 +4,69 @@
 using namespace std;
 
 // التحقق لو السيرفر فاضي
-bool serverType::isFree() const {
+bool ServerType::isFree() const {
     return (status == "free");
 }
 
 // تغيير حالة السيرفر لمشغول
-void serverType::setBusy() {
+void ServerType::setBusy() {
     status = "busy";
 }
 
 // تغيير حالة السيرفر لفاضي
-void serverType::setFree() {
+void ServerType::setFree() {
     status = "free";
 }
 
 // ضبط وقت الخدمة بقيمة معينة
-void serverType::setTransactionTime(int t) {
+void ServerType::setTransactionTime(int t) {
     transactionTime = t;
 }
 
 // ضبط وقت الخدمة بناءً على وقت العميل الحالي
-void serverType::setTransactionTime() {
+void ServerType::setTransactionTime() {
     transactionTime = currentCustomer.getTransactionTime();
 }
 
 // إرجاع الوقت المتبقي لانتهاء الخدمة
-int serverType::getRemainingTransactionTime() const {
+int ServerType::getRemainingTransactionTime() const {
     return transactionTime;
 }
 
 // تقليل وقت الخدمة بمقدار 1 (مع كل لفة في الـ Simulation)
-void serverType::decreaseTransactionTime() {
+void ServerType::decreaseTransactionTime() {
     if (transactionTime > 0) {
         transactionTime--;
     }
 }
 
 // تعيين العميل اللي السيرفر بيخدمه حالياً
-void serverType::setCurrentCustomer(const customerType& cCustomer) {
+void ServerType::setCurrentCustomer(const CustomerType& cCustomer) {
     currentCustomer = cCustomer;
 }
 
 // إرجاع رقم العميل الحالي
-int serverType::getCurrentCustomerNumber() const {
+int ServerType::getCurrentCustomerNumber() const {
     return currentCustomer.getCustomerNumber();
 }
 
 // إرجاع وقت وصول العميل الحالي
-int serverType::getCurrentCustomerArrivalTime() const {
+int ServerType::getCurrentCustomerArrivalTime() const {
     return currentCustomer.getArrivalTime();
 }
 
 // إرجاع وقت انتظار العميل الحالي
-int serverType::getCurrentCustomerWaitingTime() const {
+int ServerType::getCurrentCustomerWaitingTime() const {
     return currentCustomer.getWaitingTime();
 }
 
 // إرجاع وقت خدمة العميل الحالي
-int serverType::getCurrentCustomerTransactionTime() const {
+int ServerType::getCurrentCustomerTransactionTime() const {
     return currentCustomer.getTransactionTime();
 }
 
 // Constructor
-serverType::serverType() {
+ServerType::ServerType() {
     status = "free";
     transactionTime = 0;
 }

@@ -3,16 +3,16 @@
 
 using namespace std;
 
-serverListType::serverListType(int num) {
+ServerListType::ServerListType(int num) {
     numOfServers = num;
-    servers = new serverType[numOfServers];
+    servers = new ServerType[numOfServers];
 }
 
-serverListType::~serverListType() {
+ServerListType::~ServerListType() {
     delete[] servers;
 }
 
-int serverListType::getFreeServerID() const {
+int ServerListType::getFreeServerID() const {
     for (int i = 0; i < numOfServers; i++) {
         if (servers[i].isFree()) {
             return i;
@@ -21,7 +21,7 @@ int serverListType::getFreeServerID() const {
     return -1; 
 }
 
-int serverListType::getNumberOfBusyServers() const {
+int ServerListType::getNumberOfBusyServers() const {
     int busyServers = 0;
     for (int i = 0; i < numOfServers; i++) {
         if (!servers[i].isFree()) {
@@ -31,13 +31,13 @@ int serverListType::getNumberOfBusyServers() const {
     return busyServers;
 }
 
-void serverListType::setServerBusy(int serverID, const customerType& cCustomer) {
+void ServerListType::setServerBusy(int serverID, const CustomerType& cCustomer) {
     servers[serverID].setBusy();
     servers[serverID].setCurrentCustomer(cCustomer);
     servers[serverID].setTransactionTime();
 }
 
-void serverListType::updateServers() {
+void ServerListType::updateServers() {
     for (int i = 0; i < numOfServers; i++) {
         if (!servers[i].isFree()) {
             servers[i].decreaseTransactionTime();

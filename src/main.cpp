@@ -28,8 +28,8 @@ int main() {
     setSimulationParameters(simulationTime, numberOfServers, transactionTime, timeBetweenArrivals);
 
     // 2. تهيئة السيرفرات والطابور
-    serverListType servers(numberOfServers);
-    waitingCustomerQueue<customerType> customerQueue;
+    ServerListType servers(numberOfServers);
+    WaitingCustomerQueue<CustomerType> customerQueue;
 
     // متغيرات للإحصائيات النهائية
     int totalWaitTime = 0;
@@ -46,7 +46,7 @@ int main() {
 
         // ب. تحديث وقت الانتظار للناس اللي واقفة في الطابور
         if (!customerQueue.isEmptyQueue()) {
-            customerQueue.updateWaitingTimes();
+            customerQueue.incrementWaitingTimes();
         }
 
         // ج. وصول عميل جديد (باحتمالية عشوائية مبنية على الوقت بين العملاء)
@@ -54,7 +54,7 @@ int main() {
         if (arrivalChance == 0) {
             customersArrived++;
             // إنشاء عميل جديد وإضافته للطابور
-            customerType newCustomer(customersArrived, clock, 0, transactionTime);
+            CustomerType newCustomer(customersArrived, clock, 0, transactionTime);
             customerQueue.addQueue(newCustomer);
             cout << "--> Customer " << customersArrived << " arrived at tick " << clock << endl;
         }
@@ -63,7 +63,7 @@ int main() {
         int freeServerID = servers.getFreeServerID();
         while (freeServerID != -1 && !customerQueue.isEmptyQueue()) {
             // سحب أول عميل
-            customerType frontCustomer = customerQueue.front();
+            CustomerType frontCustomer = customerQueue.front();
             customerQueue.deleteQueue();
 
             // تجميع الإحصائيات

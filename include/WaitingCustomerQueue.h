@@ -12,7 +12,7 @@ struct nodeType {
 };
 
 template <class Type>
-class waitingCustomerQueue : public queueADT<Type> {
+class WaitingCustomerQueue : public queueADT<Type> {
 private:
     nodeType<Type> *queueFront; // مؤشر لأول عنصر في الطابور
     nodeType<Type> *queueRear;  // مؤشر لآخر عنصر في الطابور
@@ -28,11 +28,11 @@ public:
     void deleteQueue();
 
     // الدالة الإضافية المطلوبة للـ Simulation لزيادة وقت الانتظار
-    void updateWaitingTimes();
+    void incrementWaitingTimes();
 
     // Constructor & Destructor
-    waitingCustomerQueue();
-    ~waitingCustomerQueue();
+    WaitingCustomerQueue();
+    ~WaitingCustomerQueue();
 };
 
 #endif

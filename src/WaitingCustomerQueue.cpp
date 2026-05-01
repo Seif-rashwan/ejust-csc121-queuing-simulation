@@ -6,19 +6,19 @@ using namespace std;
 
 // 1. التحقق لو الطابور فاضي
 template <class Type>
-bool waitingCustomerQueue<Type>::isEmptyQueue() const {
+bool WaitingCustomerQueue<Type>::isEmptyQueue() const {
     return (queueFront == nullptr);
 }
 
 // 2. التحقق لو الطابور مليان (في الـ Linked List عمره ما بيكون مليان)
 template <class Type>
-bool waitingCustomerQueue<Type>::isFullQueue() const {
+bool WaitingCustomerQueue<Type>::isFullQueue() const {
     return false;
 }
 
 // 3. تهيئة الطابور (مسح كل العناصر اللي فيه)
 template <class Type>
-void waitingCustomerQueue<Type>::initializeQueue() {
+void WaitingCustomerQueue<Type>::initializeQueue() {
     nodeType<Type> *temp;
     while (queueFront != nullptr) {
         temp = queueFront;
@@ -30,21 +30,21 @@ void waitingCustomerQueue<Type>::initializeQueue() {
 
 // 4. إرجاع أول عنصر
 template <class Type>
-Type waitingCustomerQueue<Type>::front() const {
+Type WaitingCustomerQueue<Type>::front() const {
     assert(queueFront != nullptr); // التأكد إن الطابور مش فاضي
     return queueFront->info;
 }
 
 // 5. إرجاع آخر عنصر
 template <class Type>
-Type waitingCustomerQueue<Type>::back() const {
+Type WaitingCustomerQueue<Type>::back() const {
     assert(queueRear != nullptr);
     return queueRear->info;
 }
 
 // 6. إضافة عنصر جديد للطابور (عميل جديد)
 template <class Type>
-void waitingCustomerQueue<Type>::addQueue(const Type& newElement) {
+void WaitingCustomerQueue<Type>::addQueue(const Type& newElement) {
     nodeType<Type> *newNode;
     newNode = new nodeType<Type>;
     newNode->info = newElement;
@@ -61,7 +61,7 @@ void waitingCustomerQueue<Type>::addQueue(const Type& newElement) {
 
 // 7. حذف عنصر من الطابور (عميل دخل للسيرفر)
 template <class Type>
-void waitingCustomerQueue<Type>::deleteQueue() {
+void WaitingCustomerQueue<Type>::deleteQueue() {
     nodeType<Type> *temp;
     if (!isEmptyQueue()) {
         temp = queueFront;
@@ -77,7 +77,7 @@ void waitingCustomerQueue<Type>::deleteQueue() {
 
 // 8. الدالة الخاصة: تحديث وقت الانتظار لكل العملاء في الطابور
 template <class Type>
-void waitingCustomerQueue<Type>::updateWaitingTimes() {
+void WaitingCustomerQueue<Type>::incrementWaitingTimes() {
     nodeType<Type> *current = queueFront;
     while (current != nullptr) {
         // بننادي على دالة زيادة وقت الانتظار اللي جوه كلاس العميل
@@ -88,14 +88,14 @@ void waitingCustomerQueue<Type>::updateWaitingTimes() {
 
 // 9. Constructor
 template <class Type>
-waitingCustomerQueue<Type>::waitingCustomerQueue() {
+WaitingCustomerQueue<Type>::WaitingCustomerQueue() {
     queueFront = nullptr;
     queueRear = nullptr;
 }
 
 // 10. Destructor
 template <class Type>
-waitingCustomerQueue<Type>::~waitingCustomerQueue() {
+WaitingCustomerQueue<Type>::~WaitingCustomerQueue() {
     initializeQueue();
 }
 
@@ -103,4 +103,4 @@ waitingCustomerQueue<Type>::~waitingCustomerQueue() {
 // Explicit Template Instantiation
 // عشان الـ Linker بتاع الـ C++ ميضربش error وإحنا بنبني المشروع
 #include "customerType.h"
-template class waitingCustomerQueue<customerType>;
+template class WaitingCustomerQueue<CustomerType>;

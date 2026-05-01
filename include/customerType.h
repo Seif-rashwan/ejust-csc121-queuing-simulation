@@ -1,7 +1,7 @@
 #ifndef CUSTOMERTYPE_H
 #define CUSTOMERTYPE_H
 
-class customerType {
+class CustomerType {
 private:
     int customerNumber;
     int arrivalTime;
@@ -19,7 +19,7 @@ public:
     int getCustomerNumber() const;
 
     // Constructor
-    customerType(int customerN = 0, int arrTime = 0, int wTime = 0, int tTime = 0);
+    CustomerType(int customerN = 0, int arrTime = 0, int wTime = 0, int tTime = 0);
 };
 
 #endif
