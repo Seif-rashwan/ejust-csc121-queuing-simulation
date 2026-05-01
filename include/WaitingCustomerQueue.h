@@ -3,10 +3,8 @@
 
 #include <iostream>
 #include "queueADT.h"
-
 using namespace std;
 
-// بنية العقدة (Node) للـ Linked List
 template <class Type>
 struct nodeType {
     Type info;
