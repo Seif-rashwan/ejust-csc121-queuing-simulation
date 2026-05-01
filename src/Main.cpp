@@ -5,7 +5,6 @@
 #include "ServerListType.h"
 #include "WaitingCustomerQueue.h"
 
-
 using std::cin;
 using std::cout;
 using std::endl;
