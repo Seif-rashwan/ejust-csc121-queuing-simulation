@@ -1,6 +1,6 @@
 CXX      = g++
 CXXFLAGS = -std=c++17 -Wall -Wextra -Iinclude
-SRC      = src/main.cpp
+SRC      = src/main.cpp src/customerType.cpp src/serverType.cpp src/serverListType.cpp src/waitingCustomerQueue.cpp
 TARGET   = simulation
 
 all: $(TARGET)
