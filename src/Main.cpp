@@ -4,8 +4,8 @@
 #include "ServerListType.h"
 #include "WaitingCustomerQueue.h"
 
-using std::cout;
 using std::cin;
+using std::cout;
 using std::endl;
 
 // دالة لأخذ معطيات المحاكاة من المستخدم
