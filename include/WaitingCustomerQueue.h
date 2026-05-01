@@ -1,36 +1,37 @@
-#ifndef WAITING_CUSTOMER_QUEUE_H
-#define WAITING_CUSTOMER_QUEUE_H
+#ifndef INCLUDE_WAITINGCUSTOMERQUEUE_H_
+#define INCLUDE_WAITINGCUSTOMERQUEUE_H_
 
 #include <queue>
 #include <stdexcept>
+#include "CustomerType.h"
 
-#include "customerType.h"
+// Copyright 2026 E-JUST CSC 121 Project
 
 // Extends std::queue with a helper to increment every customer's waiting time
-class waitingCustomerQueue {
+class WaitingCustomerQueue {
 public:
     bool empty() const { return q.empty(); }
     int size() const { return static_cast<int>(q.size()); }
 
-    void enqueue(const customerType& c) { q.push(c); }
+    void enqueue(const CustomerType& c) { q.push(c); }
 
-    customerType dequeue() {
+    CustomerType dequeue() {
         if (q.empty()) throw std::runtime_error("Queue is empty");
-        customerType front = q.front();
+        CustomerType front = q.front();
         q.pop();
         return front;
     }
 
-    const customerType& front() const {
+    const CustomerType& front() const {
         if (q.empty()) throw std::runtime_error("Queue is empty");
         return q.front();
     }
 
     // Called every clock tick: rebuild queue with incremented wait times
     void incrementWaitingTimes() {
-        std::queue<customerType> temp;
+        std::queue<CustomerType> temp;
         while (!q.empty()) {
-            customerType c = q.front();
+            CustomerType c = q.front();
             q.pop();
             c.incrementWaitingTime();
             temp.push(c);
@@ -39,7 +40,8 @@ public:
     }
 
 private:
-    std::queue<customerType> q;
+    std::queue<CustomerType> q;
 };
 
-#endif  // WAITING_CUSTOMER_QUEUE_H
+#endif  // INCLUDE_WAITINGCUSTOMERQUEUE_H_
+

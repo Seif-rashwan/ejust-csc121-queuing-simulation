@@ -1,39 +1,43 @@
-#include "customerType.h"
+// Copyright 2026 E-JUST CSC 121 Project
 
-void customerType::setCustomerInfo(int customerNumber, int arrivalTime, int waitingTime, int transactionTime) {
-    this->customerNumber = customerNumber;
-    this->arrivalTime = arrivalTime;
-    this->waitingTime = waitingTime;
-    this->transactionTime = transactionTime;
+#include "CustomerType.h"
+
+void CustomerType::setCustomerInfo(int customer_number, int arrival_time, 
+                                    int waiting_time, int transaction_time) {
+    this->customer_number = customer_number;
+    this->arrival_time = arrival_time;
+    this->waiting_time = waiting_time;
+    this->transaction_time = transaction_time;
 }
 
-int customerType::getWaitingTime() const {
-    return waitingTime;
+int CustomerType::getWaitingTime() const {
+    return waiting_time;
 }
 
-void customerType::setWaitingTime(int time) {
-    waitingTime = time;
+void CustomerType::setWaitingTime(int time) {
+    waiting_time = time;
 }
 
-void customerType::incrementWaitingTime() {
-    waitingTime++;
+void CustomerType::incrementWaitingTime() {
+    waiting_time++;
 }
 
-int customerType::getArrivalTime() const {
-    return arrivalTime;
+int CustomerType::getArrivalTime() const {
+    return arrival_time;
 }
 
-int customerType::getTransactionTime() const {
-    return transactionTime;
+int CustomerType::getTransactionTime() const {
+    return transaction_time;
 }
 
-int customerType::getCustomerNumber() const {
-    return customerNumber;
+int CustomerType::getCustomerNumber() const {
+    return customer_number;
 }
 
-customerType::customerType(int customerNumber, int arrivalTime, int waitingTime, int transactionTime) {
-    this->customerNumber = customerNumber;
-    this->arrivalTime = arrivalTime;
-    this->waitingTime = waitingTime;
-    this->transactionTime = transactionTime;
+CustomerType::CustomerType(int customer_number, int arrival_time, 
+                            int waiting_time, int transaction_time) {
+    this->customer_number = customer_number;
+    this->arrival_time = arrival_time;
+    this->waiting_time = waiting_time;
+    this->transaction_time = transaction_time;
 }

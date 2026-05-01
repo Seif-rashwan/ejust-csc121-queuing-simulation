@@ -1,54 +1,56 @@
-#include "serverType.h"
+// Copyright 2026 E-JUST CSC 121 Project
 
-bool serverType::isFree() const {
+#include "ServerType.h"
+
+bool ServerType::isFree() const {
     return status == "free";
 }
 
-void serverType::setBusy() {
+void ServerType::setBusy() {
     status = "busy";
 }
 
-void serverType::setFree() {
+void ServerType::setFree() {
     status = "free";
 }
 
-void serverType::setTransactionTime(int t) {
-    transactionTime = t;
+void ServerType::setTransactionTime(int t) {
+    transaction_time = t;
 }
 
-void serverType::setTransactionTime() {
-    transactionTime = currentCustomer.getTransactionTime();
+void ServerType::setTransactionTime() {
+    transaction_time = current_customer.getTransactionTime();
 }
 
-int serverType::getRemainingTransactionTime() const {
-    return transactionTime;
+int ServerType::getRemainingTransactionTime() const {
+    return transaction_time;
 }
 
-void serverType::decreaseTransactionTime() {
-    transactionTime--;
+void ServerType::decreaseTransactionTime() {
+    transaction_time--;
 }
 
-void serverType::setCurrentCustomer(customerType currentCustomer) {
-    this->currentCustomer = currentCustomer;
+void ServerType::setCurrentCustomer(CustomerType current_customer) {
+    this->current_customer = current_customer;
 }
 
-int serverType::getCurrentCustomerNumber() const {
-    return currentCustomer.getCustomerNumber();
+int ServerType::getCurrentCustomerNumber() const {
+    return current_customer.getCustomerNumber();
 }
 
-int serverType::getCurrentCustomerArrivalTime() const {
-    return currentCustomer.getArrivalTime();
+int ServerType::getCurrentCustomerArrivalTime() const {
+    return current_customer.getArrivalTime();
 }
 
-int serverType::getCurrentCustomerWaitingTime() const {
-    return currentCustomer.getWaitingTime();
+int ServerType::getCurrentCustomerWaitingTime() const {
+    return current_customer.getWaitingTime();
 }
 
-int serverType::getCurrentCustomerTransactionTime() const {
-    return currentCustomer.getTransactionTime();
+int ServerType::getCurrentCustomerTransactionTime() const {
+    return current_customer.getTransactionTime();
 }
 
-serverType::serverType() {
+ServerType::ServerType() {
     status = "free";
-    transactionTime = 0;
+    transaction_time = 0;
 }

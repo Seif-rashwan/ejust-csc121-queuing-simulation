@@ -1,11 +1,12 @@
-#ifndef SERVERTYPE_H
-#define SERVERTYPE_H
+#ifndef INCLUDE_SERVERTYPE_H_
+#define INCLUDE_SERVERTYPE_H_
 
 #include <string>
+#include "CustomerType.h"
 
-#include "customerType.h"
+// Copyright 2026 E-JUST CSC 121 Project
 
-class serverType {
+class ServerType {
 public:
     // Functions
     bool isFree() const;
@@ -15,19 +16,19 @@ public:
     void setTransactionTime();
     int getRemainingTransactionTime() const;
     void decreaseTransactionTime();
-    void setCurrentCustomer(customerType currentCustomer);
+    void setCurrentCustomer(CustomerType current_customer);
     int getCurrentCustomerNumber() const;
     int getCurrentCustomerArrivalTime() const;
     int getCurrentCustomerWaitingTime() const;
     int getCurrentCustomerTransactionTime() const;
 
     // Constructor
-    serverType();
+    ServerType();
 
 private:
-    customerType currentCustomer;
+    CustomerType current_customer;
     std::string status;
-    int transactionTime;
+    int transaction_time;
 };
 
-#endif  // SERVERTYPE_H
+#endif  // INCLUDE_SERVERTYPE_H_

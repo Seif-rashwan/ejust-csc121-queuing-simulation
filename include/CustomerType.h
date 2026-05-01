@@ -1,10 +1,13 @@
-#ifndef CUSTOMERTYPE_H
-#define CUSTOMERTYPE_H
+#ifndef INCLUDE_CUSTOMERTYPE_H_
+#define INCLUDE_CUSTOMERTYPE_H_
 
-class customerType {
+// Copyright 2026 E-JUST CSC 121 Project
+
+class CustomerType {
 public:
     // Functions
-    void setCustomerInfo(int customerNumber = 0, int arrivalTime = 0, int waitingTime = 0, int transactionTime = 0);
+    void setCustomerInfo(int customer_number = 0, int arrival_time = 0, 
+                      int waiting_time = 0, int transaction_time = 0);
     int getWaitingTime() const;
     void setWaitingTime(int time);
     void incrementWaitingTime();
@@ -13,13 +16,14 @@ public:
     int getCustomerNumber() const;
 
     // Constructor
-    customerType(int customerNumber = 0, int arrivalTime = 0, int waitingTime = 0, int transactionTime = 0);
+    explicit CustomerType(int customer_number = 0, int arrival_time = 0, 
+                        int waiting_time = 0, int transaction_time = 0);
 
 private:
-    int customerNumber;
-    int arrivalTime;
-    int waitingTime;
-    int transactionTime;
+    int customer_number;
+    int arrival_time;
+    int waiting_time;
+    int transaction_time;
 };
 
-#endif  // CUSTOMERTYPE_H
+#endif  // INCLUDE_CUSTOMERTYPE_H_

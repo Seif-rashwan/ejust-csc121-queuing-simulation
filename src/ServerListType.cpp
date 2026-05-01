@@ -1,7 +1,9 @@
-#include "serverListType.h"
+// Copyright 2026 E-JUST CSC 121 Project
 
-int serverListType::getFreeServerID() const {
-    for (int i = 0; i < numServers; i++) {
+#include "ServerListType.h"
+
+int ServerListType::getFreeServerID() const {
+    for (int i = 0; i < num_servers; i++) {
         if (servers[i].isFree()) {
             return i;
         }
@@ -9,34 +11,35 @@ int serverListType::getFreeServerID() const {
     return -1;
 }
 
-int serverListType::getNumberOfBusyServers() const {
-    int busyServers = 0;
-    for (int i = 0; i < numServers; i++) {
+int ServerListType::getNumberOfBusyServers() const {
+    int busy_servers = 0;
+    for (int i = 0; i < num_servers; i++) {
         if (!servers[i].isFree()) {
-            busyServers++;
+            busy_servers++;
         }
     }
-    return busyServers;
+    return busy_servers;
 }
 
-void serverListType::setServerBusy(int serverID, customerType currentCustomer, int transactionTime) {
-    servers[serverID].setBusy();
-    servers[serverID].setCurrentCustomer(currentCustomer);
-    servers[serverID].setTransactionTime(transactionTime);
+void ServerListType::setServerBusy(int server_id, CustomerType current_customer, 
+                                   int transaction_time) {
+    servers[server_id].setBusy();
+    servers[server_id].setCurrentCustomer(current_customer);
+    servers[server_id].setTransactionTime(transaction_time);
 }
 
-void serverListType::setServerBusy(int serverID, customerType currentCustomer) {
-    servers[serverID].setBusy();
-    servers[serverID].setCurrentCustomer(currentCustomer);
-    servers[serverID].setTransactionTime();
+void ServerListType::setServerBusy(int server_id, CustomerType current_customer) {
+    servers[server_id].setBusy();
+    servers[server_id].setCurrentCustomer(current_customer);
+    servers[server_id].setTransactionTime();
 }
 
-void serverListType::updateServers(std::ostream& outF) {
-    for (int i = 0; i < numServers; i++) {
+void ServerListType::updateServers(std::ostream& out_f) {
+    for (int i = 0; i < num_servers; i++) {
         if (!servers[i].isFree()) {
             servers[i].decreaseTransactionTime();
             if (servers[i].getRemainingTransactionTime() == 0) {
-                outF << "Server " << i << " completed Customer "
+                out_f << "Server " << i << " completed Customer "
                      << servers[i].getCurrentCustomerNumber() << "\n";
                 servers[i].setFree();
             }
@@ -44,11 +47,11 @@ void serverListType::updateServers(std::ostream& outF) {
     }
 }
 
-serverListType::serverListType(int num) {
-    numServers = num;
-    servers = new serverType[numServers];
+ServerListType::ServerListType(int num) {
+    num_servers = num;
+    servers = new ServerType[num_servers];
 }
 
-serverListType::~serverListType() {
+ServerListType::~ServerListType() {
     delete[] servers;
 }

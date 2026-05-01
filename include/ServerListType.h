@@ -1,26 +1,28 @@
-#ifndef SERVERLISTTYPE_H
-#define SERVERLISTTYPE_H
+#ifndef INCLUDE_SERVERLISTTYPE_H_
+#define INCLUDE_SERVERLISTTYPE_H_
 
 #include <iostream>
+#include "ServerType.h"
+#include "CustomerType.h"
 
-#include "serverType.h"
+// Copyright 2026 E-JUST CSC 121 Project
 
-class serverListType {
+class ServerListType {
 public:
     // Functions
     int getFreeServerID() const;
     int getNumberOfBusyServers() const;
-    void setServerBusy(int serverID, customerType currentCustomer, int transactionTime);
-    void setServerBusy(int serverID, customerType currentCustomer);
-    void updateServers(std::ostream& outF);
+    void setServerBusy(int server_id, CustomerType current_customer, int transaction_time);
+    void setServerBusy(int server_id, CustomerType current_customer);
+    void updateServers(std::ostream& out_f);
 
     // Constructor & Destructor
-    serverListType(int num = 1);
-    ~serverListType();
+    explicit ServerListType(int num = 1);
+    ~ServerListType();
 
 private:
-    int numServers;
-    serverType* servers;  // Pointer to create a dynamic array of servers
+    int num_servers;
+    ServerType* servers;  // Pointer to create a dynamic array of servers
 };
 
-#endif  // SERVERLISTTYPE_H
+#endif  // INCLUDE_SERVERLISTTYPE_H_
