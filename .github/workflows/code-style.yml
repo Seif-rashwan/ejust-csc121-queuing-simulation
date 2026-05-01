@@ -50,6 +50,7 @@ jobs:
         uses: actions/github-script@v7
         env:
           FAILED_FILES: ${{ steps.format.outputs.failed_files }}
+
         with:
           script: |
             const issue_number = context.payload.pull_request.number;
