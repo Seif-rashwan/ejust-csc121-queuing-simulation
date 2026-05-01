@@ -1,7 +1,8 @@
+// Copyright 2026 Seif Rashwan
 #include <iostream>
 #include "ServerType.h"
 
-using namespace std;
+using std::cout;
 
 // التحقق لو السيرفر فاضي
 bool ServerType::isFree() const

@@ -1,7 +1,9 @@
+// Copyright 2026 Seif Rashwan
 #include <iostream>
 #include "ServerListType.h"
 
-using namespace std;
+using std::cout;
+using std::endl;
 
 ServerListType::ServerListType(int num)
 {

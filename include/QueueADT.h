@@ -1,5 +1,6 @@
-#ifndef QUEUEADT_H
-#define QUEUEADT_H
+// Copyright 2026 Seif Rashwan
+#ifndef INCLUDE_QUEUEADT_H_
+#define INCLUDE_QUEUEADT_H_
 
 template <class Type>
 class QueueADT {
@@ -29,4 +30,4 @@ public:
     virtual ~QueueADT() {}
 };
 
-#endif
+#endif  // INCLUDE_QUEUEADT_H_

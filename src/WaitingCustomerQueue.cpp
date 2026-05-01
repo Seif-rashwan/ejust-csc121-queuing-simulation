@@ -1,8 +1,10 @@
+// Copyright 2026 Seif Rashwan
 #include <iostream>
 #include <cassert>
 #include "WaitingCustomerQueue.h"
 
-using namespace std;
+using std::cout;
+using std::endl;
 
 // 1. التحقق لو الطابور فاضي
 template <class Type>
@@ -19,9 +21,8 @@ bool WaitingCustomerQueue<Type>::isFullQueue() const {
 // 3. تهيئة الطابور (مسح كل العناصر اللي فيه)
 template <class Type>
 void WaitingCustomerQueue<Type>::initializeQueue() {
-    nodeType<Type> *temp;
     while (queueFront != nullptr) {
-        temp = queueFront;
+        nodeType<Type> *temp = queueFront;
         queueFront = queueFront->link;
         delete temp;
     }
@@ -31,14 +32,14 @@ void WaitingCustomerQueue<Type>::initializeQueue() {
 // 4. إرجاع أول عنصر
 template <class Type>
 Type WaitingCustomerQueue<Type>::front() const {
-    assert(queueFront != nullptr); // التأكد إن الطابور مش فاضي
+    assert(queueFront != nullptr);  // التأكد إن الطابور مش فاضي
     return queueFront->info;
 }
 
 // 5. إرجاع آخر عنصر
 template <class Type>
 Type WaitingCustomerQueue<Type>::back() const {
-    assert(queueRear != nullptr);
+    assert(queueRear != nullptr);  // التأكد إن الطابور مش فاضي
     return queueRear->info;
 }
 
@@ -46,29 +47,30 @@ Type WaitingCustomerQueue<Type>::back() const {
 template <class Type>
 void WaitingCustomerQueue<Type>::addQueue(const Type& newElement) {
     nodeType<Type> *newNode;
-    newNode = new nodeType<Type>;
+    newNode = new nodeType<Type>;  // إنشاء عقدة جديدة
     newNode->info = newElement;
-    newNode->link = nullptr;
+    newNode->link = nullptr;  // link = nullptr للعقدة الجديدة
 
-    if (queueFront == nullptr) { // لو الطابور فاضي
-        queueFront = newNode;
-        queueRear = newNode;
-    } else { // لو فيه ناس واقفة
-        queueRear->link = newNode;
-        queueRear = queueRear->link;
+    if (queueFront == nullptr)  // لو الطابور فاضي
+    {
+        queueFront = newNode;  // queueFront = newNode
+        queueRear = newNode;  // queueRear = newNode
+    } else  // لو فيه ناس واقفة
+    {
+        queueRear->link = newNode;  // ربط queueRear بالعقدة الجديدة
+        queueRear = queueRear->link;  // تحديث queueRear
     }
 }
 
 // 7. حذف عنصر من الطابور (عميل دخل للسيرفر)
 template <class Type>
 void WaitingCustomerQueue<Type>::deleteQueue() {
-    nodeType<Type> *temp;
     if (!isEmptyQueue()) {
-        temp = queueFront;
+        nodeType<Type> *temp = queueFront;
         queueFront = queueFront->link;
         delete temp;
 
-        if (queueFront == nullptr) // لو مسحنا آخر عنصر
+        if (queueFront == nullptr)  // لو مسحنا آخر عنصر
             queueRear = nullptr;
     } else {
         cout << "Cannot remove from an empty queue." << endl;

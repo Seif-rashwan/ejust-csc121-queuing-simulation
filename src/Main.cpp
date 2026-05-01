@@ -1,10 +1,13 @@
+// Copyright 2026 Seif Rashwan
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
 #include "ServerListType.h"
 #include "WaitingCustomerQueue.h"
 
-using namespace std;
+using std::cout;
+using std::cin;
+using std::endl;
 
 // دالة لأخذ معطيات المحاكاة من المستخدم
 void setSimulationParameters(int& sTime, int& numOfServers, int& transTime,
@@ -97,7 +100,7 @@ int main()
     if (customersServed > 0)
     {
         cout << "Average waiting time: "
-         << (double)totalWaitTime / customersServed << endl;
+             << static_cast<double>(totalWaitTime) / customersServed << endl;
     }
 
     return 0;
