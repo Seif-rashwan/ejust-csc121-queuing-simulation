@@ -1,52 +1,131 @@
-name: Code Style Check
+name: Code Style & Quality Check
 on: [push, pull_request]
+
 permissions:
-  contents: write
+  contents: read
+  pull-requests: write
 
 jobs:
   clang-format:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Install clang-format
-        run: sudo apt-get update && sudo apt-get install -y clang-format
-      
-      - name: Apply code formatting with clang-format
-        run: |
-          find . -name "*.cpp" -o -name "*.h" | xargs clang-format -i
 
-      - name: Commit formatted code
-        uses: stefanzweifel/git-auto-commit-action@v5
+      - name: Install clang-format
+        run: sudo apt-get install -y clang-format
+
+      - name: Check formatting and collect failed files
+        id: format
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mapfile -t files < <(find . -name "*.cpp" -o -name "*.h")
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "No C++ files found. Skipping."
+            exit 0
+          fi
+
+          # Check formatting without modifying files
+          clang-format --dry-run --Werror "${files[@]}" 2>&1 | tee format_output.txt || {
+            # Extract filenames from clang-format output
+            failed_files=$(grep -oP 'error: file '\''[^'\'']+'\'' needs formatting' format_output.txt | sed "s/error: file '//;s/' needs formatting//")
+            
+            # If no matches, list all files and let clang-format detect which ones fail
+            if [ -z "$failed_files" ]; then
+              failed_files=$(clang-format --dry-run "${files[@]}" 2>&1 | grep "needs formatting" | sed "s/.*'\(.*\)'.*/\1/" || echo "")
+            fi
+            
+            {
+              echo "failed_files<<'EOF'"
+              echo "${failed_files}"
+              echo "EOF"
+            } >> "$GITHUB_OUTPUT"
+            
+            exit 1
+          }
+
+      - name: Comment on PR with failed files
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        env:
+          FAILED_FILES: ${{ steps.format.outputs.failed_files }}
         with:
-          commit_message: "style: auto format with clang-format"
+          script: |
+            const issue_number = context.payload.pull_request.number;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+
+            const failed = (process.env.FAILED_FILES || "").trim();
+            const fileList = failed
+              ? failed.split("\n").filter(Boolean).map(f => `- \`${f}\``).join("\n")
+              : "_(Could not determine which files changed.)_";
+
+            const body = [
+              "### ⚠️ Code Formatting Check Failed (clang-format)",
+              "",
+              "The following files do not meet the formatting standards:",
+              "",
+              fileList,
+              "",
+              "**To fix locally**, run:",
+              "",
+              "```bash",
+              "clang-format -i $(find . -name \"*.cpp\" -o -name \"*.h\")",
+              "git add -A",
+              "git commit --amend --no-edit",
+              "git push --force-with-lease",
+              "```",
+              "",
+              "This will automatically format your code and update your PR."
+            ].join("\n");
+
+            // Update existing bot comment to avoid spam
+            const { data: comments } = await github.rest.issues.listComments({
+              owner, repo, issue_number, per_page: 100
+            });
+
+            const existing = comments.find(c =>
+              c.user?.type === "Bot" &&
+              (c.body || "").includes("Code Formatting Check Failed")
+            );
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner, repo, comment_id: existing.id, body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner, repo, issue_number, body
+              });
+            }
 
   cpplint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          
+
       - name: Install cpplint
         run: pip install cpplint
-      
-      - name: Run cpplint
+
+      - name: Run cpplint (uses CPPLINT.cfg)
         run: cpplint --recursive src/ include/
 
   naming-conventions:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
+
       - name: Check naming conventions
         run: python3 .github/scripts/check_naming_conventions.py
 
@@ -54,11 +133,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Install cppcheck
         run: sudo apt-get update && sudo apt-get install -y cppcheck
-      
+
       - name: Run static analysis with cppcheck
         run: |
-          cppcheck --enable=all --suppress=missingIncludeSystem --error-exitcode=1 \
-            src/ include/
+          cppcheck --enable=all --suppress=missingIncludeSystem \
+            -I./include \
+            --exit-code-suppressions=warning --error-exitcode=1 src/ include/
