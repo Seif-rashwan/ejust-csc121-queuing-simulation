@@ -5,7 +5,14 @@ using namespace std;
 
 ServerListType::ServerListType(int num)
 {
-    numOfServers = num;
+    if (num <= 0)
+    {
+        numOfServers = 1; // Default to at least 1 server
+    }
+    else
+    {
+        numOfServers = num;
+    }
     servers = new ServerType[numOfServers];
 }
 
@@ -41,9 +48,12 @@ int ServerListType::getNumberOfBusyServers() const
 
 void ServerListType::setServerBusy(int serverID, const CustomerType& cCustomer)
 {
-    servers[serverID].setBusy();
-    servers[serverID].setCurrentCustomer(cCustomer);
-    servers[serverID].setTransactionTime();
+    if (serverID >= 0 && serverID < numOfServers)
+    {
+        servers[serverID].setBusy();
+        servers[serverID].setCurrentCustomer(cCustomer);
+        servers[serverID].setTransactionTime();
+    }
 }
 
 void ServerListType::updateServers()

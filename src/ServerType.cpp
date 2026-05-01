@@ -24,13 +24,27 @@ void ServerType::setFree()
 // ضبط وقت الخدمة بقيمة معينة
 void ServerType::setTransactionTime(int t)
 {
-    transactionTime = t;
+    if (t >= 0)
+    {
+        transactionTime = t;
+    }
+    else
+    {
+        transactionTime = 0;
+    }
 }
 
 // ضبط وقت الخدمة بناءً على وقت العميل الحالي
 void ServerType::setTransactionTime()
 {
-    transactionTime = currentCustomer.getTransactionTime();
+    if (status == "busy")
+    {
+        transactionTime = currentCustomer.getTransactionTime();
+    }
+    else
+    {
+        transactionTime = 0;
+    }
 }
 
 // إرجاع الوقت المتبقي لانتهاء الخدمة

@@ -102,5 +102,5 @@ WaitingCustomerQueue<Type>::~WaitingCustomerQueue() {
 // ---------------------------------------------------------
 // Explicit Template Instantiation
 // عشان الـ Linker بتاع الـ C++ ميضربش error وإحنا بنبني المشروع
-#include "customerType.h"
+#include "CustomerType.h"
 template class WaitingCustomerQueue<CustomerType>;
