@@ -1,11 +1,11 @@
-#include <iostream>
-#include <iomanip>
 #include <cstdlib>
 #include <ctime>
+#include <iomanip>
+#include <iostream>
 
 #include "customerType.h"
-#include "serverType.h"
 #include "serverListType.h"
+#include "serverType.h"
 #include "waitingCustomerQueue.h"
 
 // ──────────────────────────────────────────────
@@ -26,30 +26,28 @@ int randomServiceTime() {
 int main() {
     srand(static_cast<unsigned>(time(nullptr)));
 
-    serverListType       serverList(numServers);
+serverListType       serverList(numServers);
     waitingCustomerQueue waitQueue;
 
-    int customerCount   = 0;
-    int totalWaitTime   = 0;
-    int totalCustomers  = 0;
-    int maxQueueLength  = 0;
+    int customerCount  = 0;
+    int totalWaitTime  = 0;
+    int totalCustomers = 0;
+    int maxQueueLength = 0;
 
     std::cout << "========================================\n";
     std::cout << "   Queuing System Simulation — E-JUST  \n";
     std::cout << "========================================\n";
-    std::cout << "Servers: "  << numServers      << "  |  "
+std::cout << "Servers: "  << numServers      << "  |  "
               << "Sim time: " << simTime         << " ticks  |  "
               << "Arrival every " << arrivalInterval << " ticks\n\n";
 
     // ── Main simulation loop ─────────────────
     for (int clock = 1; clock <= simTime; clock++) {
-
         // 2.1  Update servers (decrement transaction time)
         serverList.updateServers(std::cout);
 
         // 2.2  Increment waiting time of every queued customer
-        if (!waitQueue.empty())
-            waitQueue.incrementWaitingTimes();
+        if (!waitQueue.empty()) waitQueue.incrementWaitingTimes();
 
         // 2.3  New customer arrives?
         if (clock % arrivalInterval == 0) {
@@ -57,14 +55,13 @@ int main() {
             customerType newCustomer(customerCount, clock, 0, randomServiceTime());
             waitQueue.enqueue(newCustomer);
             totalCustomers++;
-            std::cout << "  [Clock " << clock << "] Customer #"
-                      << customerCount << " arrived (service time: "
-                      << newCustomer.getTransactionTime() << " units)\n";
+            std::cout << "  [Clock " << clock << "] Customer #" << customerCount
+                      << " arrived (service time: " << newCustomer.getTransactionTime()
+                      << " units)\n";
         }
 
         // Track peak queue length
-        if (waitQueue.size() > maxQueueLength)
-            maxQueueLength = waitQueue.size();
+        if (waitQueue.size() > maxQueueLength) maxQueueLength = waitQueue.size();
 
         // 2.4  Assign waiting customers to free servers
         int freeID;
@@ -80,13 +77,11 @@ int main() {
     std::cout << "           Simulation Results           \n";
     std::cout << "========================================\n";
     std::cout << std::fixed << std::setprecision(2);
-    std::cout << "Total customers served : " << totalCustomers  << "\n";
+    std::cout << "Total customers served : " << totalCustomers << "\n";
     std::cout << "Customers still queued : " << waitQueue.size() << "\n";
-    std::cout << "Peak queue length      : " << maxQueueLength   << "\n";
+    std::cout << "Peak queue length      : " << maxQueueLength << "\n";
 
-    double avgWait = totalCustomers > 0
-                   ? static_cast<double>(totalWaitTime) / totalCustomers
-                   : 0.0;
+    double avgWait = totalCustomers > 0 ? static_cast<double>(totalWaitTime) / totalCustomers : 0.0;
     std::cout << "Average waiting time   : " << avgWait << " ticks\n";
     std::cout << "========================================\n";
 

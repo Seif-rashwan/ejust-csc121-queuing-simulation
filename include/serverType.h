@@ -2,6 +2,7 @@
 #define SERVERTYPE_H
 
 #include <string>
+
 #include "customerType.h"
 
 class serverType {

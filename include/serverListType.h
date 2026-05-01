@@ -2,6 +2,7 @@
 #define SERVERLISTTYPE_H
 
 #include <iostream>
+
 #include "serverType.h"
 
 class serverListType {

@@ -1,9 +1,10 @@
 #ifndef WAITING_CUSTOMER_QUEUE_H
 #define WAITING_CUSTOMER_QUEUE_H
 
-#include "customerType.h"
 #include <queue>
 #include <stdexcept>
+
+#include "customerType.h"
 
 // Extends std::queue with a helper to increment every customer's waiting time
 class waitingCustomerQueue {
