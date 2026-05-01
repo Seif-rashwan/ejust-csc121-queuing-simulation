@@ -146,4 +146,4 @@ jobs:
         run: |
           cppcheck --enable=all --suppress=missingIncludeSystem \
             -I./include \
-            --exit-code-suppressions=warning --error-exitcode=1 src/ include/
+            --error-exitcode=1 src/ include/
