@@ -7,12 +7,12 @@
 using namespace std;
 
 class ServerType {
-private:
+   private:
     CustomerType currentCustomer;
     string status;
     int transactionTime;
 
-public:
+   public:
     // دوال الاستعلام عن حالة السيرفر
     bool isFree() const;
     void setBusy();

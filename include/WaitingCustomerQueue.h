@@ -13,18 +13,18 @@ struct nodeType {
 
 template <class Type>
 class WaitingCustomerQueue : public QueueADT<Type> {
-private:
-    nodeType<Type> *queueFront; // مؤشر لأول عنصر في الطابور
-    nodeType<Type> *queueRear;  // مؤشر لآخر عنصر في الطابور
+   private:
+    nodeType<Type> *queueFront;  // مؤشر لأول عنصر في الطابور
+    nodeType<Type> *queueRear;   // مؤشر لآخر عنصر في الطابور
 
-public:
+   public:
     // الدوال الأساسية الموروثة من queueADT
     bool isEmptyQueue() const;
     bool isFullQueue() const;
     void initializeQueue();
     Type front() const;
     Type back() const;
-    void addQueue(const Type& queueElement);
+    void addQueue(const Type &queueElement);
     void deleteQueue();
 
     // الدالة الإضافية المطلوبة للـ Simulation لزيادة وقت الانتظار
