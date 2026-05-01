@@ -1,7 +1,8 @@
 #include "WaitingCustomerQueue.h"
 #include <cassert>
 #include <iostream>
-using namespace std;
+using std::cout;
+using std::endl;
 
 // 1. التحقق لو الطابور فاضي
 template <class Type>

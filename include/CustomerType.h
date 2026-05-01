@@ -1,5 +1,5 @@
-#ifndef CUSTOMERTYPE_H
-#define CUSTOMERTYPE_H
+#ifndef INCLUDE_CUSTOMERTYPE_H_
+#define INCLUDE_CUSTOMERTYPE_H_
 
 class CustomerType {
    private:
@@ -19,7 +19,7 @@ class CustomerType {
     int getCustomerNumber() const;
 
     // Constructor
-    CustomerType(int customerN = 0, int arrTime = 0, int wTime = 0, int tTime = 0);
+    explicit CustomerType(int customerN = 0, int arrTime = 0, int wTime = 0, int tTime = 0);
 };
 
-#endif
+#endif  // INCLUDE_CUSTOMERTYPE_H_

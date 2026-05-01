@@ -1,8 +1,10 @@
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
+#include <random>
 #include "ServerListType.h"
 #include "WaitingCustomerQueue.h"
+
 
 using std::cin;
 using std::cout;
@@ -38,7 +40,8 @@ int main() {
     int customersServed  = 0;
     int customersArrived = 0;
 
-    srand(time(0));  // عشان العشوائية في وصول العملاء
+    std::random_device rd;
+    std::mt19937 gen(rd());
 
     // 3. بداية المحاكاة (اللوب الأساسية)
     for (int clock = 1; clock <= simulationTime; clock++) {
@@ -51,7 +54,11 @@ int main() {
         }
 
         // ج. وصول عميل جديد (باحتمالية عشوائية مبنية على الوقت بين العملاء)
-        int arrivalChance = rand() % timeBetweenArrivals;
+        int arrivalChance = 0;
+        if (timeBetweenArrivals > 0) {
+            std::uniform_int_distribution<int> dist(0, timeBetweenArrivals - 1);
+            arrivalChance = dist(gen);
+        }
         if (arrivalChance == 0) {
             customersArrived++;
             // إنشاء عميل جديد وإضافته للطابور
@@ -89,7 +96,8 @@ int main() {
     cout << "Customers left in queue: " << customersArrived - customersServed << endl;
 
     if (customersServed > 0) {
-        cout << "Average waiting time: " << (double)totalWaitTime / customersServed << endl;
+        cout << "Average waiting time: " << static_cast<double>(totalWaitTime) / customersServed
+             << endl;
     }
 
     return 0;
