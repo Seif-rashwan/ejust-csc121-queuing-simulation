@@ -37,7 +37,7 @@ Type WaitingCustomerQueue<Type>::front() const {
 // 5. إرجاع آخر عنصر
 template <class Type>
 Type WaitingCustomerQueue<Type>::back() const {
-    assert(queueRear != nullptr);
+    assert(queueRear != nullptr);  // التأكد إن الطابور مش فاضي
     return queueRear->info;
 }
 
@@ -47,7 +47,7 @@ void WaitingCustomerQueue<Type>::addQueue(const Type& newElement) {
     nodeType<Type>* newNode;
     newNode       = new nodeType<Type>;
     newNode->info = newElement;
-    newNode->link = nullptr;
+    newNode->link = nullptr;  // link = nullptr للعقدة الجديدة
 
     if (queueFront == nullptr) {  // لو الطابور فاضي
         queueFront = newNode;

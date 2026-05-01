@@ -1,10 +1,11 @@
-#ifndef SERVERTYPE_H
-#define SERVERTYPE_H
+// Copyright 2026 Seif Rashwan
+#ifndef INCLUDE_SERVERTYPE_H_
+#define INCLUDE_SERVERTYPE_H_
 
 #include <string>
 #include "CustomerType.h"
 
-using namespace std;
+using std::string;
 
 class ServerType {
    private:
@@ -35,4 +36,4 @@ class ServerType {
     ServerType();
 };
 
-#endif
+#endif  // INCLUDE_SERVERTYPE_H_

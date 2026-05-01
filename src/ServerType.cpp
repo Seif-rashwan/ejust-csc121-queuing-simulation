@@ -1,7 +1,7 @@
 #include "ServerType.h"
 #include <iostream>
 
-using namespace std;
+using std::cout;
 
 // التحقق لو السيرفر فاضي
 bool ServerType::isFree() const {

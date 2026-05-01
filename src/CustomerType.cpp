@@ -1,3 +1,4 @@
+// Copyright 2026 Seif Rashwan
 #include "CustomerType.h"
 
 // دالة لضبط كل بيانات العميل مرة واحدة

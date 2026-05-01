@@ -4,7 +4,9 @@
 #include "ServerListType.h"
 #include "WaitingCustomerQueue.h"
 
-using namespace std;
+using std::cout;
+using std::cin;
+using std::endl;
 
 // دالة لأخذ معطيات المحاكاة من المستخدم
 void setSimulationParameters(int& sTime, int& numOfServers, int& transTime, int& tBetweenArrivals) {

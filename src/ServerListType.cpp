@@ -1,7 +1,8 @@
 #include "ServerListType.h"
 #include <iostream>
 
-using namespace std;
+using std::cout;
+using std::endl;
 
 ServerListType::ServerListType(int num) {
     if (num <= 0) {

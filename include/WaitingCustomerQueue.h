@@ -1,9 +1,9 @@
-#ifndef WAITINGCUSTOMERQUEUE_H
-#define WAITINGCUSTOMERQUEUE_H
+// Copyright 2026 Seif Rashwan
+#ifndef INCLUDE_WAITINGCUSTOMERQUEUE_H_
+#define INCLUDE_WAITINGCUSTOMERQUEUE_H_
 
 #include <iostream>
 #include "QueueADT.h"
-using namespace std;
 
 template <class Type>
 struct nodeType {
@@ -35,4 +35,4 @@ class WaitingCustomerQueue : public QueueADT<Type> {
     ~WaitingCustomerQueue();
 };
 
-#endif
+#endif  // INCLUDE_WAITINGCUSTOMERQUEUE_H_
