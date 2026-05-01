@@ -8,7 +8,7 @@
 
 // Extends std::queue with a helper to increment every customer's waiting time
 class waitingCustomerQueue {
-public:
+   public:
     bool empty() const { return q.empty(); }
     int size() const { return static_cast<int>(q.size()); }
 
@@ -38,7 +38,7 @@ public:
         q = temp;
     }
 
-private:
+   private:
     std::queue<customerType> q;
 };
 

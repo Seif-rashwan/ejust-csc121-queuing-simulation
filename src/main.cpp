@@ -11,22 +11,19 @@
 // ──────────────────────────────────────────────
 //  Simulation parameters (edit these freely)
 // ──────────────────────────────────────────────
-const int simTime          = 100;   // total clock ticks to simulate
-const int numServers       = 3;     // number of servers
-const int arrivalInterval  = 4;     // a new customer arrives every N ticks
-const int minServiceTime  = 2;     // minimum service (transaction) time
-const int maxServiceTime  = 6;     // maximum service (transaction) time
+const int simTime         = 100;  // total clock ticks to simulate
+const int numServers      = 3;    // number of servers
+const int arrivalInterval = 4;    // a new customer arrives every N ticks
+const int minServiceTime  = 2;    // minimum service (transaction) time
+const int maxServiceTime  = 6;    // maximum service (transaction) time
 // ──────────────────────────────────────────────
 
-int randomServiceTime() {
-    return minServiceTime
-         + rand() % (maxServiceTime - minServiceTime + 1);
-}
+int randomServiceTime() { return minServiceTime + rand() % (maxServiceTime - minServiceTime + 1); }
 
 int main() {
     srand(static_cast<unsigned>(time(nullptr)));
 
-serverListType       serverList(numServers);
+    serverListType serverList(numServers);
     waitingCustomerQueue waitQueue;
 
     int customerCount  = 0;
@@ -37,8 +34,7 @@ serverListType       serverList(numServers);
     std::cout << "========================================\n";
     std::cout << "   Queuing System Simulation — E-JUST  \n";
     std::cout << "========================================\n";
-std::cout << "Servers: "  << numServers      << "  |  "
-              << "Sim time: " << simTime         << " ticks  |  "
+    std::cout << "Servers: " << numServers << "  |  " << "Sim time: " << simTime << " ticks  |  "
               << "Arrival every " << arrivalInterval << " ticks\n\n";
 
     // ── Main simulation loop ─────────────────

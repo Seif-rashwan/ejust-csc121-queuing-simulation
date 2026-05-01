@@ -6,7 +6,7 @@
 #include "serverType.h"
 
 class serverListType {
-public:
+   public:
     // Functions
     int getFreeServerID() const;
     int getNumberOfBusyServers() const;
@@ -18,7 +18,7 @@ public:
     serverListType(int num = 1);
     ~serverListType();
 
-private:
+   private:
     int numServers;
     serverType* servers;  // Pointer to create a dynamic array of servers
 };

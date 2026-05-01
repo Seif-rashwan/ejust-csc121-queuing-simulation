@@ -19,7 +19,8 @@ int serverListType::getNumberOfBusyServers() const {
     return busyServers;
 }
 
-void serverListType::setServerBusy(int serverID, customerType currentCustomer, int transactionTime) {
+void serverListType::setServerBusy(int serverID, customerType currentCustomer,
+                                   int transactionTime) {
     servers[serverID].setBusy();
     servers[serverID].setCurrentCustomer(currentCustomer);
     servers[serverID].setTransactionTime(transactionTime);
@@ -46,9 +47,7 @@ void serverListType::updateServers(std::ostream& outF) {
 
 serverListType::serverListType(int num) {
     numServers = num;
-    servers = new serverType[numServers];
+    servers    = new serverType[numServers];
 }
 
-serverListType::~serverListType() {
-    delete[] servers;
-}
+serverListType::~serverListType() { delete[] servers; }

@@ -6,7 +6,7 @@
 #include "customerType.h"
 
 class serverType {
-public:
+   public:
     // Functions
     bool isFree() const;
     void setBusy();
@@ -24,7 +24,7 @@ public:
     // Constructor
     serverType();
 
-private:
+   private:
     customerType currentCustomer;
     std::string status;
     int transactionTime;
