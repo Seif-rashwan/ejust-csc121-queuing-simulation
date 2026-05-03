@@ -4,6 +4,8 @@ BasedOnStyle: Google
 IndentWidth: 4
 UseTab: Never
 ColumnLimit: 100
+IncludeBlocks: Preserve
+SortIncludes: true
 AlignArrayOfStructures: Right
 AlignAfterOpenBracket: Align
 AlignConsecutiveAssignments:
@@ -15,3 +17,4 @@ BraceWrapping:
   AfterControlStatement: true
   AfterFunction: true
 NamespaceIndentation: All
+AllowShortFunctionsOnASingleLine: Empty

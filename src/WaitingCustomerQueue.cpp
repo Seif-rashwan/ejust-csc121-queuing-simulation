@@ -1,8 +1,6 @@
-// Copyright 2026 Seif Rashwan
-#include <iostream>
-#include <cassert>
 #include "WaitingCustomerQueue.h"
-
+#include <cassert>
+#include <iostream>
 using std::cout;
 using std::endl;
 
@@ -21,8 +19,9 @@ bool WaitingCustomerQueue<Type>::isFullQueue() const {
 // 3. تهيئة الطابور (مسح كل العناصر اللي فيه)
 template <class Type>
 void WaitingCustomerQueue<Type>::initializeQueue() {
+    nodeType<Type>* temp;
     while (queueFront != nullptr) {
-        nodeType<Type> *temp = queueFront;
+        temp       = queueFront;
         queueFront = queueFront->link;
         delete temp;
     }
@@ -46,27 +45,26 @@ Type WaitingCustomerQueue<Type>::back() const {
 // 6. إضافة عنصر جديد للطابور (عميل جديد)
 template <class Type>
 void WaitingCustomerQueue<Type>::addQueue(const Type& newElement) {
-    nodeType<Type> *newNode;
-    newNode = new nodeType<Type>;  // إنشاء عقدة جديدة
+    nodeType<Type>* newNode;
+    newNode       = new nodeType<Type>;
     newNode->info = newElement;
     newNode->link = nullptr;  // link = nullptr للعقدة الجديدة
 
-    if (queueFront == nullptr)  // لو الطابور فاضي
-    {
-        queueFront = newNode;  // queueFront = newNode
-        queueRear = newNode;  // queueRear = newNode
-    } else  // لو فيه ناس واقفة
-    {
-        queueRear->link = newNode;  // ربط queueRear بالعقدة الجديدة
-        queueRear = queueRear->link;  // تحديث queueRear
+    if (queueFront == nullptr) {  // لو الطابور فاضي
+        queueFront = newNode;
+        queueRear  = newNode;
+    } else {  // لو فيه ناس واقفة
+        queueRear->link = newNode;
+        queueRear       = queueRear->link;
     }
 }
 
 // 7. حذف عنصر من الطابور (عميل دخل للسيرفر)
 template <class Type>
 void WaitingCustomerQueue<Type>::deleteQueue() {
+    nodeType<Type>* temp;
     if (!isEmptyQueue()) {
-        nodeType<Type> *temp = queueFront;
+        temp       = queueFront;
         queueFront = queueFront->link;
         delete temp;
 
@@ -80,10 +78,10 @@ void WaitingCustomerQueue<Type>::deleteQueue() {
 // 8. الدالة الخاصة: تحديث وقت الانتظار لكل العملاء في الطابور
 template <class Type>
 void WaitingCustomerQueue<Type>::incrementWaitingTimes() {
-    nodeType<Type> *current = queueFront;
+    nodeType<Type>* current = queueFront;
     while (current != nullptr) {
         // بننادي على دالة زيادة وقت الانتظار اللي جوه كلاس العميل
-        current->info.incrementWaitingTime(); 
+        current->info.incrementWaitingTime();
         current = current->link;
     }
 }
@@ -92,7 +90,7 @@ void WaitingCustomerQueue<Type>::incrementWaitingTimes() {
 template <class Type>
 WaitingCustomerQueue<Type>::WaitingCustomerQueue() {
     queueFront = nullptr;
-    queueRear = nullptr;
+    queueRear  = nullptr;
 }
 
 // 10. Destructor

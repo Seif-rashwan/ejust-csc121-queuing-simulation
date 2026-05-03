@@ -1,18 +1,16 @@
-// Copyright 2026 Seif Rashwan
-#include <iostream>
 #include <cstdlib>
 #include <ctime>
+#include <iostream>
+#include <random>
 #include "ServerListType.h"
 #include "WaitingCustomerQueue.h"
 
-using std::cout;
 using std::cin;
+using std::cout;
 using std::endl;
 
 // دالة لأخذ معطيات المحاكاة من المستخدم
-void setSimulationParameters(int& sTime, int& numOfServers, int& transTime,
-                         int& tBetweenArrivals)
-{
+void setSimulationParameters(int& sTime, int& numOfServers, int& transTime, int& tBetweenArrivals) {
     cout << "Enter simulation time: ";
     cin >> sTime;
     cout << "Enter number of servers: ";
@@ -23,8 +21,7 @@ void setSimulationParameters(int& sTime, int& numOfServers, int& transTime,
     cin >> tBetweenArrivals;
 }
 
-int main()
-{
+int main() {
     int simulationTime;
     int numberOfServers;
     int transactionTime;
@@ -38,28 +35,30 @@ int main()
     WaitingCustomerQueue<CustomerType> customerQueue;
 
     // متغيرات للإحصائيات النهائية
-    int totalWaitTime = 0;
-    int customersServed = 0;
+    int totalWaitTime    = 0;
+    int customersServed  = 0;
     int customersArrived = 0;
 
-    srand(time(0));  // عشان العشوائية في وصول العملاء
+    std::random_device rd;
+    std::mt19937 gen(rd());
 
     // 3. بداية المحاكاة (اللوب الأساسية)
-    for (int clock = 1; clock <= simulationTime; clock++)
-    {
+    for (int clock = 1; clock <= simulationTime; clock++) {
         // أ. تحديث حالة السيرفرات (تقليل وقت الناس اللي بتخدم حالياً)
         servers.updateServers();
 
         // ب. تحديث وقت الانتظار للناس اللي واقفة في الطابور
-        if (!customerQueue.isEmptyQueue())
-        {
+        if (!customerQueue.isEmptyQueue()) {
             customerQueue.incrementWaitingTimes();
         }
 
         // ج. وصول عميل جديد (باحتمالية عشوائية مبنية على الوقت بين العملاء)
-        int arrivalChance = rand() % timeBetweenArrivals;
-        if (arrivalChance == 0)
-        {
+        int arrivalChance = 0;
+        if (timeBetweenArrivals > 0) {
+            std::uniform_int_distribution<int> dist(0, timeBetweenArrivals - 1);
+            arrivalChance = dist(gen);
+        }
+        if (arrivalChance == 0) {
             customersArrived++;
             // إنشاء عميل جديد وإضافته للطابور
             CustomerType newCustomer(customersArrived, clock, 0, transactionTime);
@@ -69,8 +68,7 @@ int main()
 
         // د. نقل العملاء من الطابور للسيرفرات الفاضية
         int freeServerID = servers.getFreeServerID();
-        while (freeServerID != -1 && !customerQueue.isEmptyQueue())
-        {
+        while (freeServerID != -1 && !customerQueue.isEmptyQueue()) {
             // سحب أول عميل
             CustomerType frontCustomer = customerQueue.front();
             customerQueue.deleteQueue();
@@ -94,13 +92,11 @@ int main()
     cout << "Total simulation time: " << simulationTime << endl;
     cout << "Total customers arrived: " << customersArrived << endl;
     cout << "Total customers served: " << customersServed << endl;
-    cout << "Customers left in queue: "
-         << customersArrived - customersServed << endl;
-    
-    if (customersServed > 0)
-    {
-        cout << "Average waiting time: "
-             << static_cast<double>(totalWaitTime) / customersServed << endl;
+    cout << "Customers left in queue: " << customersArrived - customersServed << endl;
+
+    if (customersServed > 0) {
+        cout << "Average waiting time: " << static_cast<double>(totalWaitTime) / customersServed
+             << endl;
     }
 
     return 0;

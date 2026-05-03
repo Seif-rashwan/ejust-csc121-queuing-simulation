@@ -3,9 +3,9 @@
 
 // دالة لضبط كل بيانات العميل مرة واحدة
 void CustomerType::setCustomerInfo(int customerN, int arrTime, int wTime, int tTime) {
-    customerNumber = customerN;
-    arrivalTime = arrTime;
-    waitingTime = wTime;
+    customerNumber  = customerN;
+    arrivalTime     = arrTime;
+    waitingTime     = wTime;
     transactionTime = tTime;
 }
 

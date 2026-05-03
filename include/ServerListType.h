@@ -5,11 +5,11 @@
 #include "ServerType.h"
 
 class ServerListType {
-private:
+   private:
     int numOfServers;
-    ServerType *servers; 
+    ServerType* servers;
 
-public:
+   public:
     int getFreeServerID() const;
     int getNumberOfBusyServers() const;
     void setServerBusy(int serverID, const CustomerType& cCustomer);

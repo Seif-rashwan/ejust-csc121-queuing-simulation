@@ -4,7 +4,7 @@
 
 template <class Type>
 class QueueADT {
-public:
+   public:
     // يتحقق إذا كان الطابور فارغ
     virtual bool isEmptyQueue() const = 0;
 
