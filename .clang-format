@@ -1,11 +1,9 @@
+Language: Cpp
 BasedOnStyle: Google
+Standard: c++20
 ColumnLimit: 100
 IndentWidth: 4
 UseTab: Never
-
----
-Language: Cpp
-Standard: c++20
 
 SortIncludes: true
 IncludeBlocks: Preserve
@@ -19,5 +17,3 @@ AlignConsecutiveAssignments:
   Enabled: true
   AcrossEmptyLines: true
   AcrossComments: false
-
----

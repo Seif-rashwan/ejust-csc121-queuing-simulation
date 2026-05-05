@@ -1,4 +1,4 @@
-# See https://clang.llvm.org/extra/clang-tidy/checks/readability/identifier-naming.html
+# See https://clang.llvm.org/extra/clang-tidy/checks/readability/identifier-naming.html & https://clang.llvm.org/extra/clang-tidy/
 # for more details on clang-tidy configuration options.
 
 ---
@@ -15,9 +15,9 @@ Checks: >
 WarningsAsErrors: '*'
 CheckOptions:
   - key:             readability-identifier-naming.ClassCase
-    value:           PascalCase
+    value:           CamelCase
   - key:             readability-identifier-naming.StructCase
-    value:           PascalCase
+    value:           CamelCase
   - key:             readability-identifier-naming.PrivateMemberSuffix
     value:           _
   - key:             readability-identifier-naming.PrivateMemberCase
@@ -25,30 +25,10 @@ CheckOptions:
   - key:             readability-identifier-naming.MethodCase
     value:           camelBack
   - key:             readability-identifier-naming.FunctionCase
-    value:           PascalCase
+    value:           CamelCase
   - key:             readability-identifier-naming.VariableCase
     value:           lower_case
   - key:             readability-identifier-naming.ParameterCase
     value:           lower_case
   - key:             readability-identifier-naming.ConstantCase
     value:           UPPER_CASE
-
-  - key:             readability-identifier-naming.LocalPointerSuffix
-    value:           'ptr'
-  - key:             readability-identifier-naming.GlobalPointerSuffix
-    value:           'ptr'
-  - key:             readability-identifier-naming.GlobalPointerSuffixCase
-    value:           lower_case
-  - key:             readability-identifier-naming.PointerParameterSuffix
-    value:           'ptr'
-  - key:             readability-identifier-naming.PointerParameterSuffixCase
-    value:           lower_case
-  - key:             readability-identifier-naming.MemberPointerSuffix
-    value:           'ptr'
-  - key:             readability-identifier-naming.MemberPointerSuffixCase
-    value:           lower_case
-  - key:             readability-identifier-naming.PrivateMemberPointerSuffix
-    value:           'ptr_'
-  - key:             readability-identifier-naming.PrivateMemberPointerCase
-    value:           lower_case
-...
