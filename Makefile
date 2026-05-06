@@ -1,7 +1,9 @@
 CXX      = g++
 CXXFLAGS = -Wall -Wextra -Wpedantic -std=c++23 -Iinclude
+DEPFLAGS = -MMD -MP
 SRC      = $(wildcard src/*.cpp)
 OBJ      = $(SRC:src/%.cpp=build/%.o)
+DEP      = $(OBJ:build/%.o=build/%.d)
 TARGET   = simulation
 
 .PHONY: all run debug lint format clean build
@@ -12,7 +14,9 @@ $(TARGET): $(OBJ)
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
 build/%.o: src/%.cpp | build
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(DEPFLAGS) -c $< -o $@
+
+-include $(DEP)
 
 build:
 	mkdir -p build
