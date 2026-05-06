@@ -4,6 +4,8 @@ SRC      = $(wildcard src/*.cpp)
 OBJ      = $(SRC:src/%.cpp=build/%.o)
 TARGET   = simulation
 
+.PHONY: all run debug lint format clean build
+
 all: $(TARGET)
 
 $(TARGET): $(OBJ)
