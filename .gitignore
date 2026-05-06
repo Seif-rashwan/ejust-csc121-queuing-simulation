@@ -1,0 +1,30 @@
+# Compiled Object files
+*.o
+*.obj
+
+# Executables
+*.exe
+*.out
+simulation
+
+# Optional build directory
+build/
+bin/
+
+# clangd cache 
+.cache/
+.clangd/
+
+# VS Code
+.vscode/*
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Doxygen generated documentation
+html/
+latex/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
