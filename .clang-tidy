@@ -10,7 +10,7 @@ Checks: >
   bugprone-*,
   performance-*,
   readability-*,
-  -readability-magic-numbers
+  -modernize-use-nodiscard,
 
 WarningsAsErrors: '*'
 CheckOptions:
