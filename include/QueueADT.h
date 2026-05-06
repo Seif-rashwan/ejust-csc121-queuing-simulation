@@ -23,9 +23,9 @@ class QueueADT {
    public:
     /**
      * @brief Adds an element to the queue.
-     * @param queueElement The element to be added to the queue.
+     * @param queue_elem The element to be added to the queue.
      */
-    virtual void queue(const Type& queueElement) = 0;
+    virtual void enqueue(const Type& queue_elem) = 0;
 
     /**
      * @brief Removes the front element from the queue.
@@ -40,25 +40,35 @@ class QueueADT {
 
     /**
      * @brief Checks if the queue is full.
-     * @return `true` if the queue is full, `false` otherwise.
-     * @throws std::exception If the queue is full, throws an exception.
+     * @return `true` if the queue is full (always true if a linked list implementation),
+     *         `false` otherwise.
+     * @throws std::exception if the queue is full, throws an exception.
      */
-    virtual bool isFull() const = 0;
+    virtual bool isFull() const {
+        return false;
+    }
 
     /**
      * @brief Retrieves the front element of the queue.
      * @return The element at the front of the queue.
-     * @throws std::exception If the queue is empty, throws an exception.
+     * @throws std::exception if the queue is empty, throws an exception.
      */
     virtual Type front() const = 0;
 
     /**
      * @brief Retrieves the back element of the queue.
      * @return The element at the back of the queue.
+     * @throws std::exception if the queue is empty, throws an exception.
      */
-    virtual Type back() const = 0;
+    virtual Type back() const;
 
-    virtual ~QueueADT()       = default;
+    /**
+     * @brief Returns the current amount of items/elements in the queue.
+     * @return `int` how many slots are occupied.
+     */
+    virtual int size() const = 0;
+
+    virtual ~QueueADT()      = default;
 };
 
 #endif  // INCLUDE_QUEUEADT_H_
