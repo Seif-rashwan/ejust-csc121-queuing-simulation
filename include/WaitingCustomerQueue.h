@@ -2,35 +2,31 @@
 #ifndef INCLUDE_WAITINGCUSTOMERQUEUE_H_
 #define INCLUDE_WAITINGCUSTOMERQUEUE_H_
 
-#include <iostream>
 #include "QueueADT.h"
 
-template <class Type>
-struct nodeType {
-    Type info;
-    nodeType<Type> *link;
+template <typename Type>
+struct LinkedNode {
+    Type data;
+    LinkedNode<Type>* next;
 };
 
-template <class Type>
+template <typename Type>
 class WaitingCustomerQueue : public QueueADT<Type> {
    private:
-    nodeType<Type> *queueFront;  // مؤشر لأول عنصر في الطابور
-    nodeType<Type> *queueRear;   // مؤشر لآخر عنصر في الطابور
+    LinkedNode<Type>* front_;
+    LinkedNode<Type>* rear_;
+    void initialize();
 
    public:
-    // الدوال الأساسية الموروثة من queueADT
-    bool isEmptyQueue() const;
-    bool isFullQueue() const;
-    void initializeQueue();
-    Type front() const;
-    Type back() const;
-    void addQueue(const Type &queueElement);
-    void deleteQueue();
+    void enqueue(const Type& customer) override;
+    void dequeue() override;
 
-    // الدالة الإضافية المطلوبة للـ Simulation لزيادة وقت الانتظار
-    void incrementWaitingTimes();
+    Type front() const override;
+    Type back() const override;
+    bool isEmpty() const override;
 
-    // Constructor & Destructor
+    void incrementWaitingTimes(const double& inc_amount);
+
     WaitingCustomerQueue();
     ~WaitingCustomerQueue();
 };
