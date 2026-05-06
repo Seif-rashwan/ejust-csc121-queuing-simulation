@@ -1,89 +1,91 @@
 #include "WaitingCustomerQueue.h"
-#include <cassert>
-#include <iostream>
+#include <stdexcept>
 
-template <class Type>
-bool WaitingCustomerQueue<Type>::is_empty_queue() const {
-    return (queue_front == nullptr);
+template <typename Type>
+bool WaitingCustomerQueue<Type>::isEmpty() const {
+    return (front_ == nullptr);
 }
 
-template <class Type>
-bool WaitingCustomerQueue<Type>::is_full_queue() const {
-    return false; 
-}
+template <typename Type>
+void WaitingCustomerQueue<Type>::initialize() {
+    LinkedNode<Type>* temp;
 
-template <class Type>
-void WaitingCustomerQueue<Type>::initialize_queue() {
-    NodeType<Type>* temp;
-    while (queue_front != nullptr) {
-        temp = queue_front;
-        queue_front = queue_front->link;
+    while (front_ != nullptr) {
+        temp   = front_;
+        front_ = front_->next;
         delete temp;
     }
-    queue_rear = nullptr;
+
+    rear_ = nullptr;
 }
 
-template <class Type>
+template <typename Type>
 Type WaitingCustomerQueue<Type>::front() const {
-    assert(queue_front != nullptr);
-    return queue_front->info;
+    if (front_ == nullptr) {
+        throw std::runtime_error("ERROR: Cannot access front of empty queue.");
+    }
+
+    return front_->data;
 }
 
-template <class Type>
+template <typename Type>
 Type WaitingCustomerQueue<Type>::back() const {
-    assert(queue_rear != nullptr);
-    return queue_rear->info;
+    if (rear_ == nullptr) {
+        throw std::runtime_error("ERROR: Cannot access back of empty queue.");
+    }
+
+    return rear_->data;
 }
 
-template <class Type>
-void WaitingCustomerQueue<Type>::add_queue(const Type& queue_element) {
-    NodeType<Type>* new_node = new NodeType<Type>;
-    new_node->info = queue_element;
-    new_node->link = nullptr;
-    
-    if (queue_front == nullptr) {
-        queue_front = new_node;
-        queue_rear = new_node;
+template <typename Type>
+void WaitingCustomerQueue<Type>::enqueue(const Type& customer) {
+    auto* new_node = new LinkedNode<Type>;
+    new_node->data = customer;
+    new_node->next = nullptr;
+
+    if (front_ == nullptr) {
+        front_ = new_node;
+        rear_  = new_node;
     } else {
-        queue_rear->link = new_node;
-        queue_rear = new_node;
+        rear_->next = new_node;
+        rear_       = new_node;
     }
 }
 
-template <class Type>
-void WaitingCustomerQueue<Type>::delete_queue() {
-    if (!is_empty_queue()) {
-        NodeType<Type>* temp = queue_front;
-        queue_front = queue_front->link;
+template <typename Type>
+void WaitingCustomerQueue<Type>::dequeue() {
+    if (!isEmpty()) {
+        LinkedNode<Type>* temp = front_;
+        front_                 = front_->next;
         delete temp;
-        
-        if (queue_front == nullptr) {
-            queue_rear = nullptr;
+
+        if (front_ == nullptr) {
+            rear_ = nullptr;
         }
     } else {
-        std::cout << "ERROR: Cannot remove from empty queue." << std::endl;
+        throw std::runtime_error("ERROR: Cannot remove from empty queue.");
     }
 }
 
-template <class Type>
-void WaitingCustomerQueue<Type>::increment_all_waiting_times() {
-    NodeType<Type>* current = queue_front;
+template <typename Type>
+void WaitingCustomerQueue<Type>::incrementWaitingTimes(double& inc_amount) {
+    LinkedNode<Type>* current = front_;
     while (current != nullptr) {
-        current->info.increment_waiting_time();
-        current = current->link;
+        current->data.incrementWaitingTime(inc_amount);
+        current = current->next;
     }
 }
 
-template <class Type>
+template <typename Type>
 WaitingCustomerQueue<Type>::WaitingCustomerQueue() {
-    queue_front = nullptr;
-    queue_rear = nullptr;
+    front_ = nullptr;
+    rear_  = nullptr;
 }
 
-template <class Type>
+template <typename Type>
 WaitingCustomerQueue<Type>::~WaitingCustomerQueue() {
-    initialize_queue();
+    initialize();
 }
 
 #include "CustomerType.h"
-template class WaitingCustomerQueue<CustomerType>;
+template typename WaitingCustomerQueue<CustomerType>;
