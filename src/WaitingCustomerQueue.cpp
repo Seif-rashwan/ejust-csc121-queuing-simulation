@@ -1,106 +1,89 @@
 #include "WaitingCustomerQueue.h"
 #include <cassert>
 #include <iostream>
-using std::cout;
-using std::endl;
 
-// 1. التحقق لو الطابور فاضي
 template <class Type>
-bool WaitingCustomerQueue<Type>::isEmptyQueue() const {
-    return (queueFront == nullptr);
+bool WaitingCustomerQueue<Type>::is_empty_queue() const {
+    return (queue_front == nullptr);
 }
 
-// 2. التحقق لو الطابور مليان (في الـ Linked List عمره ما بيكون مليان)
 template <class Type>
-bool WaitingCustomerQueue<Type>::isFullQueue() const {
-    return false;
+bool WaitingCustomerQueue<Type>::is_full_queue() const {
+    return false;  
 }
 
-// 3. تهيئة الطابور (مسح كل العناصر اللي فيه)
 template <class Type>
-void WaitingCustomerQueue<Type>::initializeQueue() {
-    nodeType<Type>* temp;
-    while (queueFront != nullptr) {
-        temp       = queueFront;
-        queueFront = queueFront->link;
+void WaitingCustomerQueue<Type>::initialize_queue() {
+    NodeType<Type>* temp;
+    while (queue_front != nullptr) {
+        temp = queue_front;
+        queue_front = queue_front->link;
         delete temp;
     }
-    queueRear = nullptr;
+    queue_rear = nullptr;
 }
 
-// 4. إرجاع أول عنصر
 template <class Type>
 Type WaitingCustomerQueue<Type>::front() const {
-    assert(queueFront != nullptr);  // التأكد إن الطابور مش فاضي
-    return queueFront->info;
+    assert(queue_front != nullptr);
+    return queue_front->info;
 }
 
-// 5. إرجاع آخر عنصر
 template <class Type>
 Type WaitingCustomerQueue<Type>::back() const {
-    assert(queueRear != nullptr);  // التأكد إن الطابور مش فاضي
-    return queueRear->info;
+    assert(queue_rear != nullptr);
+    return queue_rear->info;
 }
 
-// 6. إضافة عنصر جديد للطابور (عميل جديد)
 template <class Type>
-void WaitingCustomerQueue<Type>::addQueue(const Type& newElement) {
-    nodeType<Type>* newNode;
-    newNode       = new nodeType<Type>;
-    newNode->info = newElement;
-    newNode->link = nullptr;  // link = nullptr للعقدة الجديدة
-
-    if (queueFront == nullptr) {  // لو الطابور فاضي
-        queueFront = newNode;
-        queueRear  = newNode;
-    } else {  // لو فيه ناس واقفة
-        queueRear->link = newNode;
-        queueRear       = queueRear->link;
-    }
-}
-
-// 7. حذف عنصر من الطابور (عميل دخل للسيرفر)
-template <class Type>
-void WaitingCustomerQueue<Type>::deleteQueue() {
-    nodeType<Type>* temp;
-    if (!isEmptyQueue()) {
-        temp       = queueFront;
-        queueFront = queueFront->link;
-        delete temp;
-
-        if (queueFront == nullptr)  // لو مسحنا آخر عنصر
-            queueRear = nullptr;
+void WaitingCustomerQueue<Type>::add_queue(const Type& queue_element) {
+    NodeType<Type>* new_node = new NodeType<Type>;
+    new_node->info = queue_element;
+    new_node->link = nullptr;
+    
+    if (queue_front == nullptr) {
+        queue_front = new_node;
+        queue_rear = new_node;
     } else {
-        cout << "Cannot remove from an empty queue." << endl;
+        queue_rear->link = new_node;
+        queue_rear = new_node;
     }
 }
 
-// 8. الدالة الخاصة: تحديث وقت الانتظار لكل العملاء في الطابور
 template <class Type>
-void WaitingCustomerQueue<Type>::incrementWaitingTimes() {
-    nodeType<Type>* current = queueFront;
+void WaitingCustomerQueue<Type>::delete_queue() {
+    if (!is_empty_queue()) {
+        NodeType<Type>* temp = queue_front;
+        queue_front = queue_front->link;
+        delete temp;
+        
+        if (queue_front == nullptr) {
+            queue_rear = nullptr;
+        }
+    } else {
+        std::cout << "ERROR: Cannot remove from empty queue." << std::endl;
+    }
+}
+
+template <class Type>
+void WaitingCustomerQueue<Type>::increment_all_waiting_times() {
+    NodeType<Type>* current = queue_front;
     while (current != nullptr) {
-        // بننادي على دالة زيادة وقت الانتظار اللي جوه كلاس العميل
-        current->info.incrementWaitingTime();
+        current->info.increment_waiting_time();
         current = current->link;
     }
 }
 
-// 9. Constructor
 template <class Type>
 WaitingCustomerQueue<Type>::WaitingCustomerQueue() {
-    queueFront = nullptr;
-    queueRear  = nullptr;
+    queue_front = nullptr;
+    queue_rear = nullptr;
 }
 
-// 10. Destructor
 template <class Type>
 WaitingCustomerQueue<Type>::~WaitingCustomerQueue() {
-    initializeQueue();
+    initialize_queue();
 }
 
-// ---------------------------------------------------------
-// Explicit Template Instantiation
-// عشان الـ Linker بتاع الـ C++ ميضربش error وإحنا بنبني المشروع
 #include "CustomerType.h"
 template class WaitingCustomerQueue<CustomerType>;
