@@ -40,7 +40,7 @@ class QueueADT {
      */
     virtual bool isFull() const {
         return false;
-    };
+    }
 
     /**
      * @brief Retrieves the front element of the queue.

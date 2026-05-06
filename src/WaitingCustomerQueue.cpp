@@ -8,11 +8,9 @@ bool WaitingCustomerQueue<Type>::isEmpty() const {
 
 template <typename Type>
 void WaitingCustomerQueue<Type>::initialize() {
-    LinkedNode<Type>* temp;
-
     while (front_ != nullptr) {
-        temp   = front_;
-        front_ = front_->next;
+        LinkedNode<Type>* temp = front_;
+        front_                 = front_->next;
         delete temp;
     }
 
@@ -68,7 +66,7 @@ void WaitingCustomerQueue<Type>::dequeue() {
 }
 
 template <typename Type>
-void WaitingCustomerQueue<Type>::incrementWaitingTimes(double& inc_amount) {
+void WaitingCustomerQueue<Type>::incrementWaitingTimes(const double& inc_amount = 1.0) {
     LinkedNode<Type>* current = front_;
     while (current != nullptr) {
         current->data.incrementWaitingTime(inc_amount);
@@ -88,4 +86,4 @@ WaitingCustomerQueue<Type>::~WaitingCustomerQueue() {
 }
 
 #include "CustomerType.h"
-template typename WaitingCustomerQueue<CustomerType>;
+template class WaitingCustomerQueue<CustomerType>;
