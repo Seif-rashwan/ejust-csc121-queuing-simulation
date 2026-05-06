@@ -11,6 +11,7 @@ INPUT_ENCODING         = UTF-8
 INPUT                  = src include
 
 OUTPUT_DIRECTORY       = docs
+INHERIT_DOCS           = YES
 GENERATE_LATEX         = NO
 GENERATE_MAN           = NO
 GENERATE_RTF           = NO
