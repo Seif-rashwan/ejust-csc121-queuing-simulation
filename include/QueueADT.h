@@ -60,7 +60,7 @@ class QueueADT {
      * @return The element at the back of the queue.
      * @throws std::exception if the queue is empty, throws an exception.
      */
-    virtual Type back() const;
+    virtual Type back() const = 0;
 
     /**
      * @brief Returns the current amount of items/elements in the queue.
