@@ -7,19 +7,13 @@ template <typename Type>
 WaitingCustomerQueue<Type>::WaitingCustomerQueue(int max_size) {
     max_queue_size_ = (max_size > 0) ? max_size : 100;
     queue_array_    = new Type[max_queue_size_];
-    initialize();
+    queue_front_    = 0;
+    queue_rear_     = max_queue_size_ - 1;
+    count_          = 0;
 }
-
 template <typename Type>
 WaitingCustomerQueue<Type>::~WaitingCustomerQueue() {
     delete[] queue_array_;
-}
-
-template <typename Type>
-void WaitingCustomerQueue<Type>::initialize() {
-    queue_front_ = 0;
-    queue_rear_  = max_queue_size_ - 1;
-    count_       = 0;
 }
 
 template <typename Type>

@@ -13,8 +13,8 @@ class WaitingCustomerQueue : public QueueADT<Type> {
     int queue_front_;
     int queue_rear_;
     Type* queue_array_;
-
-    void initialize() override;
+    WaitingCustomerQueue(const WaitingCustomerQueue&)            = delete;
+    WaitingCustomerQueue& operator=(const WaitingCustomerQueue&) = delete;
 
    public:
     void enqueue(const Type& queue_elem) override;
