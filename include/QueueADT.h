@@ -14,6 +14,12 @@
  */
 template <typename Type>
 class QueueADT {
+   protected:
+    /**
+     * @brief Initializes the queue by setting it to an empty state.
+     */
+    virtual void initialize() = 0;
+
    public:
     /**
      * @brief Adds an element to the queue.

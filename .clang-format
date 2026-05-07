@@ -1,20 +1,19 @@
----
 Language: Cpp
 BasedOnStyle: Google
+Standard: c++20
+ColumnLimit: 100
 IndentWidth: 4
 UseTab: Never
-ColumnLimit: 100
-IncludeBlocks: Preserve
+
 SortIncludes: true
+IncludeBlocks: Preserve
+PointerAlignment: Left
 AlignArrayOfStructures: Right
 AlignAfterOpenBracket: Align
+NamespaceIndentation: All
+AllowShortFunctionsOnASingleLine: Empty
+
 AlignConsecutiveAssignments:
   Enabled: true
   AcrossEmptyLines: true
   AcrossComments: false
-BraceWrapping:
-  AfterClass: true
-  AfterControlStatement: true
-  AfterFunction: true
-NamespaceIndentation: All
-AllowShortFunctionsOnASingleLine: Empty

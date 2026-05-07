@@ -1,0 +1,40 @@
+# See Doxyfile (https://github.com/nullromo/doxygen-example/blob/main/Doxyfile)
+# for details on the options and how to use Doxygen for this project.
+
+PROJECT_NAME           = "EJUST CSC121 Queuing Simulation"
+FILE_PATTERNS          = *.cpp *.h *.hh *.hpp
+EXCLUDE_PATTERNS       = */build/* \
+                         */cmake-build-*/* \
+                         */.git/*
+
+INPUT_ENCODING         = UTF-8
+INPUT                  = src include
+
+OUTPUT_DIRECTORY       = docs
+INHERIT_DOCS           = YES
+GENERATE_LATEX         = NO
+GENERATE_MAN           = NO
+GENERATE_RTF           = NO
+GENERATE_XML           = NO
+RECURSIVE              = YES
+EXTRACT_PRIVATE        = NO
+EXTRACT_STATIC         = NO
+
+SOURCE_BROWSER         = YES
+INLINE_SOURCES         = YES
+
+GENERATE_TREEVIEW      = YES
+STRIP_FROM_PATH        = .
+FULL_PATH_NAMES        = NO
+
+HAVE_DOT               = YES
+DOT_IMAGE_FORMAT       = svg
+DOT_GRAPH_MAX_NODES    = 50
+
+WARN_LOGFILE           = docs/doxygen-warnings.log
+JAVADOC_AUTOBRIEF      = YES
+WARN_IF_UNDOCUMENTED   = YES
+
+USE_MDFILE_AS_MAINPAGE = README.md
+GENERATE_HTML          = YES
+HTML_OUTPUT            = html
