@@ -1,15 +1,37 @@
 CXX      = g++
-CXXFLAGS = -std=c++17 -Wall -Wextra -Iinclude
-SRC      = src/Main.cpp src/CustomerType.cpp src/ServerType.cpp src/ServerListType.cpp src/WaitingCustomerQueue.cpp
+CXXFLAGS = -Wall -Wextra -Wpedantic -std=c++23 -Iinclude
+DEPFLAGS = -MMD -MP
+SRC      = $(wildcard src/*.cpp)
+OBJ      = $(SRC:src/%.cpp=build/%.o)
+DEP      = $(OBJ:build/%.o=build/%.d)
 TARGET   = simulation
+
+.PHONY: all run debug lint format clean build
 
 all: $(TARGET)
 
-$(TARGET): $(SRC)
-	$(CXX) $(CXXFLAGS) -o $(TARGET) $(SRC)
+$(TARGET): $(OBJ)
+	$(CXX) $(CXXFLAGS) -o $@ $^
+
+build/%.o: src/%.cpp | build
+	$(CXX) $(CXXFLAGS) $(DEPFLAGS) -c $< -o $@
+
+-include $(DEP)
+
+build:
+	mkdir -p build
 
 run: all
 	./$(TARGET)
 
+debug: CXXFLAGS += -g -O0
+debug: all
+
+lint:
+	clang-tidy $(SRC) -- $(CXXFLAGS)
+
+format:
+	clang-format -i $(SRC) $(wildcard include/*.h)
+
 clean:
-	rm -f $(TARGET)
+	rm -rf build $(TARGET) $(TARGET).exe
