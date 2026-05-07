@@ -25,7 +25,7 @@ void CustomerType::incrementWaitingTime() {
 }
 
 // إرجاع وقت الوصول
-int CustomerType::setArrivalTime(int time) {
+void CustomerType::setArrivalTime(int time) {
     arrivalTime = time;
 }
 // إرجاع وقت الوصول

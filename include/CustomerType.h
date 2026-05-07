@@ -15,7 +15,7 @@ class CustomerType {
     void setWaitingTime(int time);
     void incrementWaitingTime();
     int getArrivalTime() const;
-    int setArrivalTime(int time);
+    void setArrivalTime(int time);
     int getTransactionTime() const;
     int getCustomerNumber() const;
 
