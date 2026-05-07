@@ -6,8 +6,8 @@
 
 class ServerListType {
    private:
-    int numOfServers;
-    ServerType* servers;
+    int num_of_servers_;
+    ServerType* servers_;
 
    public:
     int getFreeServerID() const;

@@ -3,20 +3,20 @@
 
 ServerListType::ServerListType(int num) {
     if (num <= 0) {
-        numOfServers = 1;
+        num_of_servers_ = 1;
     } else {
-        numOfServers = num;
+        num_of_servers_ = num;
     }
-    servers = new ServerType[numOfServers];
+    servers_ = new ServerType[num_of_servers_];
 }
 
 ServerListType::~ServerListType() {
-    delete[] servers;
+    delete[] servers_;
 }
 
-int ServerListType::getFreeServerId() const {
-    for (int i = 0; i < numOfServers; i++) {
-        if (servers[i].isFree()) {
+int ServerListType::getFreeServerID() const {
+    for (int i = 0; i < num_of_servers_; i++) {
+        if (servers_[i].isFree()) {
             return i;
         }
     }
@@ -25,36 +25,35 @@ int ServerListType::getFreeServerId() const {
 
 int ServerListType::getNumberOfBusyServers() const {
     int busy_servers = 0;
-    for (int i = 0; i < numOfServers; i++) {
-        if (!servers[i].isFree()) {
-            busyServers++;
+    for (int i = 0; i < num_of_servers_; i++) {
+        if (!servers_[i].isFree()) {
+            busy_servers++;
         }
     }
-    return busyServers;
+    return busy_servers;
 }
 
 void ServerListType::setServerBusy(int server_id, const CustomerType& c_customer) {
-    if (server_id >= 0 && server_id < numOfServers) {
-        servers[server_id].setBusy();
-        servers[server_id].setCurrentCustomer(c_customer);
-        servers[server_id].setTransactionTimeFromCustomer();
+    if (server_id >= 0 && server_id < num_of_servers_) {
+        servers_[server_id].setBusy();
+        servers_[server_id].setCurrentCustomer(c_customer);
+        servers_[server_id].setTransactionTime();
         //
-        std::cout << "  [Server " << (server_id + 1) 
-                  << "] now serving Customer " << c_customer.getCustomerNumber()
-                  << " (will take " << c_customer.getTransactionTime() 
-                  << " ticks)" << std::endl;
+        std::cout << "  [Server " << (server_id + 1) << "] now serving Customer "
+                  << c_customer.getCustomerNumber() << " (will take "
+                  << c_customer.getTransactionTime() << " ticks)" << std::endl;
     }
 }
 
 void ServerListType::updateServers() {
-    for (int i = 0; i < numOfServers; i++) {
-        if (!servers[i].isFree()) {
-            servers[i].decreaseTransactionTime();
-            if (servers[i].getRemainingTransactionTime() == 0) {
+    for (int i = 0; i < num_of_servers_; i++) {
+        if (!servers_[i].isFree()) {
+            servers_[i].decreaseTransactionTime();
+            if (servers_[i].getRemainingTransactionTime() == 0) {
                 std::cout << "  [Server " << (i + 1) << "] finished with Customer "
-                          << servers[i].getCurrentCustomerNumber() 
-                          << " and is now FREE." << std::endl;
-                servers[i].setFree();
+                          << servers_[i].getCurrentCustomerNumber() << " and is now FREE."
+                          << std::endl;
+                servers_[i].setFree();
             }
         }
     }
