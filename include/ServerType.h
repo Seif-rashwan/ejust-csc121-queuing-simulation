@@ -26,6 +26,7 @@ class ServerType {
     void setTransactionTime();
     int getRemainingTransactionTime() const;
     void decreaseTransactionTime();
+    void setTransactionTimeFromCustomer();
 
     // دوال التعامل مع العميل الحالي
     void setCurrentCustomer(const CustomerType& c_customer);

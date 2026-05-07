@@ -27,6 +27,10 @@ void ServerType::setTransactionTime(int t) {
     }
 }
 
+void ServerType::setTransactionTimeFromCustomer() {
+    setTransactionTime();
+}
+
 // ضبط وقت الخدمة بناءً على وقت العميل الحالي
 void ServerType::setTransactionTime() {
     if (status_ == "busy") {
