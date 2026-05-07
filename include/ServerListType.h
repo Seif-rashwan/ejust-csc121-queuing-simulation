@@ -8,6 +8,8 @@ class ServerListType {
    private:
     int num_of_servers_;
     ServerType* servers_;
+    ServerListType(const ServerListType&)            = delete;
+    ServerListType& operator=(const ServerListType&) = delete;
 
    public:
     int getFreeServerID() const;
