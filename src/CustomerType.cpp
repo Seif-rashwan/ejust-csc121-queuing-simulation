@@ -25,6 +25,10 @@ void CustomerType::incrementWaitingTime() {
 }
 
 // إرجاع وقت الوصول
+int CustomerType::setArrivalTime(int time) {
+    arrivalTime = time;
+}
+// إرجاع وقت الوصول
 int CustomerType::getArrivalTime() const {
     return arrivalTime;
 }

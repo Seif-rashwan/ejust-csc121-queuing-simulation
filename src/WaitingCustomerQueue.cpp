@@ -16,6 +16,7 @@ void WaitingCustomerQueue<Type>::initialize() {
 
     rear_ = nullptr;
 }
+//incrementWaitingTime
 
 template <typename Type>
 Type WaitingCustomerQueue<Type>::front() const {
