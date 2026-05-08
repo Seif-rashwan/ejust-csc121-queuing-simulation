@@ -6,13 +6,13 @@
 
 class ServerListType {
    private:
-    int numOfServers;
-    ServerType* servers;
+    int num_of_servers_;
+    ServerType* servers_;
 
    public:
     int getFreeServerID() const;
     int getNumberOfBusyServers() const;
-    void setServerBusy(int serverID, const CustomerType& cCustomer);
+    void setServerBusy(int server_id, const CustomerType& c_customer);
     void updateServers();
 
     explicit ServerListType(int num = 1);

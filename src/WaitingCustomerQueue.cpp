@@ -14,6 +14,7 @@ template <typename Type>
 WaitingCustomerQueue<Type>::~WaitingCustomerQueue() {
     delete[] queue_array_;
 }
+// incrementWaitingTime
 
 template <typename Type>
 void WaitingCustomerQueue<Type>::initialize() {
