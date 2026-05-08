@@ -29,8 +29,10 @@ class WaitingCustomerQueue : public QueueADT<Type> {
     int size() const override;
 
     void incrementWaitingTimes();
-
     explicit WaitingCustomerQueue(int max_size = DEFAULT_MAX_SIZE);
+
+    WaitingCustomerQueue& operator=(const WaitingCustomerQueue&) = delete;
+    WaitingCustomerQueue(const WaitingCustomerQueue&)            = delete;
     ~WaitingCustomerQueue() override;
 };
 

@@ -16,6 +16,9 @@ class ServerListType {
     void updateServers();
 
     explicit ServerListType(int num = 1);
+    ServerListType(const ServerListType&)            = delete;
+    ServerListType& operator=(const ServerListType&) = delete;
+
     ~ServerListType();
 };
 
