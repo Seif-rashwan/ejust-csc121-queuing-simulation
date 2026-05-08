@@ -78,7 +78,7 @@ against staged files only — not the entire codebase.
 **To manually run against all files at any time:**
 
 ```bash
-python -m pre-commit run --all-files
+python -m pre_commit run --all-files
 ```
 
 **To auto-fix formatting issues:**
