@@ -2,7 +2,6 @@
 #ifndef INCLUDE_WAITINGCUSTOMERQUEUE_H_
 #define INCLUDE_WAITINGCUSTOMERQUEUE_H_
 
-#include <cassert>
 #include "QueueADT.h"
 
 template <typename Type>
@@ -17,6 +16,8 @@ class WaitingCustomerQueue : public QueueADT<Type> {
     void initialize() override;
 
    public:
+    static const int DEFAULT_MAX_SIZE = 100;
+
     void enqueue(const Type& queue_elem) override;
     void dequeue() override;
 
@@ -29,7 +30,7 @@ class WaitingCustomerQueue : public QueueADT<Type> {
 
     void incrementWaitingTimes();
 
-    explicit WaitingCustomerQueue(int max_size = 100);
+    explicit WaitingCustomerQueue(int max_size = DEFAULT_MAX_SIZE);
     ~WaitingCustomerQueue() override;
 };
 
