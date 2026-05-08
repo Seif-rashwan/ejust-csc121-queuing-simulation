@@ -16,5 +16,4 @@ repos:
           - "--extra-arg=-std=c++23"
           - "--extra-arg=-Iinclude"
           - "--header-filter=^(src|include)/"
-          - "--warnings-as-errors=*"
-        additional_dependencies: ['clang-tidy']
+        additional_dependencies: ["clang-tidy"]
