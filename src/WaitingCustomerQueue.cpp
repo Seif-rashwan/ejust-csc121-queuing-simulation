@@ -1,5 +1,7 @@
-#include "WaitingCustomerQueue.h"
+#include <stdexcept>
+
 #include "CustomerType.h"
+#include "WaitingCustomerQueue.h"
 
 template <typename Type>
 WaitingCustomerQueue<Type>::WaitingCustomerQueue(int max_size) {
@@ -37,19 +39,28 @@ int WaitingCustomerQueue<Type>::size() const {
 
 template <typename Type>
 Type WaitingCustomerQueue<Type>::front() const {
-    assert(!isEmpty());
+    if (isEmpty()) {
+        throw std::underflow_error("WaitingCustomerQueue::front(): queue is empty");
+    }
+
     return queue_array_[queue_front_];
 }
 
 template <typename Type>
 Type WaitingCustomerQueue<Type>::back() const {
-    assert(!isEmpty());
+    if (isEmpty()) {
+        throw std::underflow_error("WaitingCustomerQueue::back(): queue is empty");
+    }
+
     return queue_array_[queue_rear_];
 }
 
 template <typename Type>
 void WaitingCustomerQueue<Type>::enqueue(const Type& queue_elem) {
-    assert(!isFull());
+    if (isFull()) {
+        throw std::overflow_error("WaitingCustomerQueue::enqueue(): queue is full");
+    }
+
     queue_rear_               = (queue_rear_ + 1) % max_queue_size_;
     queue_array_[queue_rear_] = queue_elem;
     count_++;
@@ -57,7 +68,10 @@ void WaitingCustomerQueue<Type>::enqueue(const Type& queue_elem) {
 
 template <typename Type>
 void WaitingCustomerQueue<Type>::dequeue() {
-    assert(!isEmpty());
+    if (isEmpty()) {
+        throw std::underflow_error("WaitingCustomerQueue::dequeue(): queue is empty");
+    }
+
     queue_front_ = (queue_front_ + 1) % max_queue_size_;
     count_--;
 }
