@@ -16,6 +16,7 @@ void WaitingCustomerQueue<Type>::initialize() {
 
     rear_ = nullptr;
 }
+// incrementWaitingTime
 
 template <typename Type>
 Type WaitingCustomerQueue<Type>::front() const {
@@ -66,10 +67,10 @@ void WaitingCustomerQueue<Type>::dequeue() {
 }
 
 template <typename Type>
-void WaitingCustomerQueue<Type>::incrementWaitingTimes(const double& inc_amount = 1.0) {
+void WaitingCustomerQueue<Type>::incrementWaitingTimes() {
     LinkedNode<Type>* current = front_;
     while (current != nullptr) {
-        current->data.incrementWaitingTime(inc_amount);
+        current->data.incrementWaitingTime();
         current = current->next;
     }
 }
@@ -83,6 +84,17 @@ WaitingCustomerQueue<Type>::WaitingCustomerQueue() {
 template <typename Type>
 WaitingCustomerQueue<Type>::~WaitingCustomerQueue() {
     initialize();
+}
+
+template <typename Type>
+int WaitingCustomerQueue<Type>::size() const {
+    int count                 = 0;
+    LinkedNode<Type>* current = front_;
+    while (current != nullptr) {
+        count++;
+        current = current->next;
+    }
+    return count;
 }
 
 #include "CustomerType.h"

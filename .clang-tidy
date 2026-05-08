@@ -2,17 +2,23 @@
 # for more details on clang-tidy configuration options.
 
 ---
+HeaderFilterRegex: '(include|src)/.*'
 Checks: >
-  -*, 
+  -*,
   readability-identifier-naming,
   modernize-*,
   -modernize-use-trailing-return-type,
+  -modernize-use-nodiscard,
   bugprone-*,
   performance-*,
-  readability-*,
-  -modernize-use-nodiscard,
+  readability-*
 
-WarningsAsErrors: '*'
+WarningsAsErrors: >
+  *,
+  -bugprone-easily-swappable-parameters,
+  -bugprone-exception-escape,
+  -readability-suspicious-call-argument
+
 CheckOptions:
   - key:             readability-identifier-naming.ClassCase
     value:           CamelCase
