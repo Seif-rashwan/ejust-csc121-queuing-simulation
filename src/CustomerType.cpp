@@ -32,10 +32,6 @@ void CustomerType::setArrivalTime(int time) {
 }
 
 // إرجاع وقت الوصول
-int CustomerType::setArrivalTime(int time) {
-    arrivalTime = time;
-}
-// إرجاع وقت الوصول
 int CustomerType::getArrivalTime() const {
     return arrival_time_;
 }
