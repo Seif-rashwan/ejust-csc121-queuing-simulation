@@ -5,30 +5,35 @@
 #include "QueueADT.h"
 
 template <typename Type>
-struct LinkedNode {
-    Type data;
-    LinkedNode<Type>* next;
-};
-
-template <typename Type>
 class WaitingCustomerQueue : public QueueADT<Type> {
    private:
-    LinkedNode<Type>* front_;
-    LinkedNode<Type>* rear_;
-    void initialize();
+    int max_queue_size_;
+    int count_;
+    int queue_front_;
+    int queue_rear_;
+    Type* queue_array_;
+
+    void initialize() override;
 
    public:
-    void enqueue(const Type& customer) override;
+    static const int DEFAULT_MAX_SIZE = 100;
+
+    void enqueue(const Type& queue_elem) override;
     void dequeue() override;
 
     Type front() const override;
     Type back() const override;
+
     bool isEmpty() const override;
+    bool isFull() const override;
+    int size() const override;
 
-    void incrementWaitingTimes(const double& inc_amount);
+    void incrementWaitingTimes();
+    explicit WaitingCustomerQueue(int max_size = DEFAULT_MAX_SIZE);
 
-    WaitingCustomerQueue();
-    ~WaitingCustomerQueue();
+    WaitingCustomerQueue& operator=(const WaitingCustomerQueue&) = delete;
+    WaitingCustomerQueue(const WaitingCustomerQueue&)            = delete;
+    ~WaitingCustomerQueue() override;
 };
 
 #endif  // INCLUDE_WAITINGCUSTOMERQUEUE_H_

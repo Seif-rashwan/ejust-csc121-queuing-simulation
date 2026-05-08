@@ -41,18 +41,18 @@ void ServerListType::setServerBusy(int server_id, const CustomerType& c_customer
         //
         std::cout << "  [Server " << (server_id + 1) << "] now serving Customer "
                   << c_customer.getCustomerNumber() << " (will take "
-                  << c_customer.getTransactionTime() << " ticks)" << std::endl;
+                  << c_customer.getTransactionTime() << " ticks)" << "\n";
     }
 }
 
 void ServerListType::updateServers() {
     for (int i = 0; i < num_of_servers_; i++) {
         if (!servers_[i].isFree()) {
-            int customer_num = servers_[i].getCurrentCustomerNumber();
             servers_[i].decreaseTransactionTime();
             if (servers_[i].getRemainingTransactionTime() == 0) {
-                std::cout << "  [Server " << (i + 1) << "] finished with Customer " << customer_num
-                          << " and is now FREE." << std::endl;
+                std::cout << "  [Server " << (i + 1) << "] finished with Customer "
+                          << servers_[i].getCurrentCustomerNumber() << " and is now FREE." << "\n";
+
                 servers_[i].setFree();
             }
         }
