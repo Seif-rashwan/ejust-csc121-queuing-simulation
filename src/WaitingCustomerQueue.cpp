@@ -1,11 +1,10 @@
 #include "WaitingCustomerQueue.h"
 #include <cassert>
-#include <stdexcept>
 #include "CustomerType.h"
 
 template <typename Type>
 WaitingCustomerQueue<Type>::WaitingCustomerQueue(int max_size) {
-    max_queue_size_ = (max_size > 0) ? max_size : 100;
+    max_queue_size_ = (max_size > 0) ? max_size : DEFAULT_MAX_SIZE;
     queue_array_    = new Type[max_queue_size_];
     initialize();
 }
@@ -14,7 +13,6 @@ template <typename Type>
 WaitingCustomerQueue<Type>::~WaitingCustomerQueue() {
     delete[] queue_array_;
 }
-// incrementWaitingTime
 
 template <typename Type>
 void WaitingCustomerQueue<Type>::initialize() {
