@@ -4,18 +4,18 @@
 
 using std::cin;
 using std::cout;
-using std::endl;
 
 // دالة لأخذ معطيات المحاكاة من المستخدم
-void SetSimulationParameters(int& sTime, int& numOfServers, int& transTime, int& tBetweenArrivals) {
+void SetSimulationParameters(int& s_time, int& num_of_servers, int& trans_time,
+                             int& t_between_arrivals) {
     cout << "Enter simulation time: ";
-    cin >> sTime;
+    cin >> s_time;
     cout << "Enter number of servers: ";
-    cin >> numOfServers;
+    cin >> num_of_servers;
     cout << "Enter transaction time: ";
-    cin >> transTime;
+    cin >> trans_time;
     cout << "Enter time between customer arrivals: ";
-    cin >> tBetweenArrivals;
+    cin >> t_between_arrivals;
 }
 
 int main() {
@@ -64,7 +64,6 @@ int main() {
         while (free_server_id != -1 && !customer_queue.isEmpty()) {
             // سحب أول عميل
             CustomerType front_customer = customer_queue.front();
-
             customer_queue.dequeue();
 
             // تجميع الإحصائيات
@@ -80,18 +79,18 @@ int main() {
     }
 
     // 4. طباعة التقرير النهائي (الإحصائيات)
-    cout << "\n===================================" << endl;
-    cout << "        SIMULATION RESULTS         " << endl;
-    cout << "===================================" << endl;
-    cout << "Total simulation time: " << simulation_time << endl;
-    cout << "Total customers arrived: " << customers_arrived << endl;
-    cout << "Total customers served: " << customers_served << endl;
-    cout << "Customers left in queue: " << customers_arrived - customers_served << endl;
+    cout << "\n===================================" << "\n";
+    cout << "        SIMULATION RESULTS         " << "\n";
+    cout << "===================================" << "\n";
+    cout << "Total simulation time: " << simulation_time << "\n";
+    cout << "Total customers arrived: " << customers_arrived << "\n";
+    cout << "Total customers served: " << customers_served << "\n";
+    cout << "Customers left in queue: " << customers_arrived - customers_served << "\n";
     cout << "Peak queue length: " << peak_queue_length << endl;
 
     if (customers_served > 0) {
         cout << "Average waiting time: " << static_cast<double>(total_wait_time) / customers_served
-             << endl;
+             << "\n";
     }
 
     return 0;

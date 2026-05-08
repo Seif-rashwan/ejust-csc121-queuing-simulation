@@ -13,10 +13,12 @@ class WaitingCustomerQueue : public QueueADT<Type> {
     int queue_front_;
     int queue_rear_;
     Type* queue_array_;
-    WaitingCustomerQueue(const WaitingCustomerQueue&)            = delete;
-    WaitingCustomerQueue& operator=(const WaitingCustomerQueue&) = delete;
+
+    void initialize() override;
 
    public:
+    static const int DEFAULT_MAX_SIZE = 100;
+
     void enqueue(const Type& queue_elem) override;
     void dequeue() override;
 
@@ -28,8 +30,10 @@ class WaitingCustomerQueue : public QueueADT<Type> {
     int size() const override;
 
     void incrementWaitingTimes();
+    explicit WaitingCustomerQueue(int max_size = DEFAULT_MAX_SIZE);
 
-    explicit WaitingCustomerQueue(int max_size = 100);
+    WaitingCustomerQueue& operator=(const WaitingCustomerQueue&) = delete;
+    WaitingCustomerQueue(const WaitingCustomerQueue&)            = delete;
     ~WaitingCustomerQueue() override;
 };
 

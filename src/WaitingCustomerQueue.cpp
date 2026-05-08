@@ -1,19 +1,24 @@
-#include "WaitingCustomerQueue.h"
-#include <cassert>
 #include <stdexcept>
+
 #include "CustomerType.h"
+#include "WaitingCustomerQueue.h"
 
 template <typename Type>
 WaitingCustomerQueue<Type>::WaitingCustomerQueue(int max_size) {
-    max_queue_size_ = (max_size > 0) ? max_size : 100;
+    max_queue_size_ = (max_size > 0) ? max_size : DEFAULT_MAX_SIZE;
     queue_array_    = new Type[max_queue_size_];
-    queue_front_    = 0;
-    queue_rear_     = max_queue_size_ - 1;
-    count_          = 0;
+    initialize();
 }
+
 template <typename Type>
 WaitingCustomerQueue<Type>::~WaitingCustomerQueue() {
     delete[] queue_array_;
+}
+template <typename Type>
+void WaitingCustomerQueue<Type>::initialize() {
+    queue_front_ = 0;
+    queue_rear_  = max_queue_size_ - 1;
+    count_       = 0;
 }
 
 template <typename Type>
@@ -33,19 +38,28 @@ int WaitingCustomerQueue<Type>::size() const {
 
 template <typename Type>
 Type WaitingCustomerQueue<Type>::front() const {
-    assert(!isEmpty());
+    if (isEmpty()) {
+        throw std::underflow_error("WaitingCustomerQueue::front(): queue is empty");
+    }
+
     return queue_array_[queue_front_];
 }
 
 template <typename Type>
 Type WaitingCustomerQueue<Type>::back() const {
-    assert(!isEmpty());
+    if (isEmpty()) {
+        throw std::underflow_error("WaitingCustomerQueue::back(): queue is empty");
+    }
+
     return queue_array_[queue_rear_];
 }
 
 template <typename Type>
 void WaitingCustomerQueue<Type>::enqueue(const Type& queue_elem) {
-    assert(!isFull());
+    if (isFull()) {
+        throw std::overflow_error("WaitingCustomerQueue::enqueue(): queue is full");
+    }
+
     queue_rear_               = (queue_rear_ + 1) % max_queue_size_;
     queue_array_[queue_rear_] = queue_elem;
     count_++;
@@ -53,7 +67,10 @@ void WaitingCustomerQueue<Type>::enqueue(const Type& queue_elem) {
 
 template <typename Type>
 void WaitingCustomerQueue<Type>::dequeue() {
-    assert(!isEmpty());
+    if (isEmpty()) {
+        throw std::underflow_error("WaitingCustomerQueue::dequeue(): queue is empty");
+    }
+
     queue_front_ = (queue_front_ + 1) % max_queue_size_;
     count_--;
 }

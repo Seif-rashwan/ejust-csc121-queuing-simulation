@@ -12,8 +12,6 @@ class ServerType {
     CustomerType current_customer_;
     string status_;
     int transaction_time_;
-    ServerType(const ServerType&)            = delete;
-    ServerType& operator=(const ServerType&) = delete;
 
    public:
     // دوال الاستعلام عن حالة السيرفر
@@ -22,7 +20,7 @@ class ServerType {
     void setFree();
 
     // دوال وقت الخدمة
-    void setTransactionTime(int t);
+    void setTransactionTime(int time);
     void setTransactionTime();
     int getRemainingTransactionTime() const;
     void decreaseTransactionTime();
@@ -34,6 +32,9 @@ class ServerType {
     int getCurrentCustomerArrivalTime() const;
     int getCurrentCustomerWaitingTime() const;
     int getCurrentCustomerTransactionTime() const;
+  
+    ServerType(const ServerType&)            = delete;
+    ServerType& operator=(const ServerType&) = delete;
 
     // Constructor
     ServerType();

@@ -19,9 +19,9 @@ void ServerType::setFree() {
 }
 
 // ضبط وقت الخدمة بقيمة معينة
-void ServerType::setTransactionTime(int t) {
-    if (t >= 0) {
-        transaction_time_ = t;
+void ServerType::setTransactionTime(int time) {
+    if (time >= 0) {
+        transaction_time_ = time;
     } else {
         transaction_time_ = 0;
     }
@@ -53,8 +53,8 @@ void ServerType::decreaseTransactionTime() {
 }
 
 // تعيين العميل اللي السيرفر بيخدمه حالياً
-void ServerType::setCurrentCustomer(const CustomerType& cCustomer) {
-    current_customer_ = cCustomer;
+void ServerType::setCurrentCustomer(const CustomerType& c_customer) {
+    current_customer_ = c_customer;
 }
 
 // إرجاع رقم العميل الحالي
