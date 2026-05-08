@@ -51,8 +51,7 @@ void ServerListType::updateServers() {
             servers_[i].decreaseTransactionTime();
             if (servers_[i].getRemainingTransactionTime() == 0) {
                 std::cout << "  [Server " << (i + 1) << "] finished with Customer "
-                          << servers_[i].getCurrentCustomerNumber() << " and is now FREE."
-                          << "\n";
+                          << servers_[i].getCurrentCustomerNumber() << " and is now FREE." << "\n";
 
                 servers_[i].setFree();
             }
