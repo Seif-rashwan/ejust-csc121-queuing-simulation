@@ -30,27 +30,7 @@ ejust-csc121-queuing-simulation/
 │   ├── ServerListType.h                  # Server pool interface
 │   ├── ServerType.h                      # Single-server interface
 │   └── WaitingCustomerQueue.h            # Circular-array FIFO queue + wait-time increment
-│   ├── CustomerType.h                    # Customer data & interface
-│   ├── QueueADT.h                        # Abstract queue interface
-│   ├── ServerListType.h                  # Server pool interface
-│   ├── ServerType.h                      # Single-server interface
-│   └── WaitingCustomerQueue.h            # Circular-array FIFO queue + wait-time increment
 ├── src/
-│   ├── CustomerType.cpp                  # Customer implementation
-│   ├── Main.cpp                          # Simulation loop & results
-│   ├── ServerListType.cpp                # Server pool implementation
-│   ├── ServerType.cpp                    # Server implementation
-│   └── WaitingCustomerQueue.cpp          # Queue implementation
-├── .clang-format                         # Google style, 100-col, C++20 base
-├── .clang-tidy                           # Static analysis & naming rules
-├── .editorconfig                         # Editor whitespace/encoding consistency
-├── .gitignore                            # Git ignore rules
-├── .pre-commit-config.yaml               # Local clang-format + clang-tidy hooks
-├── CODING_STANDARD.md                    # Full team coding standard reference
-├── CPPLINT.cfg                           # cpplint rule overrides
-├── Doxyfile                              # Doxygen documentation config
-├── Makefile                              # Build system
-├── TASKS.md                              # Per-member task breakdown & Git workflow
 │   ├── CustomerType.cpp                  # Customer implementation
 │   ├── Main.cpp                          # Simulation loop & results
 │   ├── ServerListType.cpp                # Server pool implementation
@@ -75,12 +55,6 @@ ejust-csc121-queuing-simulation/
 
 > **Requires:** g++ with C++23 support, GNU Make.
 
----
-
-## Building & Running
-
-> **Requires:** g++ with C++23 support, GNU Make.
-
 ```bash
 make            # Compile all sources → simulation[.exe]
 make run        # Compile + execute
@@ -88,15 +62,7 @@ make debug      # Compile with -g -O0 for debugging
 make lint       # Run clang-tidy against all sources
 make format     # Auto-format all sources with clang-format
 make clean      # Remove build artifacts and binary
-make            # Compile all sources → simulation[.exe]
-make run        # Compile + execute
-make debug      # Compile with -g -O0 for debugging
-make lint       # Run clang-tidy against all sources
-make format     # Auto-format all sources with clang-format
-make clean      # Remove build artifacts and binary
 ```
-
----
 
 ---
 
