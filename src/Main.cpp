@@ -12,17 +12,29 @@ using std::cout;
 void SetSimulationParameters(int& s_time, int& num_of_servers, int& trans_time,
                              int& t_between_arrivals) {
     cout << "Enter simulation time: ";
-    cin >> s_time;
+    if (!(cin >> s_time)) {
+        throw std::runtime_error("Invalid input: expected an integer for simulation time.");
+    }
+
     cout << "Enter number of servers: ";
-    cin >> num_of_servers;
+    if (!(cin >> num_of_servers)) {
+        throw std::runtime_error("Invalid input: expected an integer for number of servers.");
+    }
+
     cout << "Enter transaction time: ";
-    cin >> trans_time;
+    if (!(cin >> trans_time)) {
+        throw std::runtime_error("Invalid input: expected an integer for transaction time.");
+    }
+
     cout << "Enter time between customer arrivals: ";
-    cin >> t_between_arrivals;
+    if (!(cin >> t_between_arrivals)) {
+        throw std::runtime_error("Invalid input: expected an integer for time between arrivals.");
+    }
 
     if (s_time <= 0 || num_of_servers <= 0 || trans_time <= 0 || t_between_arrivals <= 0) {
         throw std::invalid_argument("All simulation parameters must be positive integers.");
     }
+
     if (t_between_arrivals > s_time) {
         cout << "Warning: time between arrivals (" << t_between_arrivals
              << ") exceeds simulation time (" << s_time << "). No customers will arrive.\n";
