@@ -7,6 +7,7 @@ ServerListType::ServerListType(int num) {
     } else {
         num_of_servers_ = num;
     }
+
     servers_ = new ServerType[num_of_servers_];
 }
 

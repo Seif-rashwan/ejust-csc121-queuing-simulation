@@ -24,7 +24,6 @@ class ServerType {
     void setTransactionTime();
     int getRemainingTransactionTime() const;
     void decreaseTransactionTime();
-    void setTransactionTimeFromCustomer();
 
     // دوال التعامل مع العميل الحالي
     void setCurrentCustomer(const CustomerType& c_customer);
@@ -32,12 +31,11 @@ class ServerType {
     int getCurrentCustomerArrivalTime() const;
     int getCurrentCustomerWaitingTime() const;
     int getCurrentCustomerTransactionTime() const;
-  
+
+    ServerType();
+    ~ServerType()                            = default;
     ServerType(const ServerType&)            = delete;
     ServerType& operator=(const ServerType&) = delete;
-
-    // Constructor
-    ServerType();
 };
 
 #endif  // INCLUDE_SERVERTYPE_H_

@@ -14,6 +14,7 @@ template <typename Type>
 WaitingCustomerQueue<Type>::~WaitingCustomerQueue() {
     delete[] queue_array_;
 }
+
 template <typename Type>
 void WaitingCustomerQueue<Type>::initialize() {
     queue_front_ = 0;
