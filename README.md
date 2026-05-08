@@ -181,14 +181,56 @@ Every push and pull request triggers the `Code Style & Quality Check` workflow:
 
 ---
 
+## Web GUI Enhancement (Phase 2 Complete)
+
+A modern web-based interface has been added to complement the console simulation:
+
+### Features
+- **Modern Web Interface**: Beautiful, responsive design with real-time visualization
+- **Dual Mode Operation**: 
+  - Local JavaScript simulation for quick testing
+  - C++ backend integration for high-performance simulation
+- **Real-time Statistics**: Live updates of queue metrics, server utilization, and performance indicators
+- **Interactive Controls**: Adjust parameters on-the-fly with instant visual feedback
+- **Detailed Analytics**: Comprehensive statistics modal with performance metrics
+
+### Quick Start (Web GUI)
+
+#### Option 1: Local Mode (JavaScript Only)
+1. Open `index.html` in your web browser
+2. The simulation will start automatically in local mode
+3. Use controls to adjust parameters and observe simulation
+
+#### Option 2: Backend Mode (C++ + Node.js)
+1. Install Node.js dependencies: `npm install`
+2. Build C++ simulation: `npm run build`
+3. Start web server: `npm start`
+4. Open `http://localhost:8080` and click "Backend" mode
+
+### Web GUI Files
+- `index.html` - Main web interface
+- `style-enhanced.css` - Modern styling
+- `script-enhanced.js` - Frontend logic with backend integration
+- `server.js` - Node.js web server for C++ integration
+- `package.json` - Node.js dependencies and scripts
+
+### API Endpoints (Backend Mode)
+- `GET /api/state` - Get current simulation state
+- `POST /api/config` - Update simulation parameters
+- `POST /api/start` - Start C++ simulation
+- `POST /api/pause` - Pause/resume simulation
+- `POST /api/reset` - Reset simulation
+
+---
+
 ## Phase 2, Bonus Extensions/Features
 
-| Priority | Feature                                                               |
-| :------: | :-------------------------------------------------------------------- |
-|  🔴 High  | Live terminal UI visualizing server states & queue length each tick   |
-|  🔴 High  | CSV export of per-tick statistics for external graphing               |
-| 🟡 Medium | Multi-scenario comparison (vary `NUM_SERVERS` and `ARRIVAL_INTERVAL`) |
-| 🟡 Medium | Priority queue variant (VIP customers with preemption)                |
+| Priority | Feature                                                               | Status |
+| :------: | :-------------------------------------------------------------------- | :-----: |
+|  🔴 High  | Live terminal UI visualizing server states & queue length each tick   | ✅ Done |
+|  🔴 High  | CSV export of per-tick statistics for external graphing               | ✅ Done |
+| 🟡 Medium | Multi-scenario comparison (vary `NUM_SERVERS` and `ARRIVAL_INTERVAL`) | ✅ Done |
+| 🟡 Medium | Priority queue variant (VIP customers with preemption)                | 🔄 In Progress |
 
 ---
 
