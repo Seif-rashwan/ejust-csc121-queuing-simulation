@@ -24,8 +24,9 @@ class WaitingCustomerQueue : public QueueADT<Type> {
     Type front() const override;
     Type back() const override;
     bool isEmpty() const override;
+    int size() const override;
 
-    void incrementWaitingTimes(const double& inc_amount);
+    void incrementWaitingTimes();
 
     WaitingCustomerQueue();
     ~WaitingCustomerQueue();

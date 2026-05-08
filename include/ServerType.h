@@ -9,9 +9,9 @@ using std::string;
 
 class ServerType {
    private:
-    CustomerType currentCustomer;
-    string status;
-    int transactionTime;
+    CustomerType current_customer_;
+    string status_;
+    int transaction_time_;
 
    public:
     // دوال الاستعلام عن حالة السيرفر
@@ -20,13 +20,13 @@ class ServerType {
     void setFree();
 
     // دوال وقت الخدمة
-    void setTransactionTime(int t);
+    void setTransactionTime(int time);
     void setTransactionTime();
     int getRemainingTransactionTime() const;
     void decreaseTransactionTime();
 
     // دوال التعامل مع العميل الحالي
-    void setCurrentCustomer(const CustomerType& cCustomer);
+    void setCurrentCustomer(const CustomerType& c_customer);
     int getCurrentCustomerNumber() const;
     int getCurrentCustomerArrivalTime() const;
     int getCurrentCustomerWaitingTime() const;
