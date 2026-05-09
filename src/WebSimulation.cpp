@@ -1,14 +1,16 @@
 #include <algorithm>
 #include <iostream>
+#include <sstream>
 
 #include "WebSimulation.h"
 
 using std::cin;
 using std::cout;
+using std::ostringstream;
 
 // ────────────────────────────────────────────────────────────────────────────────
 // Web Sim. Entry Point:
-// ───────────────────────────────
+// ─────────────────────
 int main(int argc, const char* argv[]) {
     try {
         // 'simulation_time_cap' is just a safety cap; sim ends when all customers served
@@ -231,51 +233,58 @@ void WebSimulation::tick() {
 void WebSimulation::outputState() const {
     // All output is prefixed "STATE:" followed by a single-line JSON object.
     // No other text is ever written to stdout by this program.
-    cout << "STATE:{";
-    cout << "\"tick\":" << current_clock_ << ",";
-    cout << "\"queueSize\":" << queue_size_ << ",";
-    cout << "\"served\":" << customers_served_ << ",";
-    cout << "\"turnedAway\":" << customers_turned_away_ << ",";
-    cout << "\"peakQueue\":" << peak_queue_length_ << ",";
-    cout << "\"avgWait\":"
-         << (customers_served_ > 0 ? static_cast<double>(total_wait_time_) / customers_served_
-                                   : 0.0)
-         << ",";
-    cout << "\"nextArrival\":"
-         << (time_between_arrivals_ - (current_clock_ % time_between_arrivals_)) << ",";
-    cout << "\"running\":" << (running_ && !isFinished() ? "true" : "false") << ",";
-    cout << "\"totalCustomers\":" << total_arrivals_target_ << ",";
-    cout << "\"arrived\":" << customers_arrived_ << ",";
-    cout << R"("lastEvent":")" << last_event_type_ << "\",";
-    cout << "\"lastEventCustomer\":" << last_event_customer_id_ << ",";
+    ostringstream output;
 
-    cout << "\"servers\":[";
+    output << R"(STATE:{)"
+           << R"("tick":)" << current_clock_ << ","
+           << R"("queueSize":)" << queue_size_ << ","
+           << R"("served":)" << customers_served_ << ","
+           << R"("turnedAway":)" << customers_turned_away_ << ","
+           << R"("peakQueue":)" << peak_queue_length_ << ","
+           << R"("avgWait":)"
+           << (customers_served_ > 0 ? static_cast<double>(total_wait_time_) / customers_served_
+                                     : 0.0)
+           << ","
+           << R"("nextArrival":)"
+           << (time_between_arrivals_ - (current_clock_ % time_between_arrivals_)) << ","
+           << R"("running":)" << (running_ && !isFinished() ? "true" : "false") << ","
+           << R"("totalCustomers":)" << total_arrivals_target_ << ","
+           << R"("arrived":)" << customers_arrived_ << ","
+           << R"("lastEvent":")" << last_event_type_ << "\","
+           << R"("lastEventCustomer":)" << last_event_customer_id_ << ","
+           << R"("servers":[)";
+
     for (int i = 0; i < number_of_servers_; i++) {
         if (i > 0) {
-            cout << ",";
+            output << ",";
         }
 
-        cout << "{\"busy\":" << (server_states_[i].busy ? "true" : "false") << ","
-             << "\"remaining\":" << server_states_[i].remaining << ","
-             << "\"customerId\":" << server_states_[i].assigned_customer_id << "}";
+        output << R"({"busy":)" << (server_states_[i].busy ? "true" : "false") << ","
+               << R"("remaining":)" << server_states_[i].remaining << ","
+               << R"("customerId":)" << server_states_[i].assigned_customer_id << "}";
     }
 
-    cout << "]}\n";
+    output << "]}\n";
+    cout << output.str();
     cout.flush();
 }
 
 void WebSimulation::outputFinalStats() const {
-    cout << "FINAL:{";
-    cout << "\"totalSimulationTime\":" << simulation_time_ << ",";
-    cout << "\"totalCustomersArrived\":" << customers_arrived_ << ",";
-    cout << "\"customersServed\":" << customers_served_ << ",";
-    cout << "\"customersLeftInQueue\":" << queue_size_ << ",";
-    cout << "\"customersTurnedAway\":" << customers_turned_away_ << ",";
-    cout << "\"peakQueueLength\":" << peak_queue_length_ << ",";
-    cout << "\"averageWaitingTime\":"
-         << (customers_served_ > 0 ? static_cast<double>(total_wait_time_) / customers_served_
-                                   : 0.0);
-    cout << "}\n";
+    ostringstream output;
+
+    output << R"(FINAL:{)"
+           << R"("totalSimulationTime":)" << simulation_time_ << ","
+           << R"("totalCustomersArrived":)" << customers_arrived_ << ","
+           << R"("customersServed":)" << customers_served_ << ","
+           << R"("customersLeftInQueue":)" << queue_size_ << ","
+           << R"("customersTurnedAway":)" << customers_turned_away_ << ","
+           << R"("peakQueueLength":)" << peak_queue_length_ << ","
+           << R"("averageWaitingTime":)"
+           << (customers_served_ > 0 ? static_cast<double>(total_wait_time_) / customers_served_
+                                     : 0.0)
+           << "}\n";
+
+    cout << output.str();
     cout.flush();
 }
 
