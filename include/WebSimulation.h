@@ -141,6 +141,9 @@ class WebSimulation {
      */
     ~WebSimulation();
 
+    WebSimulation(const ServerListType&)            = delete;
+    WebSimulation& operator=(const ServerListType&) = delete;
+
     //--------------------------------------------------------------------------------
     // Lifecycle:
     /**

@@ -9,7 +9,7 @@ using std::cout;
 // ────────────────────────────────────────────────────────────────────────────────
 // Web Sim. Entry Point:
 // ───────────────────────────────
-int main(int argc, char* argv[]) {
+int main(int argc, const char* argv[]) {
     try {
         // 'simulation_time_cap' is just a safety cap; sim ends when all customers served
         int simulation_time_cap   = WebSimulation::SIMULATION_TIME_CAP_DEFAULT;
