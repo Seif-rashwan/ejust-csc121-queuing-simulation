@@ -1,4 +1,5 @@
 # Software Requirements Specification (SRS)
+
 ## Queuing System Simulation — CSC 121
 
 **Document Version:** 2.0  
@@ -63,7 +64,7 @@ The system simulates customers arriving at a service centre, waiting in a FIFO q
 
 The system operates as a standalone educational tool. It has two independent run modes:
 
-```
+```mathematica
 ┌──────────────────────────────────────────────────────┐
 │                   Run Mode                           │
 │                                                      │
