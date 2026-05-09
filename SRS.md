@@ -53,7 +53,7 @@ The system simulates customers arriving at a service centre, waiting in a FIFO q
 
 - Course materials: CSC 121, E-JUST Spring 2026
 - Gross & Harris, *Fundamentals of Queueing Theory*, 4th ed.
-- ISO/IEC 14882:2017 (C++17 Standard)
+- ISO/IEC 14882:2023 (C++23 Standard)
 
 ---
 
@@ -204,7 +204,7 @@ The system operates as a standalone educational tool. It has two independent run
 | ID | Requirement |
 |:---|:------------|
 | NFR-3.1 | The C++ engine MUST NOT write anything other than `STATE:{…}` or `FINAL:{…}` to stdout |
-| NFR-3.2 | Debug `std::cout` statements are PROHIBITED in `web_simulation.cpp` |
+| NFR-3.2 | Debug `std::cout` statements are PROHIBITED in `WebSimulation.cpp` |
 | NFR-3.3 | The Node.js server MUST handle fragmented stdout chunks without crashing (`JSON.parse` errors) |
 | NFR-3.4 | Killing the C++ process (pause/reset) MUST NOT leave zombie processes |
 
@@ -212,7 +212,7 @@ The system operates as a standalone educational tool. It has two independent run
 
 | ID | Requirement |
 |:---|:------------|
-| NFR-4.1 | All C++ files SHALL comply with the project's C++17 coding standard and clang-format rules |
+| NFR-4.1 | All C++ files SHALL comply with the project's C++23 coding standard and clang-format rules |
 | NFR-4.2 | The JavaScript frontend SHALL use no external frameworks (Vanilla JS only) |
 | NFR-4.3 | All magic numbers SHALL be named constants or derived from configuration |
 
@@ -251,7 +251,7 @@ The system operates as a standalone educational tool. It has two independent run
 
 | Interface | Technology | Version |
 |:----------|:-----------|:--------|
-| Simulation engine | C++ | ISO C++17 |
+| Simulation engine | C++ | ISO C++23 |
 | Web server | Node.js + Express | Node ≥ 18 |
 | IPC | child_process.spawn (stdout pipe) | — |
 | Browser | Any modern browser | Chrome 90+, Firefox 88+, Edge 90+ |
@@ -260,7 +260,7 @@ The system operates as a standalone educational tool. It has two independent run
 
 - HTTP/1.1 REST on `localhost:8081`
 - CORS enabled for local development
-- Polling interval: 350 ms (configurable in `script-enhanced.js`)
+- Polling interval: 350 ms (configurable in `frontend/js/main.js`)
 
 ---
 
@@ -305,5 +305,5 @@ Emitted once on simulation exit. Fields: `totalSimulationTime`, `totalCustomersA
 | C-6 | Maximum supported `totalCustomers` is 500 (ring canvas performance limit) |
 | C-7 | The safety cap prevents but does not guarantee liveness for pathological configurations (e.g., arrival interval = 0) |
 | A-1 | Users have a modern web browser with JavaScript and Canvas API support |
-| A-2 | `g++` (C++17) and `Node.js ≥ 18` are installed on the host machine |
+| A-2 | `g++` (C++23) and `Node.js ≥ 18` are installed on the host machine |
 | A-3 | Port 8081 is available on localhost |

@@ -7,7 +7,7 @@
 ![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey)
 
 **E-JUST · Faculty of Computer Science & Information Technology · Spring 2026**  
-**Instructor:** Dr. Reda Elbasiony &nbsp;|&nbsp; **Standard:** C++17 &nbsp;|&nbsp; **Build:** g++ / GNU Make
+**Instructor:** Dr. Reda Elbasiony | **Standard:** C++23 | **Build:** g++ / GNU Make
 
 ---
 
@@ -40,7 +40,7 @@ The project ships in two integrated layers:
 
 | Layer | Technology | Role |
 |:------|:-----------|:-----|
-| **Engine** | Modern C++ | Deterministic tick-based simulation core |
+| **Engine** | Modern C++23 | Deterministic tick-based simulation core |
 | **Server** | Node.js / Express | Spawns & streams the C++ process; REST API |
 | **Frontend** | Vanilla HTML/CSS/JS | Real-time animated visualisation |
 
@@ -58,7 +58,7 @@ The project ships in two integrated layers:
 │  │ served/wait  │   │  slot animation)  │   │  customers    │  │
 │  └──────────────┘   └───────────────────┘   └───────────────┘  │
 │  ┌──────────────────────────────────────────────────────────┐   │
-│  │           script-enhanced.js  (Controller)               │   │
+│  │             frontend/js/modules  (Controller)                │   │
 │  │  ┌─────────────────────┐   ┌──────────────────────────┐  │   │
 │  │  │  Local JS Simulation│   │  Backend Polling Client  │  │   │
 │  │  │  (standalone mode)  │   │  GET /api/state @350 ms  │  │   │
@@ -95,6 +95,10 @@ The project ships in two integrated layers:
 │                                                                 │
 │   Classes: CustomerType · ServerType · ServerListType           │
 │            WaitingCustomerQueue · WebSimulation                 │
+│                                                                 │
+│   Build Targets:                                                 │
+│   ├── build/bin/simulation.exe     (web server mode)            │
+│   └── build/bin/simulation_cli.exe (standalone CLI mode)        │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -130,30 +134,31 @@ When stateQueue is empty + state.running === false → show "Simulation complete
 ```
 ejust-csc121-queuing-simulation/
 │
-├── backend/
-│   ├── build/
-│   │   └── simulation.exe              ← compiled C++ engine
-│   ├── include/
-│   │   ├── CustomerType.h
-│   │   ├── QueueADT.h
-│   │   ├── ServerListType.h
-│   │   ├── ServerType.h
-│   │   └── WaitingCustomerQueue.h
-│   ├── src/
-│   │   ├── CustomerType.cpp            ← customer data model
-│   │   ├── ServerType.cpp              ← single-server FSM
-│   │   ├── ServerListType.cpp          ← server pool (round-robin dispatch)
-│   │   ├── WaitingCustomerQueue.cpp    ← circular-array FIFO queue
-│   │   ├── Main.cpp                    ← original console entry point
-│   │   └── web_simulation.cpp          ← web-facing engine (JSON stdout)
+├── build/
+│   └── simulation.exe              ← compiled C++ engine (auto-generated)
+├── include/
+│   ├── CustomerType.h
+│   ├── QueueADT.h
+│   ├── ServerListType.h
+│   ├── ServerType.h
+│   ├── WaitingCustomerQueue.h
+│   └── WebSimulation.h
+├── src/
+│   ├── CustomerType.cpp            ← customer data model
+│   ├── ServerType.cpp              ← single-server FSM
+│   ├── ServerListType.cpp          ← server pool (round-robin dispatch)
+│   ├── WaitingCustomerQueue.cpp    ← circular-array FIFO queue
+│   ├── Main.cpp                    ← original console entry point
+│   └── WebSimulation.cpp           ← web-facing engine (JSON stdout)
+├── server/
 │   ├── node_modules/
 │   ├── package.json
 │   └── server.js                       ← Node.js REST API + child process manager
 │
 ├── frontend/
 │   ├── index.html                      ← single-page application shell
-│   ├── style-enhanced.css              ← dark-mode design system
-│   └── script-enhanced.js             ← simulation controller + canvas renderer
+│   ├── style.css                       ← dark-mode design system
+│   └── js/                             ← modular simulation controller & renderer
 │
 ├── .github/
 │   ├── scripts/
@@ -222,9 +227,10 @@ ejust-csc121-queuing-simulation/
 
 | Tool | Version | Purpose |
 |:-----|:--------|:--------|
-| `g++` | ≥ 9 (C++17) | Compile C++ engine |
+| `g++` | ≥ 11 (C++23) | Compile C++ engine |
 | `Node.js` | ≥ 18 | Run Express server |
 | `npm` | ≥ 9 | Install JS dependencies |
+| `python` | ≥ 3.7 | Pre-commit hooks (optional) |
 
 ### Option A — Local Mode (No server required)
 
@@ -240,30 +246,78 @@ Click **Local** (default) → **Start**. The pure-JavaScript simulation runs ent
 ### Option B — Backend Mode (C++ engine)
 
 ```bash
-# 1. Compile the C++ engine
-cd backend
-g++ -std=c++17 -O2 -I include -o build/simulation.exe \
-    src/web_simulation.cpp \
-    src/ServerListType.cpp \
-    src/ServerType.cpp \
-    src/WaitingCustomerQueue.cpp \
-    src/CustomerType.cpp
+# 1. One-time setup (installs pre-commit hooks + Node.js deps)
+make install
 
-# 2. Install Node.js dependencies (first time only)
-npm install
+# 2. Build the C++ binaries
+make build          # Build both web and CLI binaries
+# OR build individually:
+make build-web      # Build web server binary only
+make build-cli      # Build CLI binary only
 
-# 3. Start the server
-node server.js
+# 3. Start the web server
+make run            # Build and start Node.js server
 ```
 
 Open **http://localhost:8081**, click **Backend** → **Start**.
 
-### Option C — Console Mode (original)
+### Option C — Console Mode (standalone CLI)
 
 ```bash
-# From project root
-make        # or: g++ -std=c++17 -I backend/include -o sim backend/src/Main.cpp ...
-./sim
+# Build and run CLI version
+make run-cli        # Build CLI binary and run it
+# OR manually:
+make build-cli
+./build/bin/simulation_cli.exe
+```
+
+---
+
+## Build System
+
+The project uses GNU Make for building. The build system is organized with separate directories for clarity:
+
+```
+build/
+├── bin/           # Final executables
+│   ├── simulation.exe        # Web server mode (Node.js spawns this)
+│   └── simulation_cli.exe    # Standalone CLI mode
+└── obj/           # Intermediate object files (.o) and dependencies (.d)
+    ├── CustomerType.o
+    ├── ServerType.o
+    ├── ServerListType.o
+    ├── WaitingCustomerQueue.o
+    ├── WebSimulation.o
+    └── Main.o
+```
+
+### Available Build Targets
+
+| Target | Description |
+|:-------|:------------|
+| `make` or `make all` | Build both binaries |
+| `make build` | Same as `make all` |
+| `make build-web` | Build web server binary only |
+| `make build-cli` | Build CLI binary only |
+| `make run` | Build web binary and start Node.js server |
+| `make run-cli` | Build CLI binary and run it |
+| `make install` | One-time setup: install pre-commit hooks + Node.js deps |
+| `make debug` | Build with debug symbols (`-g -O0`) |
+| `make lint` | Run clang-tidy static analysis |
+| `make format` | Auto-format all C++ code |
+| `make clean` | Remove all build artifacts |
+
+### Development Workflow
+
+```bash
+# First time setup
+make install
+
+# Development cycle
+make build        # Compile changes
+make run          # Test web interface
+make lint         # Check code quality
+make format       # Fix formatting issues
 ```
 
 ---
@@ -294,16 +348,16 @@ All parameters are adjustable at runtime via the web UI sliders and pushed to th
 | `ServerType` | `ServerType.*` | Tracks free/busy FSM, current customer, remaining service ticks; auto-frees on countdown expiry |
 | `ServerListType` | `ServerListType.*` | Pool of `ServerType`; `getFreeServerID()`, `setServerBusy()`, `updateServers()` |
 | `WaitingCustomerQueue` | `WaitingCustomerQueue.*` | Circular-array FIFO inheriting `QueueADT<T>`; `incrementWaitingTimes()` for bulk tick |
-| `WebSimulation` | `web_simulation.cpp` | Orchestrates the full tick loop; emits `STATE:{JSON}` per tick; round-robin dispatch via `next_server_hint` |
+| `WebSimulation` | `WebSimulation.cpp` | Orchestrates the full tick loop; emits `STATE:{JSON}` per tick; round-robin dispatch via `next_server_hint` |
 
 ### JavaScript Frontend
 
 | Object/Function | File | Responsibility |
 |:----------------|:-----|:--------------|
-| `local` | `script-enhanced.js` | Pure-JS simulation mirror of the C++ engine; same FIFO + round-robin logic |
-| `RING` | `script-enhanced.js` | Canvas renderer for the circular queue visualisation |
-| `render()` | `script-enhanced.js` | Unified UI update: stat cards, ring, progress bar, FIFO strip, server cards |
-| `sendConfig()` | `script-enhanced.js` | Debounced slider → `POST /api/config` |
+| `local` | `js/simulation.js` | Pure-JS simulation mirror of the C++ engine; same FIFO + round-robin logic |
+| `RING` | `js/ring.js` | Canvas renderer for the circular queue visualisation |
+| `render()` | `js/render.js` | Unified UI update: stat cards, ring, progress bar, FIFO strip, server cards |
+| `sendConfig()` | `js/api.js` | Debounced slider → `POST /api/config` |
 
 ---
 

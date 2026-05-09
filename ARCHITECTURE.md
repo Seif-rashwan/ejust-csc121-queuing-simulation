@@ -2,7 +2,7 @@
 
 ## Queuing System Simulation — CSC 121
 
-**Version:** 2.0 &nbsp;|&nbsp; **Date:** May 2026
+**Version:** 2.0 | **Date:** May 2026
 
 ---
 
@@ -13,7 +13,7 @@ The system is a **three-tier event-driven application** where each tier has a si
 ```mathematica
 ┌──────────────────────────────────────────────────────────────────────┐
 │  Tier 1 — Presentation  │  Tier 2 — Orchestration  │  Tier 3 — Engine│
-│  (Browser / Vanilla JS) │  (Node.js / Express)     │  (C++17 binary) │
+│  (Browser / Vanilla JS) │  (Node.js / Express)     │  (C++23 binary) │
 │                         │                          │                 │
 │  Renders state          │  Relays data             │  Computes state │
 │  Accepts user input     │  Manages process life    │  Emits JSON     │
@@ -36,10 +36,10 @@ The tiers communicate over **two distinct channels**:
 Browser
 │
 │  ┌───────────────────────────────────────────────────────────┐
-│  │                  script-enhanced.js                       │
+│  │                  frontend/js/modules                      │
 │  │                                                           │
 │  │  ┌──────────────────────┐  ┌──────────────────────────┐   │
-│  │  │   LocalSimulation    │  │    BackendClient          │   │
+│  │  │   LocalSimulation    │  │    BackendClient         │   │
 │  │  │   (object `local`)   │  │  polls /api/state        │   │
 │  │  │                      │  │  every 350 ms            │   │
 │  │  │  tick_fn()           │  │                          │   │
@@ -91,6 +91,8 @@ C++ simulation.exe
 │  │  │   argv[3] serviceTime                                  │
 │  │  │   argv[4] arrivalInterval                              │
 │  │  │   argv[5] totalCustomers                               │
+│  │  │   │   ├── Main.cpp       ← original console entry point
+│  │  │   └── WebSimulation.cpp  ← web-facing engine (JSON stdout)
 │  │  │                                                        │
 │  │  ├─ WebSimulation sim(...)                                │
 │  │  │   ├─ ServerListType* servers      (real server pool)   │
@@ -98,17 +100,17 @@ C++ simulation.exe
 │  │  │   ├─ server_states[]              (shadow state)       │
 │  │  │   └─ next_server_hint             (round-robin ptr)    │
 │  │  │                                                        │
-│  │  ├─ sim.outputState()  ← tick 0                          │
+│  │  ├─ sim.outputState()  ← tick 0                           │
 │  │  │                                                        │
-│  │  └─ while (!sim.isFinished())                            │
+│  │  └─ while (!sim.isFinished())                             │
 │  │       sim.tick()                                          │
-│  │       │ 1. decrement shadow states; free + count_served  │
+│  │       │ 1. decrement shadow states; free + count_served   │
 │  │       │ 2. updateServers() on real ServerListType         │
 │  │       │ 3. enqueue new arrivals (≤ totalCustomers)        │
 │  │       │ 4. round-robin assign free servers                │
-│  │       sim.outputState()  → "STATE:{…}\n" to stdout       │
+│  │       sim.outputState()  → "STATE:{…}\n" to stdout        │
 │  │                                                           │
-│  └─ sim.outputFinalStats() → "FINAL:{…}\n" to stdout       │
+│  └─ sim.outputFinalStats() → "FINAL:{…}\n" to stdout         │
 └───────────────────────────────────────────────────────────────┘
 ```
 
@@ -346,7 +348,7 @@ tick N
 
 | Component         | Technology                           | Rationale                                         |
 | :---------------- | :----------------------------------- | :------------------------------------------------ |
-| Simulation engine | C++17                                | Performance, determinism, educational requirement |
+| Simulation engine | C++23                                | Performance, determinism, educational requirement |
 | Web server        | Node.js + Express                    | Lightweight, good child_process IPC support       |
 | Frontend          | Vanilla HTML/CSS/JS                  | No framework dependency; maximum transparency     |
 | Canvas            | HTML5 Canvas API                     | Hardware-accelerated 2D ring rendering            |
