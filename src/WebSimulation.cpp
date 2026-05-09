@@ -235,6 +235,7 @@ void WebSimulation::outputState() const {
     // No other text is ever written to stdout by this program.
     ostringstream output;
 
+    // clang-format off
     output << R"(STATE:{)"
            << R"("tick":)" << current_clock_ << ","
            << R"("queueSize":)" << queue_size_ << ","
@@ -263,6 +264,7 @@ void WebSimulation::outputState() const {
                << R"("remaining":)" << server_states_[i].remaining << ","
                << R"("customerId":)" << server_states_[i].assigned_customer_id << "}";
     }
+    // clang-format on
 
     output << "]}\n";
     cout << output.str();
@@ -272,6 +274,7 @@ void WebSimulation::outputState() const {
 void WebSimulation::outputFinalStats() const {
     ostringstream output;
 
+    // clang-format off
     output << R"(FINAL:{)"
            << R"("totalSimulationTime":)" << simulation_time_ << ","
            << R"("totalCustomersArrived":)" << customers_arrived_ << ","
@@ -284,6 +287,7 @@ void WebSimulation::outputFinalStats() const {
                                      : 0.0)
            << "}\n";
 
+    // clang-format on
     cout << output.str();
     cout.flush();
 }
