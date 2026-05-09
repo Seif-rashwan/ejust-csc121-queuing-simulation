@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Queuing System Simulation</title>
-    <link rel="stylesheet" href="style-enhanced.css" />
+    <link rel="stylesheet" href="style.css" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
@@ -289,22 +289,28 @@
           <div class="modal-body">
             <div class="stats-grid-detailed">
               <div class="stat-item">
-                <label>Peak Queue Length:</label><span id="stat-peak-queue">0</span>
+                <label for="stat-peak-queue">Peak Queue Length:</label
+                ><span id="stat-peak-queue">0</span>
               </div>
               <div class="stat-item">
-                <label>Server Utilization:</label><span id="stat-utilization">0%</span>
+                <label for="stat-utilization">Server Utilization:</label
+                ><span id="stat-utilization">0%</span>
               </div>
               <div class="stat-item">
-                <label>Total Customers Arrived:</label><span id="stat-total-arrived">0</span>
+                <label for="stat-total-arrived">Total Customers Arrived:</label
+                ><span id="stat-total-arrived">0</span>
               </div>
               <div class="stat-item">
-                <label>Customers Turned Away:</label><span id="stat-turned-away">0</span>
+                <label for="stat-turned-away">Customers Turned Away:</label
+                ><span id="stat-turned-away">0</span>
               </div>
               <div class="stat-item">
-                <label>Customers Currently in Bank:</label><span id="stat-avg-service">0</span>
+                <label for="stat-avg-service">Customers Currently in Bank:</label
+                ><span id="stat-avg-service">0</span>
               </div>
               <div class="stat-item">
-                <label>Customers Who Left Bank:</label><span id="stat-efficiency">0</span>
+                <label for="stat-efficiency">Customers Who Left Bank:</label
+                ><span id="stat-efficiency">0</span>
               </div>
             </div>
           </div>
@@ -312,6 +318,6 @@
       </div>
     </div>
 
-    <script src="script-enhanced.js"></script>
+    <script type="module" src="js/main.js"></script>
   </body>
 </html>
