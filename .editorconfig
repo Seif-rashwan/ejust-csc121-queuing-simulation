@@ -10,3 +10,19 @@ trim_trailing_whitespace = true
 indent_style = space
 indent_size = 4
 max_line_length = 100
+
+[*.{js,ts,json}]
+charset = utf-8
+indent_size = 2
+indent_style = space
+max_line_length = 100
+
+[*.{css,scss,less}]
+indent_style = space
+indent_size = 2
+max_line_length = 100
+
+[*.{html,htm,xml}]
+indent_style = space
+indent_size = 2
+max_line_length = 100

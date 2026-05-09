@@ -25,6 +25,32 @@ bin/
 html/
 latex/
 
+# Node.js & Web Development
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm/
+
+# Build output from web tools
+dist/
+build/
+.next/
+.nuxt/
+out/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# TypeScript
+*.tsbuildinfo
+*.d.ts
+
 # OS-specific files
 .DS_Store
 Thumbs.db

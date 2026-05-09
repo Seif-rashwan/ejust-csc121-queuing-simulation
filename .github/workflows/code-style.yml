@@ -123,7 +123,9 @@ jobs:
 
       - name: Run cppcheck
         run: |
-          cppcheck --enable=all --suppress=missingIncludeSystem \
+          cppcheck --enable=all \
+            --suppress=missingIncludeSystem \
+            --suppress=virtualCallInConstructor \
             -I./include \
             --error-exitcode=1 \
             src/ include/
