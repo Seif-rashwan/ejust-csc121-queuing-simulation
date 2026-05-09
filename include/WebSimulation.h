@@ -4,8 +4,8 @@
  * @version 1.0
  */
 
-#ifndef WEB_SIMULATION_H
-#define WEB_SIMULATION_H
+#ifndef INCLUDE_WEBSIMULATION_H_
+#define INCLUDE_WEBSIMULATION_H_
 
 #include <string>
 #include <vector>
@@ -212,4 +212,4 @@ class WebSimulation {
     void outputFinalStats() const;
 };
 
-#endif  // WEB_SIMULATION_H
+#endif  // INCLUDE_WEBSIMULATION_H_
