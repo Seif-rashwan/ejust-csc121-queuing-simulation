@@ -133,8 +133,8 @@ class WebSimulation {
      * @param t_between_arrivals Time interval between customer arrivals
      * @param total_cust Total number of customers expected (default: 100)
      */
-    WebSimulation(int sim_time, int num_servers, int trans_time, int t_between_arrivals,
-                  int total_cust = DEFAULT_TOT_CUSTOMERS);
+    explicit WebSimulation(int sim_time, int num_servers, int trans_time, int t_between_arrivals,
+                           int total_cust = DEFAULT_TOT_CUSTOMERS);
 
     /**
      * @brief Destructor; cleans up dynamically allocated resources.
