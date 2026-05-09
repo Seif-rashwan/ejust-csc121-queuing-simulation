@@ -2,12 +2,11 @@
 #include "CustomerType.h"
 
 // دالة لضبط كل بيانات العميل مرة واحدة
-// NOLINT(bugprone-easily-swappable-parameters)
-void CustomerType::setCustomerInfo(int customer_no, int arr_time, int waiting_time,  // NOLINT
+void CustomerType::setCustomerInfo(int customer_no, int arr_time, int w_time,  // NOLINT
                                    int time_spent) {
     customer_number_  = customer_no;
     arrival_time_     = arr_time;
-    waiting_time_     = waiting_time;
+    waiting_time_     = w_time;
     transaction_time_ = time_spent;
 }
 

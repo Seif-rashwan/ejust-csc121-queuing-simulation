@@ -1,7 +1,4 @@
 #include "ServerType.h"
-#include <iostream>
-
-using std::cout;
 
 // التحقق لو السيرفر فاضي
 bool ServerType::isFree() const {
@@ -29,11 +26,7 @@ void ServerType::setTransactionTime(int time) {
 
 // ضبط وقت الخدمة بناءً على وقت العميل الحالي
 void ServerType::setTransactionTime() {
-    if (status_ == "busy") {
-        transaction_time_ = current_customer_.getTransactionTime();
-    } else {
-        transaction_time_ = 0;
-    }
+    transaction_time_ = current_customer_.getTransactionTime();
 }
 
 // إرجاع الوقت المتبقي لانتهاء الخدمة

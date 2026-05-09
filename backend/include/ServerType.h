@@ -32,8 +32,10 @@ class ServerType {
     int getCurrentCustomerWaitingTime() const;
     int getCurrentCustomerTransactionTime() const;
 
-    // Constructor
     ServerType();
+    ~ServerType()                            = default;
+    ServerType(const ServerType&)            = delete;
+    ServerType& operator=(const ServerType&) = delete;
 };
 
 #endif  // INCLUDE_SERVERTYPE_H_

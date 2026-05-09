@@ -13,7 +13,7 @@ class WaitingCustomerQueue : public QueueADT<Type> {
     int queue_rear_;
     Type* queue_array_;
 
-    void initialize() override;
+    void initialize();
 
    public:
     static const int DEFAULT_MAX_SIZE = 100;

@@ -9,8 +9,7 @@ class CustomerType {
     int transaction_time_;
 
    public:
-    void setCustomerInfo(int customer_n = 0, int arr_time = 0, int waiting_time = 0,
-                         int time_spent = 0);
+    void setCustomerInfo(int customer_n = 0, int arr_time = 0, int w_time = 0, int time_spent = 0);
 
     int getWaitingTime() const;
     void setWaitingTime(int time);

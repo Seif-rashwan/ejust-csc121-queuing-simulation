@@ -1,5 +1,4 @@
 #include "ServerListType.h"
-#include <iostream>
 
 ServerListType::ServerListType(int num) {
     if (num <= 0) {
@@ -7,6 +6,7 @@ ServerListType::ServerListType(int num) {
     } else {
         num_of_servers_ = num;
     }
+
     servers_ = new ServerType[num_of_servers_];
 }
 
@@ -38,10 +38,6 @@ void ServerListType::setServerBusy(int server_id, const CustomerType& c_customer
         servers_[server_id].setBusy();
         servers_[server_id].setCurrentCustomer(c_customer);
         servers_[server_id].setTransactionTime();
-        //
-        std::cout << "  [Server " << (server_id + 1) << "] now serving Customer "
-                  << c_customer.getCustomerNumber() << " (will take "
-                  << c_customer.getTransactionTime() << " ticks)" << "\n";
     }
 }
 
@@ -50,9 +46,6 @@ void ServerListType::updateServers() {
         if (!servers_[i].isFree()) {
             servers_[i].decreaseTransactionTime();
             if (servers_[i].getRemainingTransactionTime() == 0) {
-                std::cout << "  [Server " << (i + 1) << "] finished with Customer "
-                          << servers_[i].getCurrentCustomerNumber() << " and is now FREE." << "\n";
-
                 servers_[i].setFree();
             }
         }
