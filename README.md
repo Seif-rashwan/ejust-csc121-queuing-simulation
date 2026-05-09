@@ -2,7 +2,7 @@
 
 ![Build Status](https://github.com/Seif-rashwan/ejust-csc121-queuing-simulation/actions/workflows/code-style.yml/badge.svg)
 ![License](https://img.shields.io/badge/License-MIT-green.svg?logo=unlicense)
-![C++ Standard](https://img.shields.io/badge/C%2B%2B-17-blue.svg?logo=cplusplus)
+![C++ Standard](https://img.shields.io/badge/C%2B%2B-23-blue.svg?logo=cplusplus)
 ![Node.js](https://img.shields.io/badge/Node.js-18%2B-brightgreen.svg?logo=nodedotjs)
 ![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey)
 
@@ -38,11 +38,11 @@ A **discrete-time queuing system simulation** modelling a real-life service envi
 
 The project ships in two integrated layers:
 
-| Layer | Technology | Role |
-|:------|:-----------|:-----|
-| **Engine** | Modern C++23 | Deterministic tick-based simulation core |
-| **Server** | Node.js / Express | Spawns & streams the C++ process; REST API |
-| **Frontend** | Vanilla HTML/CSS/JS | Real-time animated visualisation |
+| Layer        | Technology          | Role                                       |
+| :----------- | :------------------ | :----------------------------------------- |
+| **Engine**   | Modern C++23        | Deterministic tick-based simulation core   |
+| **Server**   | Node.js / Express   | Spawns & streams the C++ process; REST API |
+| **Frontend** | Vanilla HTML/CSS/JS | Real-time animated visualisation           |
 
 ---
 
@@ -185,39 +185,39 @@ ejust-csc121-queuing-simulation/
 
 ### Simulation Engine (C++)
 
-| Feature | Details |
-|:--------|:--------|
-| **Tick-based clock** | Deterministic discrete-time loop; each tick = one time unit |
-| **Circular array queue** | Fixed-capacity FIFO; size = `totalCustomers` (auto-sized, never turns anyone away) |
-| **Total-arrivals target** | `totalCustomers` = exact number of customers who will arrive; simulation ends when all are served |
-| **Round-robin dispatch** | `next_server_hint` pointer rotates after every assignment — no server starves |
-| **Shadow server states** | Separate `server_states[]` array mirrors real `ServerListType` for consistent UI + termination logic |
-| **Auto termination** | Stops exactly when: `allArrived ∧ queueEmpty ∧ allServersFree` — no wasted ticks |
-| **JSON stdout stream** | Every tick emits `STATE:{…}` on stdout; final `FINAL:{…}` on completion |
-| **Safety cap** | `simulation_time = totalCustomers × arrivalInterval × 20` prevents infinite loops |
+| Feature                   | Details                                                                                              |
+| :------------------------ | :--------------------------------------------------------------------------------------------------- |
+| **Tick-based clock**      | Deterministic discrete-time loop; each tick = one time unit                                          |
+| **Circular array queue**  | Fixed-capacity FIFO; size = `totalCustomers` (auto-sized, never turns anyone away)                   |
+| **Total-arrivals target** | `totalCustomers` = exact number of customers who will arrive; simulation ends when all are served    |
+| **Round-robin dispatch**  | `next_server_hint` pointer rotates after every assignment — no server starves                        |
+| **Shadow server states**  | Separate `server_states[]` array mirrors real `ServerListType` for consistent UI + termination logic |
+| **Auto termination**      | Stops exactly when: `allArrived ∧ queueEmpty ∧ allServersFree` — no wasted ticks                     |
+| **JSON stdout stream**    | Every tick emits `STATE:{…}` on stdout; final `FINAL:{…}` on completion                              |
+| **Safety cap**            | `simulation_time = totalCustomers × arrivalInterval × 20` prevents infinite loops                    |
 
 ### Node.js Server
 
-| Feature | Details |
-|:--------|:--------|
-| **State queue replay** | All `STATE:` lines buffered into `stateQueue[]`; served one-per-poll for animated playback |
-| **Line buffering** | Handles fragmented stdout chunks correctly — no JSON parse errors |
-| **Live config push** | `POST /api/config` updates parameters before next run |
-| **Clean process lifecycle** | Old child process killed before new run; stateQueue cleared on reset |
+| Feature                     | Details                                                                                    |
+| :-------------------------- | :----------------------------------------------------------------------------------------- |
+| **State queue replay**      | All `STATE:` lines buffered into `stateQueue[]`; served one-per-poll for animated playback |
+| **Line buffering**          | Handles fragmented stdout chunks correctly — no JSON parse errors                          |
+| **Live config push**        | `POST /api/config` updates parameters before next run                                      |
+| **Clean process lifecycle** | Old child process killed before new run; stateQueue cleared on reset                       |
 
 ### Frontend Visualisation
 
-| Feature | Details |
-|:--------|:--------|
-| **Circular ring canvas** | Animated arc shows occupied/empty/front/rear slots; scales dot size to capacity |
-| **Arrival progress bar** | Green→blue gradient bar: `Arrived X / N customers (%)` |
-| **FIFO strip** | Next 20 customers colour-coded by assigned server |
-| **Server lane cards** | Explicit assignment pattern per server (e.g. S1: C1, C4, C7…) |
-| **Live server cards** | Animated busy/idle state with remaining service time countdown |
-| **Stat cards** | Tick · Queue size · Served · Avg wait · Next arrival · Throughput |
-| **Dual mode** | **Local** (pure JS, no server needed) · **Backend** (C++ engine via Node.js) |
-| **Live parameter sliders** | Servers · Arrival rate · Service rate · Total customers — all hot-reload |
-| **Auto-stop UI** | Detects `running: false` and shows completion banner |
+| Feature                    | Details                                                                         |
+| :------------------------- | :------------------------------------------------------------------------------ |
+| **Circular ring canvas**   | Animated arc shows occupied/empty/front/rear slots; scales dot size to capacity |
+| **Arrival progress bar**   | Green→blue gradient bar: `Arrived X / N customers (%)`                          |
+| **FIFO strip**             | Next 20 customers colour-coded by assigned server                               |
+| **Server lane cards**      | Explicit assignment pattern per server (e.g. S1: C1, C4, C7…)                   |
+| **Live server cards**      | Animated busy/idle state with remaining service time countdown                  |
+| **Stat cards**             | Tick · Queue size · Served · Avg wait · Next arrival · Throughput               |
+| **Dual mode**              | **Local** (pure JS, no server needed) · **Backend** (C++ engine via Node.js)    |
+| **Live parameter sliders** | Servers · Arrival rate · Service rate · Total customers — all hot-reload        |
+| **Auto-stop UI**           | Detects `running: false` and shows completion banner                            |
 
 ---
 
@@ -225,12 +225,12 @@ ejust-csc121-queuing-simulation/
 
 ### Prerequisites
 
-| Tool | Version | Purpose |
-|:-----|:--------|:--------|
-| `g++` | ≥ 11 (C++23) | Compile C++ engine |
-| `Node.js` | ≥ 18 | Run Express server |
-| `npm` | ≥ 9 | Install JS dependencies |
-| `python` | ≥ 3.7 | Pre-commit hooks (optional) |
+| Tool      | Version      | Purpose                     |
+| :-------- | :----------- | :-------------------------- |
+| `g++`     | ≥ 11 (C++23) | Compile C++ engine          |
+| `Node.js` | ≥ 18         | Run Express server          |
+| `npm`     | ≥ 9          | Install JS dependencies     |
+| `python`  | ≥ 3.7        | Pre-commit hooks (optional) |
 
 ### Option A — Local Mode (No server required)
 
@@ -293,19 +293,19 @@ build/
 
 ### Available Build Targets
 
-| Target | Description |
-|:-------|:------------|
-| `make` or `make all` | Build both binaries |
-| `make build` | Same as `make all` |
-| `make build-web` | Build web server binary only |
-| `make build-cli` | Build CLI binary only |
-| `make run` | Build web binary and start Node.js server |
-| `make run-cli` | Build CLI binary and run it |
-| `make install` | One-time setup: install pre-commit hooks + Node.js deps |
-| `make debug` | Build with debug symbols (`-g -O0`) |
-| `make lint` | Run clang-tidy static analysis |
-| `make format` | Auto-format all C++ code |
-| `make clean` | Remove all build artifacts |
+| Target               | Description                                             |
+| :------------------- | :------------------------------------------------------ |
+| `make` or `make all` | Build both binaries                                     |
+| `make build`         | Same as `make all`                                      |
+| `make build-web`     | Build web server binary only                            |
+| `make build-cli`     | Build CLI binary only                                   |
+| `make run`           | Build web binary and start Node.js server               |
+| `make run-cli`       | Build CLI binary and run it                             |
+| `make install`       | One-time setup: install pre-commit hooks + Node.js deps |
+| `make debug`         | Build with debug symbols (`-g -O0`)                     |
+| `make lint`          | Run clang-tidy static analysis                          |
+| `make format`        | Auto-format all C++ code                                |
+| `make clean`         | Remove all build artifacts                              |
 
 ### Development Workflow
 
@@ -326,13 +326,13 @@ make format       # Fix formatting issues
 
 All parameters are adjustable at runtime via the web UI sliders and pushed to the server via `POST /api/config`.
 
-| Parameter | Slider ID | Default | Range | Description |
-|:----------|:----------|:-------:|:-----:|:------------|
-| Total Customers | `r-customers` | 100 | 10–500 | Exact number of customers who will arrive |
-| Servers | `r-servers` | 4 | 1–10 | Number of parallel service windows |
-| Arrival Rate (min) | `r-arrival-min` | 2 | 1–20 | Min ticks between successive arrivals |
-| Service Time (min) | `r-service-min` | 4 | 1–20 | Min ticks a server spends per customer |
-| Service Time (max) | `r-service-max` | 10 | 1–30 | Max ticks a server spends per customer |
+| Parameter          | Slider ID       | Default | Range  | Description                               |
+| :----------------- | :-------------- | :-----: | :----: | :---------------------------------------- |
+| Total Customers    | `r-customers`   |   100   | 10–500 | Exact number of customers who will arrive |
+| Servers            | `r-servers`     |    4    |  1–10  | Number of parallel service windows        |
+| Arrival Rate (min) | `r-arrival-min` |    2    |  1–20  | Min ticks between successive arrivals     |
+| Service Time (min) | `r-service-min` |    4    |  1–20  | Min ticks a server spends per customer    |
+| Service Time (max) | `r-service-max` |   10    |  1–30  | Max ticks a server spends per customer    |
 
 > **Note:** "Total Customers" is the *simulation workload* — how many people walk through the door. The queue buffer is auto-sized to this number so no customer is ever turned away due to capacity.
 
@@ -342,22 +342,22 @@ All parameters are adjustable at runtime via the web UI sliders and pushed to th
 
 ### C++ Engine
 
-| Class | File | Responsibility |
-|:------|:-----|:--------------|
-| `CustomerType` | `CustomerType.*` | Stores customer ID, arrival time, waiting time, transaction time; exposes `incrementWaitingTime()` |
-| `ServerType` | `ServerType.*` | Tracks free/busy FSM, current customer, remaining service ticks; auto-frees on countdown expiry |
-| `ServerListType` | `ServerListType.*` | Pool of `ServerType`; `getFreeServerID()`, `setServerBusy()`, `updateServers()` |
-| `WaitingCustomerQueue` | `WaitingCustomerQueue.*` | Circular-array FIFO inheriting `QueueADT<T>`; `incrementWaitingTimes()` for bulk tick |
-| `WebSimulation` | `WebSimulation.cpp` | Orchestrates the full tick loop; emits `STATE:{JSON}` per tick; round-robin dispatch via `next_server_hint` |
+| Class                  | File                     | Responsibility                                                                                              |
+| :--------------------- | :----------------------- | :---------------------------------------------------------------------------------------------------------- |
+| `CustomerType`         | `CustomerType.*`         | Stores customer ID, arrival time, waiting time, transaction time; exposes `incrementWaitingTime()`          |
+| `ServerType`           | `ServerType.*`           | Tracks free/busy FSM, current customer, remaining service ticks; auto-frees on countdown expiry             |
+| `ServerListType`       | `ServerListType.*`       | Pool of `ServerType`; `getFreeServerID()`, `setServerBusy()`, `updateServers()`                             |
+| `WaitingCustomerQueue` | `WaitingCustomerQueue.*` | Circular-array FIFO inheriting `QueueADT<T>`; `incrementWaitingTimes()` for bulk tick                       |
+| `WebSimulation`        | `WebSimulation.cpp`      | Orchestrates the full tick loop; emits `STATE:{JSON}` per tick; round-robin dispatch via `next_server_hint` |
 
 ### JavaScript Frontend
 
-| Object/Function | File | Responsibility |
-|:----------------|:-----|:--------------|
-| `local` | `js/simulation.js` | Pure-JS simulation mirror of the C++ engine; same FIFO + round-robin logic |
-| `RING` | `js/ring.js` | Canvas renderer for the circular queue visualisation |
-| `render()` | `js/render.js` | Unified UI update: stat cards, ring, progress bar, FIFO strip, server cards |
-| `sendConfig()` | `js/api.js` | Debounced slider → `POST /api/config` |
+| Object/Function | File               | Responsibility                                                              |
+| :-------------- | :----------------- | :-------------------------------------------------------------------------- |
+| `local`         | `js/simulation.js` | Pure-JS simulation mirror of the C++ engine; same FIFO + round-robin logic  |
+| `RING`          | `js/ring.js`       | Canvas renderer for the circular queue visualisation                        |
+| `render()`      | `js/render.js`     | Unified UI update: stat cards, ring, progress bar, FIFO strip, server cards |
+| `sendConfig()`  | `js/api.js`        | Debounced slider → `POST /api/config`                                       |
 
 ---
 
@@ -365,13 +365,13 @@ All parameters are adjustable at runtime via the web UI sliders and pushed to th
 
 Base URL: `http://localhost:8081`
 
-| Method | Endpoint | Body | Response | Description |
-|:-------|:---------|:-----|:---------|:------------|
-| `GET` | `/api/state` | — | `StateJSON` | Pop & return next tick snapshot from queue |
-| `POST` | `/api/config` | `ConfigJSON` | `{success}` | Update simulation parameters |
-| `POST` | `/api/start` | — | `{success}` | Kill existing process; spawn new C++ run |
-| `POST` | `/api/pause` | — | `{success}` | Kill C++ process (pause = stop current run) |
-| `POST` | `/api/reset` | — | `{success}` | Kill process + clear state + clear stateQueue |
+| Method | Endpoint      | Body         | Response    | Description                                   |
+| :----- | :------------ | :----------- | :---------- | :-------------------------------------------- |
+| `GET`  | `/api/state`  | —            | `StateJSON` | Pop & return next tick snapshot from queue    |
+| `POST` | `/api/config` | `ConfigJSON` | `{success}` | Update simulation parameters                  |
+| `POST` | `/api/start`  | —            | `{success}` | Kill existing process; spawn new C++ run      |
+| `POST` | `/api/pause`  | —            | `{success}` | Kill C++ process (pause = stop current run)   |
+| `POST` | `/api/reset`  | —            | `{success}` | Kill process + clear state + clear stateQueue |
 
 ### StateJSON Schema
 
@@ -407,44 +407,44 @@ pip install pre-commit
 python -m pre_commit install
 ```
 
-| Hook | Tool | Checks |
-|:-----|:-----|:-------|
-| Formatting | `clang-format v22` | Google style, 100-col, 4-space indent |
-| Static analysis | `clang-tidy` | Naming conventions, `[[nodiscard]]`, readability |
+| Hook            | Tool               | Checks                                           |
+| :-------------- | :----------------- | :----------------------------------------------- |
+| Formatting      | `clang-format v22` | Google style, 100-col, 4-space indent            |
+| Static analysis | `clang-tidy`       | Naming conventions, `[[nodiscard]]`, readability |
 
 ### GitHub Actions CI
 
 Every push / pull request triggers the `Code Style & Quality Check` workflow:
 
-| Job | Tool | What It Checks |
-|:----|:-----|:--------------|
-| `clang-format` | clang-format | Formatting compliance |
-| `cpplint` | cpplint | Google style lint (`CPPLINT.cfg` overrides) |
-| `file-naming-conventions` | custom Python | `PascalCase` for all `.cpp` / `.h` files |
-| `code-quality` | cppcheck + clang-tidy | Memory safety, UB, naming, design issues |
+| Job                       | Tool                  | What It Checks                              |
+| :------------------------ | :-------------------- | :------------------------------------------ |
+| `clang-format`            | clang-format          | Formatting compliance                       |
+| `cpplint`                 | cpplint               | Google style lint (`CPPLINT.cfg` overrides) |
+| `file-naming-conventions` | custom Python         | `PascalCase` for all `.cpp` / `.h` files    |
+| `code-quality`            | cppcheck + clang-tidy | Memory safety, UB, naming, design issues    |
 
 ---
 
 ## Naming Conventions
 
-| Construct | Convention | Example |
-|:----------|:-----------|:--------|
-| Files | `PascalCase` | `CustomerType.cpp` |
-| Classes & Structs | `PascalCase` | `class ServerListType` |
-| Private members | `snake_case_` (trailing `_`) | `int customer_id_;` |
-| Methods | `camelCase` | `void getCustomerId()` |
-| Free functions | `PascalCase` | `void ProcessQueue()` |
-| Parameters | `snake_case` | `int arrival_time` |
-| Constants | `UPPER_SNAKE_CASE` | `const int MAX_QUEUE_SIZE` |
+| Construct         | Convention                   | Example                    |
+| :---------------- | :--------------------------- | :------------------------- |
+| Files             | `PascalCase`                 | `CustomerType.cpp`         |
+| Classes & Structs | `PascalCase`                 | `class ServerListType`     |
+| Private members   | `snake_case_` (trailing `_`) | `int customer_id_;`        |
+| Methods           | `camelCase`                  | `void getCustomerId()`     |
+| Free functions    | `PascalCase`                 | `void ProcessQueue()`      |
+| Parameters        | `snake_case`                 | `int arrival_time`         |
+| Constants         | `UPPER_SNAKE_CASE`           | `const int MAX_QUEUE_SIZE` |
 
 ---
 
 ## Team
 
-| Name | Student ID |
-|:-----|:----------:|
-| Seif Rashwan | 120210256 |
-| Hana Aly ElMaghraby | 320240126 |
-| Nour Ibrahim | 320250325 |
-| Androw Shonoda Tawfeek | 320210333 |
-| @EgizianoEG | — |
+| Name                   | Student ID |
+| :--------------------- | :--------: |
+| Seif Rashwan           | 120210256  |
+| Hana Aly ElMaghraby    | 320240126  |
+| Nour Ibrahim           | 320250325  |
+| Androw Shonoda Tawfeek | 320210333  |
+| @EgizianoEG            |     —      |

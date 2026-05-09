@@ -2,7 +2,7 @@
 
 **CSC 121 · Data Structures and Algorithms · E-JUST Spring 2026**
 **Instructor:** Dr. Reda Elbasiony
-**Repo:** https://github.com/Seif-rashwan/ejust-csc121-queuing-simulation
+**Repo:** <https://github.com/Seif-rashwan/ejust-csc121-queuing-simulation>
 **Deadline:** 2 weeks from assignment date
 
 ---
@@ -17,19 +17,20 @@ T1 customerType  →  T2 serverType + T3 Queue (parallel)  →  T4 serverListTyp
 
 ## 📌 Task Table
 
-| Task | Core File | Difficulty | Depends On | Assignee |
-| :--: | :--- | :---: | :--- | :--- |
-| **T1** | `customerType.cpp` + **Report** | 🟢 Light + Docs | None — start immediately | ................ |
-| **T2** | `serverType.cpp` + **Bonus UI** | 🟢 Light + Creative | `customerType.h` (T1) | ................ |
-| **T3** | `waitingCustomerQueue.cpp` | 🔴 Heavy (Core DS) | `customerType.h` (T1) · `queueADT.h` | Androw shonoda |
-| **T4** | `serverListType.cpp` | 🟡 Medium | `serverType.h` (T2) | ................ |
-| **T5** | `main.cpp` | 🔴 Heavy (Engine) | ALL other tasks done | ................ |
+|  Task  | Core File                       |     Difficulty     | Depends On                           | Assignee         |
+| :----: | :------------------------------ | :----------------: | :----------------------------------- | :--------------- |
+| **T1** | `customerType.cpp` + **Report** |   🟢 Light + Docs   | None — start immediately             | ................ |
+| **T2** | `serverType.cpp` + **Bonus UI** | 🟢 Light + Creative | `customerType.h` (T1)                | ................ |
+| **T3** | `waitingCustomerQueue.cpp`      | 🔴 Heavy (Core DS)  | `customerType.h` (T1) · `queueADT.h` | Androw shonoda   |
+| **T4** | `serverListType.cpp`            |      🟡 Medium      | `serverType.h` (T2)                  | ................ |
+| **T5** | `main.cpp`                      |  🔴 Heavy (Engine)  | ALL other tasks done                 | ................ |
 
 ---
 
 ## 📝 Job Descriptions
 
 ### T1 · `customerType.cpp` + Report 🟢
+>
 > **Can start immediately — no dependencies**
 
 **Code (`customerType.cpp`):**
@@ -47,6 +48,7 @@ T1 customerType  →  T2 serverType + T3 Queue (parallel)  →  T4 serverListTyp
 ---
 
 ### T2 · `serverType.cpp` + Bonus UI 🟢
+>
 > **Needs:** `customerType.h` from T1
 
 **Code (`serverType.cpp`):**
@@ -63,6 +65,7 @@ T1 customerType  →  T2 serverType + T3 Queue (parallel)  →  T4 serverListTyp
 ---
 
 ### T3 · `waitingCustomerQueue.cpp` 🔴
+>
 > **Needs:** `customerType.h` from T1 · `queueADT.h` (already in repo)
 
 **Code (`waitingCustomerQueue.cpp` + `queueType.h`):**
@@ -79,6 +82,7 @@ T1 customerType  →  T2 serverType + T3 Queue (parallel)  →  T4 serverListTyp
 ---
 
 ### T4 · `serverListType.cpp` 🟡
+>
 > **Needs:** `serverType.h` from T2
 
 **Code (`serverListType.cpp`):**
@@ -91,6 +95,7 @@ T1 customerType  →  T2 serverType + T3 Queue (parallel)  →  T4 serverListTyp
 ---
 
 ### T5 · `main.cpp` 🔴
+>
 > **Needs:** ALL other tasks complete and merged to `main`
 
 **Code (`main.cpp`):**
@@ -127,17 +132,18 @@ git push origin feature/task-N
 ```
 
 ### Branch Names
-| Task | Branch |
-| :--: | :--- |
-| T1 | `feature/task-1-customer` |
-| T2 | `feature/task-2-server` |
-| T3 | `feature/task-3-queue` |
-| T4 | `feature/task-4-serverlist` |
-| T5 | `feature/task-5-main` |
+
+| Task  | Branch                      |
+| :---: | :-------------------------- |
+|  T1   | `feature/task-1-customer`   |
+|  T2   | `feature/task-2-server`     |
+|  T3   | `feature/task-3-queue`      |
+|  T4   | `feature/task-4-serverlist` |
+|  T5   | `feature/task-5-main`       |
 
 ---
 
-## ✅ Phase 1 Done When...
+## ✅ Phase 1 Done When
 
 - [ ] Code compiles with zero warnings: `make` runs clean
 - [ ] Circular queue handles `AAADADADA...` without phantom-full bug
@@ -150,12 +156,12 @@ git push origin feature/task-N
 
 ## 🚀 Phase 2 — Bonus (after Phase 1 is done)
 
-| Priority | Feature | Owner |
-| :---: | :--- | :--- |
-| High | Terminal UI (T2 owner) | T2 |
-| High | CSV stats export for graphing | TBD |
-| Medium | Multi-scenario comparison (vary server count) | TBD |
-| Medium | Priority queue variant (VIP customers) | TBD |
+| Priority | Feature                                       | Owner |
+| :------: | :-------------------------------------------- | :---- |
+|   High   | Terminal UI (T2 owner)                        | T2    |
+|   High   | CSV stats export for graphing                 | TBD   |
+|  Medium  | Multi-scenario comparison (vary server count) | TBD   |
+|  Medium  | Priority queue variant (VIP customers)        | TBD   |
 
 ---
 
