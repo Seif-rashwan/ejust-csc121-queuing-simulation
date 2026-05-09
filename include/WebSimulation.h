@@ -141,7 +141,7 @@ class WebSimulation {
      */
     ~WebSimulation();
 
-    WebSimulation(const ServerListType&)            = delete;
+    explicit WebSimulation(const ServerListType&)   = delete;
     WebSimulation& operator=(const ServerListType&) = delete;
 
     //--------------------------------------------------------------------------------
