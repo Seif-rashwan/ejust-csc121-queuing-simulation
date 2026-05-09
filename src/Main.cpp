@@ -1,3 +1,10 @@
+/**
+ * @file Main.cpp
+ * @brief Standalone CLI entry point for the queuing simulation.
+ *
+ * Note: This file contains its own main() function and is built into a separate
+ * executable (simulation_cli). It is NOT linked with web_simulation.cpp.
+ */
 #include <algorithm>
 #include <iostream>
 #include <stdexcept>
@@ -9,8 +16,8 @@ using std::cin;
 using std::cout;
 
 // دالة لأخذ معطيات المحاكاة من المستخدم
-void SetSimulationParameters(int& s_time, int& num_of_servers, int& trans_time,
-                             int& t_between_arrivals) {
+static void SetSimulationParameters(int& s_time, int& num_of_servers, int& trans_time,
+                                    int& t_between_arrivals) {
     cout << "Enter simulation time: ";
     if (!(cin >> s_time)) {
         throw std::runtime_error("Invalid input: expected an integer for simulation time.");
