@@ -9,7 +9,8 @@ DEPFLAGS = -MMD -MP
 LIB_SRC = src/CustomerType.cpp \
            src/ServerType.cpp \
            src/ServerListType.cpp \
-           src/WaitingCustomerQueue.cpp
+           src/WaitingCustomerQueue.cpp \
+		   src/WebSimulation.cpp
 
 # Web simulation entry point (Node.js spawned)
 WEB_SRC = src/WebSimulation.cpp
@@ -95,6 +96,13 @@ run-cli: $(CLI_TARGET)
 
 
 lint:
+	@echo "Running cpplint..."
+	cpplint --recursive src/ include/
+	@echo ""
+	@echo "Running clang-format..."
+	clang-format --dry-run --Werror $(LIB_SRC) $(CLI_SRC) $(wildcard include/*.h)
+	@echo ""
+	@echo "Running clang-tidy..."
 	clang-tidy $(LIB_SRC) $(CLI_SRC) -- $(CXXFLAGS)
 
 format:
