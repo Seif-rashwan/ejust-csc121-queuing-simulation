@@ -18,12 +18,11 @@
 3. [Repository Structure](#repository-structure)
 4. [Features](#features)
 5. [Quick Start](#quick-start)
-6. [Simulation Parameters](#simulation-parameters)
-7. [Core Classes](#core-classes)
+6. [Build System](#build-system)
+7. [Simulation Parameters](#simulation-parameters)
 8. [API Reference](#api-reference)
-9. [Code Quality & Tooling](#code-quality--tooling)
-10. [Naming Conventions](#naming-conventions)
-11. [Team](#team)
+9. [Documentation & Standards](#documentation--standards)
+10. [Team](#team)
 
 ---
 
@@ -48,90 +47,26 @@ The project ships in two integrated layers:
 
 ## Architecture
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        Browser (Frontend)                       │
-│                                                                 │
-│  ┌──────────────┐   ┌───────────────────┐   ┌───────────────┐  │
-│  │  stat cards  │   │  Circular Ring    │   │  FIFO Strip   │  │
-│  │ tick/queue/  │   │  Canvas (live     │   │  next-20      │  │
-│  │ served/wait  │   │  slot animation)  │   │  customers    │  │
-│  └──────────────┘   └───────────────────┘   └───────────────┘  │
-│  ┌──────────────────────────────────────────────────────────┐   │
-│  │             frontend/js/modules  (Controller)                │   │
-│  │  ┌─────────────────────┐   ┌──────────────────────────┐  │   │
-│  │  │  Local JS Simulation│   │  Backend Polling Client  │  │   │
-│  │  │  (standalone mode)  │   │  GET /api/state @350 ms  │  │   │
-│  │  └─────────────────────┘   └──────────────────────────┘  │   │
-│  └──────────────────────────────────────────────────────────┘   │
-└───────────────────────────┬─────────────────────────────────────┘
-                            │ HTTP / REST
-┌───────────────────────────▼─────────────────────────────────────┐
-│                  Node.js Server  (server.js)                    │
-│                                                                 │
-│  POST /api/start  →  spawn C++ child process                    │
-│  GET  /api/state  →  pop one STATE snapshot from stateQueue     │
-│  POST /api/config →  update config object                       │
-│  POST /api/reset  →  kill process + clear state                 │
-│                                                                 │
-│   stateQueue[]  ◄── line-buffered stdout reader                 │
-└───────────────────────────┬─────────────────────────────────────┘
-                            │ stdin / stdout (child_process.spawn)
-┌───────────────────────────▼─────────────────────────────────────┐
-│              C++ Simulation Engine  (simulation.exe)            │
-│                                                                 │
-│   main()                                                        │
-│    └── WebSimulation(safetyTime, servers, svcTime,              │
-│                      arrivalInterval, totalCustomers)           │
-│         ├── tick()                                              │
-│         │    ├── 1. Decrement shadow server states              │
-│         │    ├── 2. updateServers() on real ServerListType      │
-│         │    ├── 3. Enqueue new arrivals (≤ totalCustomers)     │
-│         │    └── 4. Round-robin assign free servers             │
-│         ├── outputState()  →  "STATE:{…JSON…}\n"               │
-│         ├── isFinished()   →  allArrived ∧ queueEmpty ∧         │
-│         │                     allServersFree                    │
-│         └── outputFinalStats() → "FINAL:{…JSON…}\n"            │
-│                                                                 │
-│   Classes: CustomerType · ServerType · ServerListType           │
-│            WaitingCustomerQueue · WebSimulation                 │
-│                                                                 │
-│   Build Targets:                                                 │
-│   ├── build/bin/simulation.exe     (web server mode)            │
-│   └── build/bin/simulation_cli.exe (standalone CLI mode)        │
-└─────────────────────────────────────────────────────────────────┘
-```
+The system is a **three-tier event-driven application**:
 
-### Data Flow — Backend Mode
+- **Tier 1 (Presentation):** Vanilla HTML/CSS/JS frontend running in the browser
+- **Tier 2 (Orchestration):** Node.js/Express server managing the C++ process and REST API
+- **Tier 3 (Engine):** C++23 binary performing deterministic tick-based simulation
 
-```
-User clicks Start
-      │
-      ▼
-POST /api/start
-      │  spawn simulation.exe [safetyTime] [servers] [svcTime]
-      │                       [arrivalInterval] [totalCustomers]
-      ▼
-C++ runs full simulation instantly, emitting STATE:{…} per tick
-      │
-      ▼
-server.js line-buffers stdout → pushes each STATE into stateQueue[]
-      │
-      ▼
-Browser polls GET /api/state every 350 ms
-      │  server pops stateQueue[0] → updates simulationState → returns JSON
-      ▼
-Frontend render() animates ring, stat cards, FIFO strip, server cards
-      │  (one tick per poll → looks real-time even though C++ ran instantly)
-      ▼
-When stateQueue is empty + state.running === false → show "Simulation complete"
-```
+**For detailed architecture diagrams, design decisions, class structure, and data flow sequences, see [ARCHITECTURE.md](ARCHITECTURE.md).**
+
+**Quick overview:**
+- Browser polls `/api/state` every 350 ms (default) for animation frames
+- Node.js spawns the C++ engine, which runs the full simulation, after frontend config push
+- C++ emits one `STATE:{…JSON…}` line per tick to stdout
+- Node.js buffers these states and serves them to the frontend on demand
+- Simulation auto-terminates when: all customers arrived + queue empty + all servers free
 
 ---
 
 ## Repository Structure
 
-```
+```mathematica
 ejust-csc121-queuing-simulation/
 │
 ├── build/
@@ -259,7 +194,7 @@ make build-cli      # Build CLI binary only
 make run            # Build and start Node.js server
 ```
 
-Open **http://localhost:8081**, click **Backend** → **Start**.
+Open **<http://localhost:8081>**, click **Backend** → **Start**.
 
 ### Option C — Console Mode (standalone CLI)
 
@@ -277,7 +212,7 @@ make build-cli
 
 The project uses GNU Make for building. The build system is organized with separate directories for clarity:
 
-```
+```mathematica
 build/
 ├── bin/           # Final executables
 │   ├── simulation.exe        # Web server mode (Node.js spawns this)
@@ -334,30 +269,22 @@ All parameters are adjustable at runtime via the web UI sliders and pushed to th
 | Service Time (min) | `r-service-min` |    4    |  1–20  | Min ticks a server spends per customer    |
 | Service Time (max) | `r-service-max` |   10    |  1–30  | Max ticks a server spends per customer    |
 
-> **Note:** "Total Customers" is the *simulation workload* — how many people walk through the door. The queue buffer is auto-sized to this number so no customer is ever turned away due to capacity.
+> **Note:** "Total Customers" is the *simulation workload*; how many people walk through the door. The queue buffer is auto-sized to this number so no customer is ever turned away due to capacity.
 
 ---
 
-## Core Classes
+---
 
-### C++ Engine
+## Documentation & Standards
 
-| Class                  | File                     | Responsibility                                                                                              |
-| :--------------------- | :----------------------- | :---------------------------------------------------------------------------------------------------------- |
-| `CustomerType`         | `CustomerType.*`         | Stores customer ID, arrival time, waiting time, transaction time; exposes `incrementWaitingTime()`          |
-| `ServerType`           | `ServerType.*`           | Tracks free/busy FSM, current customer, remaining service ticks; auto-frees on countdown expiry             |
-| `ServerListType`       | `ServerListType.*`       | Pool of `ServerType`; `getFreeServerID()`, `setServerBusy()`, `updateServers()`                             |
-| `WaitingCustomerQueue` | `WaitingCustomerQueue.*` | Circular-array FIFO inheriting `QueueADT<T>`; `incrementWaitingTimes()` for bulk tick                       |
-| `WebSimulation`        | `WebSimulation.cpp`      | Orchestrates the full tick loop; emits `STATE:{JSON}` per tick; round-robin dispatch via `next_server_hint` |
+**For detailed specifications, conventions, and quality standards:**
 
-### JavaScript Frontend
-
-| Object/Function | File               | Responsibility                                                              |
-| :-------------- | :----------------- | :-------------------------------------------------------------------------- |
-| `local`         | `js/simulation.js` | Pure-JS simulation mirror of the C++ engine; same FIFO + round-robin logic  |
-| `RING`          | `js/ring.js`       | Canvas renderer for the circular queue visualisation                        |
-| `render()`      | `js/render.js`     | Unified UI update: stat cards, ring, progress bar, FIFO strip, server cards |
-| `sendConfig()`  | `js/api.js`        | Debounced slider → `POST /api/config`                                       |
+| Document                                 | Purpose                                                                                                  |
+| :--------------------------------------- | :------------------------------------------------------------------------------------------------------- |
+| [CODING_STANDARD.md](CODING_STANDARD.md) | Naming conventions, formatting rules, header guards, Doxygen docs, error handling, pre-commit & CI setup |
+| [ARCHITECTURE.md](ARCHITECTURE.md)       | System tiers, component diagrams, class structure, design decisions, tick execution, error handling      |
+| [SRS.md](SRS.md)                         | Full software requirements: functional specs, performance targets, constraints, user stories             |
+| [TASKS.md](TASKS.md)                     | Student task assignments with dependencies and submission tracking                                       |
 
 ---
 
@@ -395,47 +322,6 @@ Base URL: `http://localhost:8081`
   ]
 }
 ```
-
----
-
-## Code Quality & Tooling
-
-### Pre-commit Hooks (local)
-
-```bash
-pip install pre-commit
-python -m pre_commit install
-```
-
-| Hook            | Tool               | Checks                                           |
-| :-------------- | :----------------- | :----------------------------------------------- |
-| Formatting      | `clang-format v22` | Google style, 100-col, 4-space indent            |
-| Static analysis | `clang-tidy`       | Naming conventions, `[[nodiscard]]`, readability |
-
-### GitHub Actions CI
-
-Every push / pull request triggers the `Code Style & Quality Check` workflow:
-
-| Job                       | Tool                  | What It Checks                              |
-| :------------------------ | :-------------------- | :------------------------------------------ |
-| `clang-format`            | clang-format          | Formatting compliance                       |
-| `cpplint`                 | cpplint               | Google style lint (`CPPLINT.cfg` overrides) |
-| `file-naming-conventions` | custom Python         | `PascalCase` for all `.cpp` / `.h` files    |
-| `code-quality`            | cppcheck + clang-tidy | Memory safety, UB, naming, design issues    |
-
----
-
-## Naming Conventions
-
-| Construct         | Convention                   | Example                    |
-| :---------------- | :--------------------------- | :------------------------- |
-| Files             | `PascalCase`                 | `CustomerType.cpp`         |
-| Classes & Structs | `PascalCase`                 | `class ServerListType`     |
-| Private members   | `snake_case_` (trailing `_`) | `int customer_id_;`        |
-| Methods           | `camelCase`                  | `void getCustomerId()`     |
-| Free functions    | `PascalCase`                 | `void ProcessQueue()`      |
-| Parameters        | `snake_case`                 | `int arrival_time`         |
-| Constants         | `UPPER_SNAKE_CASE`           | `const int MAX_QUEUE_SIZE` |
 
 ---
 
