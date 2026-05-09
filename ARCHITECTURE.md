@@ -1,4 +1,5 @@
 # System Architecture Document
+
 ## Queuing System Simulation — CSC 121
 
 **Version:** 2.0 &nbsp;|&nbsp; **Date:** May 2026
@@ -9,7 +10,7 @@
 
 The system is a **three-tier event-driven application** where each tier has a single, well-defined responsibility:
 
-```
+```mathematica
 ┌──────────────────────────────────────────────────────────────────────┐
 │  Tier 1 — Presentation  │  Tier 2 — Orchestration  │  Tier 3 — Engine│
 │  (Browser / Vanilla JS) │  (Node.js / Express)     │  (C++17 binary) │
@@ -22,16 +23,16 @@ The system is a **three-tier event-driven application** where each tier has a si
 
 The tiers communicate over **two distinct channels**:
 
-| Channel | From | To | Protocol |
-|:--------|:-----|:---|:---------|
-| REST/HTTP | Browser | Node.js | HTTP/1.1 JSON |
-| IPC pipe | Node.js | C++ | child_process.spawn stdout |
+| Channel   | From    | To      | Protocol                   |
+| :-------- | :------ | :------ | :------------------------- |
+| REST/HTTP | Browser | Node.js | HTTP/1.1 JSON              |
+| IPC pipe  | Node.js | C++     | child_process.spawn stdout |
 
 ---
 
 ## 2. Component Diagram
 
-```
+```mathematica
 Browser
 │
 │  ┌───────────────────────────────────────────────────────────┐
@@ -121,7 +122,7 @@ C++ simulation.exe
 
 **Solution:** Node.js collects every `STATE:{…}` line into `stateQueue[]`. The `GET /api/state` endpoint pops ONE entry per request. Since the browser polls every 350 ms, the simulation replays one tick per poll — appearing to run in real time.
 
-```
+```go
 C++ (10 ms)         Node.js stateQueue       Browser (350 ms/poll)
 ────────────         ────────────────────     ─────────────────────
 emit 500 STATEs  →  [S0, S1, ..., S499]  →  S0 → animate
@@ -145,7 +146,7 @@ emit 500 STATEs  →  [S0, S1, ..., S499]  →  S0 → animate
 
 **Solution:** `next_server_hint` pointer starts at 0 and advances after each assignment:
 
-```
+```js
 Tick 3:  C1 arrives → hint=0 → assign S0 → hint=1
 Tick 6:  C2 arrives → hint=1 → assign S1 → hint=2
 Tick 9:  C3 arrives → hint=2 → assign S2 → hint=0
@@ -183,7 +184,7 @@ This ensures `customersServed == totalCustomers` on every normal exit.
 
 ## 4. Class Diagram (C++ Engine)
 
-```
+```cpp
 ┌──────────────────────────────────────────────────────────┐
 │                   WebSimulation                          │
 │──────────────────────────────────────────────────────────│
@@ -248,7 +249,7 @@ This ensures `customersServed == totalCustomers` on every normal exit.
 
 ## 5. Sequence Diagram — Backend Mode Single Tick
 
-```
+```dsconfig
 Browser          Node.js           C++ Process
    │                │                   │
    │  POST /start   │                   │
@@ -287,7 +288,7 @@ Browser          Node.js           C++ Process
 
 Each call to `tick()` in the C++ engine executes the following steps in strict order:
 
-```
+```d
 tick N
 │
 ├─ 1. DECREMENT SHADOW SERVER STATES
@@ -330,25 +331,25 @@ tick N
 
 ## 7. Error Handling
 
-| Scenario | Handling |
-|:---------|:---------|
-| C++ process crashes | Node.js `close` event sets `running: false`; error logged to `stderr` |
-| Invalid JSON from C++ | `parseLine` catch block logs error; stateQueue not updated |
-| Port 8081 already in use | Node.js exits with port-binding error message |
-| Config with 0 servers | `ServerListType` constructor clamps to minimum 1 |
-| arrivalMin > arrivalMax | UI sliders have `min/max` constraints; server accepts as-is |
-| totalCustomers = 0 | Queue allocated with size 0; simulation finishes immediately at tick 0 |
+| Scenario                 | Handling                                                               |
+| :----------------------- | :--------------------------------------------------------------------- |
+| C++ process crashes      | Node.js `close` event sets `running: false`; error logged to `stderr`  |
+| Invalid JSON from C++    | `parseLine` catch block logs error; stateQueue not updated             |
+| Port 8081 already in use | Node.js exits with port-binding error message                          |
+| Config with 0 servers    | `ServerListType` constructor clamps to minimum 1                       |
+| arrivalMin > arrivalMax  | UI sliders have `min/max` constraints; server accepts as-is            |
+| totalCustomers = 0       | Queue allocated with size 0; simulation finishes immediately at tick 0 |
 
 ---
 
 ## 8. Technology Stack
 
-| Component | Technology | Rationale |
-|:----------|:-----------|:----------|
-| Simulation engine | C++17 | Performance, determinism, educational requirement |
-| Web server | Node.js + Express | Lightweight, good child_process IPC support |
-| Frontend | Vanilla HTML/CSS/JS | No framework dependency; maximum transparency |
-| Canvas | HTML5 Canvas API | Hardware-accelerated 2D ring rendering |
-| IPC | stdout pipe (newline-delimited JSON) | Simple, language-agnostic, debuggable |
-| Build | GNU Make + g++ | Standard academic toolchain |
-| CI | GitHub Actions | clang-format, cpplint, clang-tidy, cppcheck |
+| Component         | Technology                           | Rationale                                         |
+| :---------------- | :----------------------------------- | :------------------------------------------------ |
+| Simulation engine | C++17                                | Performance, determinism, educational requirement |
+| Web server        | Node.js + Express                    | Lightweight, good child_process IPC support       |
+| Frontend          | Vanilla HTML/CSS/JS                  | No framework dependency; maximum transparency     |
+| Canvas            | HTML5 Canvas API                     | Hardware-accelerated 2D ring rendering            |
+| IPC               | stdout pipe (newline-delimited JSON) | Simple, language-agnostic, debuggable             |
+| Build             | GNU Make + g++                       | Standard academic toolchain                       |
+| CI                | GitHub Actions                       | clang-format, cpplint, clang-tidy, cppcheck       |
