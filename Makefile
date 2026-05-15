@@ -10,7 +10,6 @@ LIB_SRC = src/CustomerType.cpp \
            src/ServerType.cpp \
            src/ServerListType.cpp \
            src/WaitingCustomerQueue.cpp \
-		   src/WebSimulation.cpp
 
 # Web simulation entry point (Node.js spawned)
 WEB_SRC = src/WebSimulation.cpp
