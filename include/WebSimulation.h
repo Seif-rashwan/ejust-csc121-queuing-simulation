@@ -122,8 +122,8 @@ class WebSimulation {
     bool allServersFree() const;
 
    public:
-    static const int DEFAULT_TOT_CUSTOMERS       = 100;
-    static const int SIMULATION_TIME_CAP_DEFAULT = 99999;
+    static constexpr int DEFAULT_TOT_CUSTOMERS       = 100;
+    static constexpr int SIMULATION_TIME_CAP_DEFAULT = 99999;
 
     /**
      * @brief Constructs a WebSimulation with specified parameters.

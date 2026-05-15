@@ -16,7 +16,7 @@ class WaitingCustomerQueue : public QueueADT<Type> {
     void initialize();
 
    public:
-    static const int DEFAULT_MAX_SIZE = 100;
+    static constexpr int DEFAULT_MAX_SIZE = 100;
 
     void enqueue(const Type& queue_elem) override;
     void dequeue() override;
