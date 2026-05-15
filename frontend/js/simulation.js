@@ -2,7 +2,6 @@
  * Self-contained local simulation. Runs entirely in the browser with no backend.
  * Exposes reset(), tick_fn(), getState(), rebuildServers(), resizeQueue().
  */
-import { randomBetween } from "./helpers.js";
 
 export const local = {
   tick: 0,
@@ -206,3 +205,8 @@ export const local = {
     return out;
   },
 };
+
+// ── Utility ───────────────────────────────────────────────
+function randomBetween(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}

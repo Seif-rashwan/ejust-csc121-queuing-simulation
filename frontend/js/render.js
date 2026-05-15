@@ -4,7 +4,11 @@
  */
 
 import { RING } from "./ring.js";
-import { setText } from "./helpers.js";
+
+function setText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
 
 const SERVER_COLORS = [
   "#6c8aff",
@@ -203,3 +207,4 @@ export function updateDetailedStats(state) {
   setText("stat-avg-service", inBank + " in bank");
   setText("stat-efficiency", (state.served ?? 0) + " left bank");
 }
+
