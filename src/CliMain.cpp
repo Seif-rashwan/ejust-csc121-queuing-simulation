@@ -129,7 +129,7 @@ class CLIApplication {
 
     void logTick(int clock, const SimulationEngine& engine) {
         if (log_file_.is_open()) {
-            log_file_ << "[Tick " << clock << "] "
+            log_file_ << "[Tick " << clock << "] "  // NOLINT
                       << "Queue: " << engine.getQueueSize() << "  "
                       << "Served: " << engine.getCustomersServed() << "  "
                       << "Arrived: " << engine.getCustomersArrived() << "  "
