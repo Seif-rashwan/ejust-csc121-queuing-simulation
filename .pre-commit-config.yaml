@@ -1,3 +1,6 @@
+# Usage:
+# python -m pre_commit run --all-files
+
 repos:
   # Formatting
   - repo: https://github.com/pre-commit/mirrors-clang-format
@@ -16,4 +19,3 @@ repos:
           - "--extra-arg=-std=c++23"
           - "--extra-arg=-Iinclude"
         additional_dependencies: ["clang-tidy"]
-        
