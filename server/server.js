@@ -28,6 +28,8 @@ let paused = false;
 let starting = false;
 
 const MAX_QUEUE_SIZE = 100_000;
+const WATCHDOG_TIMEOUT = 30_000; // 30 seconds
+const WATCHDOG_ESCALATE = 5_000; // Try SIGTERM, escalate to SIGKILL after 5s
 const exeName = process.platform === "win32" ? "simulation.exe" : "simulation";
 const cppExecutable = path.join(__dirname, "..", "build", "bin", exeName);
 
@@ -162,14 +164,37 @@ app.post("/api/start", (_, res) => {
   simulationProcess = spawn(cppExecutable, args);
   let lineBuffer = "";
 
+  // Primary watchdog: attempt graceful termination (SIGTERM on Unix, terminate on Windows)
   const watchdog = setTimeout(() => {
-    if (simulationProcess && !simulationProcess.killed) {
-      console.error("[Warning] C++ binary took longer than 5000ms. Killing it.");
-      simulationProcess.kill("SIGKILL");
-      simulationState.running = false;
-      starting = false;
+    if (!(simulationProcess && !simulationProcess.killed)) {
+      return;
     }
-  }, 5000);
+
+    console.warn(
+      `[Warning] Simulation exceeded ${WATCHDOG_TIMEOUT}ms timeout. Initiating graceful shutdown...`,
+    );
+
+    simulationProcess.kill();
+
+    // Escalation timer: force kill if graceful shutdown fails
+    const escalate = setTimeout(() => {
+      if (simulationProcess && !simulationProcess.killed) {
+        console.error("[Warning] Graceful shutdown failed. Attempting force kill...");
+        try {
+          simulationProcess.kill("SIGKILL"); // Best effort on Unix-like systems
+        } catch (e) {
+          console.warn("[Warning] Force kill not available on this platform.");
+        }
+        simulationState.running = false;
+        starting = false;
+      }
+    }, WATCHDOG_ESCALATE);
+
+    // Clear escalation timer if process exits normally
+    if (simulationProcess) {
+      simulationProcess.once("exit", () => clearTimeout(escalate));
+    }
+  }, WATCHDOG_TIMEOUT);
 
   simulationProcess.stdout.on("data", (data) => {
     lineBuffer += data.toString();
