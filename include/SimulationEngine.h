@@ -23,7 +23,8 @@
  * - Maintains a WaitingCustomerQueue for customer storage
  * - Supports randomised arrival intervals and service times for realism
  * - Outputs state after each tick and final statistics at completion
- * - Runs until all customers are served or simulation time cap is reached
+ * - Runs until all arrival attempts are processed (served or turned away) or the safety cap is
+ * reached
  */
 class SimulationEngine {
    private:
@@ -111,7 +112,8 @@ class SimulationEngine {
      * @param arrival_min       Minimum interval between arrivals (ticks).
      * @param arrival_max       Maximum interval between arrivals (ticks).
      * @param total_cust        Total number of customers to simulate.
-     * @param max_queue         Total number of customers to simulate (queue capacity).
+     * @param max_queue         Maximum capacity of the waiting queue per server (number of
+     *                          customers).
      */
     explicit SimulationEngine(int sim_time, int num_servers, int trans_min, int trans_max,
                               int arrival_min, int arrival_max,
