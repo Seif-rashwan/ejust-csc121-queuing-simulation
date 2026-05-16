@@ -125,7 +125,6 @@ jobs:
         run: |
           cppcheck --enable=all \
             --suppress=missingIncludeSystem \
-            --suppress=virtualCallInConstructor \
             --suppress=unusedFunction:src/CustomerType.cpp \
             --suppress=unusedFunction:src/ServerListType.cpp \
             --suppress=unusedFunction:src/ServerType.cpp \
