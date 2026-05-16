@@ -42,7 +42,6 @@ Type WaitingCustomerQueue<Type>::front() const {
     if (isEmpty()) {
         throw std::underflow_error("WaitingCustomerQueue::front(): queue is empty");
     }
-
     return queue_array_[queue_front_];
 }
 
@@ -51,7 +50,6 @@ Type WaitingCustomerQueue<Type>::back() const {
     if (isEmpty()) {
         throw std::underflow_error("WaitingCustomerQueue::back(): queue is empty");
     }
-
     return queue_array_[queue_rear_];
 }
 
@@ -60,7 +58,6 @@ void WaitingCustomerQueue<Type>::enqueue(const Type& queue_elem) {
     if (isFull()) {
         throw std::overflow_error("WaitingCustomerQueue::enqueue(): queue is full");
     }
-
     queue_rear_               = (queue_rear_ + 1) % max_queue_size_;
     queue_array_[queue_rear_] = queue_elem;
     count_++;
@@ -71,7 +68,6 @@ void WaitingCustomerQueue<Type>::dequeue() {
     if (isEmpty()) {
         throw std::underflow_error("WaitingCustomerQueue::dequeue(): queue is empty");
     }
-
     queue_front_ = (queue_front_ + 1) % max_queue_size_;
     count_--;
 }
@@ -85,4 +81,5 @@ void WaitingCustomerQueue<Type>::incrementWaitingTimes() {
     }
 }
 
+// Explicit instantiation for the types used in the simulation
 template class WaitingCustomerQueue<CustomerType>;

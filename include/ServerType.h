@@ -14,18 +14,15 @@ class ServerType {
     int transaction_time_;
 
    public:
-    // دوال الاستعلام عن حالة السيرفر
     bool isFree() const;
     void setBusy();
     void setFree();
 
-    // دوال وقت الخدمة
     void setTransactionTime(int time);
     void setTransactionTime();
     int getRemainingTransactionTime() const;
     void decreaseTransactionTime();
 
-    // دوال التعامل مع العميل الحالي
     void setCurrentCustomer(const CustomerType& c_customer);
     int getCurrentCustomerNumber() const;
     int getCurrentCustomerArrivalTime() const;
