@@ -17,6 +17,7 @@ int CustomerType::getWaitingTime() const {
 }
 
 // Sets the waiting time
+// cppcheck-suppress unusedFunction
 void CustomerType::setWaitingTime(int time) {
     waiting_time_ = time;
 }
@@ -27,6 +28,7 @@ void CustomerType::incrementWaitingTime() {
 }
 
 // Sets the arrival time
+// cppcheck-suppress unusedFunction
 void CustomerType::setArrivalTime(int time) {
     arrival_time_ = time;
 }

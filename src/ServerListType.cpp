@@ -14,6 +14,7 @@ ServerListType::~ServerListType() {
     delete[] servers_;
 }
 
+// cppcheck-suppress unusedFunction
 int ServerListType::getFreeServerID() const {
     for (int i = 0; i < num_of_servers_; i++) {
         if (servers_[i].isFree()) {
@@ -23,6 +24,7 @@ int ServerListType::getFreeServerID() const {
     return -1;
 }
 
+// cppcheck-suppress unusedFunction
 int ServerListType::getNumberOfBusyServers() const {
     int busy_servers = 0;
     for (int i = 0; i < num_of_servers_; i++) {

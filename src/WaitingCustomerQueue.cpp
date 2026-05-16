@@ -46,6 +46,7 @@ Type WaitingCustomerQueue<Type>::front() const {
 }
 
 template <typename Type>
+// cppcheck-suppress unusedFunction
 Type WaitingCustomerQueue<Type>::back() const {
     if (isEmpty()) {
         throw std::underflow_error("WaitingCustomerQueue::back(): queue is empty");
