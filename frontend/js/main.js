@@ -47,28 +47,6 @@ document.getElementById("btn-start").onclick = async () => {
   }
 };
 
-<<<<<<< Updated upstream
-// Mode switching"
-document.getElementById("local-mode").onclick = () => switchToMode("local");
-document.getElementById("backend-mode").onclick = () => switchToMode("backend");
-=======
-// ── Mode Switching ────────────────────────────────────────
-
-// document.getElementById("local-mode").onclick = () => {
-//   BACKEND_CONFIG.enabled = true;
-//   switchToMode("backend");
-//   updateStatusBar("● Local view is using C++ backend engine", "connected");
-// };
-
-// document.getElementById("backend-mode").onclick = () => {
-//   BACKEND_CONFIG.enabled = true;
-//   switchToMode("backend");
-//   updateStatusBar("● Backend mode connected", "connected");
-// };
-
-// ── Stats Modal ───────────────────────────────────────────
->>>>>>> Stashed changes
-
 // Stats modal:
 document.getElementById("btn-stats").onclick = () =>
   document.getElementById("stats-modal").classList.add("show");
@@ -155,17 +133,19 @@ function updateServiceLabel() {
 }
 
 // ── THEME TOGGLE ──────────────────────────────────────────
-const themeBtn = document.getElementById('theme-toggle');
-const themeIcon = themeBtn.querySelector('i');
+const themeBtn = document.getElementById("theme-toggle");
+if (themeBtn) {
+  const themeIcon = themeBtn.querySelector("i");
 
-const savedTheme = localStorage.getItem('theme');
-if (savedTheme === 'light') {
-  document.body.classList.add('light');
-  themeIcon.className = 'fas fa-moon';
+  const savedTheme = localStorage.getItem("theme");
+  if (savedTheme === "light") {
+    document.body.classList.add("light");
+    if (themeIcon) themeIcon.className = "fas fa-moon";
+  }
+
+  themeBtn.addEventListener("click", () => {
+    const isLight = document.body.classList.toggle("light");
+    if (themeIcon) themeIcon.className = isLight ? "fas fa-moon" : "fas fa-sun";
+    localStorage.setItem("theme", isLight ? "light" : "dark");
+  });
 }
-
-themeBtn.addEventListener('click', () => {
-  const isLight = document.body.classList.toggle('light');
-  themeIcon.className = isLight ? 'fas fa-moon' : 'fas fa-sun';
-  localStorage.setItem('theme', isLight ? 'light' : 'dark');
-});
