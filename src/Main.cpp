@@ -80,7 +80,7 @@ int main(int argc, char* argv[]) {
         cout << "\"turnedAway\":" << customers_turned_away << ",";
         cout << "\"peakQueue\":" << peak_queue_length << ",";
         cout << "\"running\":true";
-        cout << "}" << endl;
+        cout << "}" << "\n";
     }
 
     return 0;

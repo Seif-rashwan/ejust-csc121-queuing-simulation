@@ -7,6 +7,7 @@
 using std::cin;
 using std::cout;
 using std::ostringstream;
+constexpr int MAX_FIFO_SLOTS_PREVIEW = 20;
 
 // ────────────────────────────────────────────────────────────────────────────────
 // Web Sim. Entry Point:
@@ -260,7 +261,7 @@ void WebSimulation::outputState() const {
         << R"("_rear":)" << queue_rear_ << ","
         << R"("_fifoSlots":[)";
 
-        int limit = std::min(queue_size_, 20);
+        int limit = std::min(queue_size_, MAX_FIFO_SLOTS_PREVIEW);
         for (int i = 0; i < limit; i++) {
             if (i > 0) {
                 output << ",";
