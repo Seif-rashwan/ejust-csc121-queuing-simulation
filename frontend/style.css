@@ -1,4 +1,4 @@
-/* ── THEME VARIABLES ─────────────────────────────────────── */
+/* THEME VARIABLES: */
 :root {
   --bg-body: linear-gradient(135deg, #0f0f1e 0%, #1a1d23 100%);
   --bg-app: rgba(26, 29, 35, 0.95);
@@ -114,7 +114,6 @@ body {
   display: flex;
   gap: 8px;
   background: var(--bg-mode-toggle);
-  ;
   padding: 4px;
   border-radius: 12px;
 }
@@ -529,7 +528,7 @@ body {
 .slider {
   flex: 1;
   height: 20px;
-  border-radius: 3px;
+  border-radius: 10px;
   background: var(--slider-track);
   outline: none;
   -webkit-appearance: none;
