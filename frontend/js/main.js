@@ -47,9 +47,27 @@ document.getElementById("btn-start").onclick = async () => {
   }
 };
 
+<<<<<<< Updated upstream
 // Mode switching"
 document.getElementById("local-mode").onclick = () => switchToMode("local");
 document.getElementById("backend-mode").onclick = () => switchToMode("backend");
+=======
+// ── Mode Switching ────────────────────────────────────────
+
+// document.getElementById("local-mode").onclick = () => {
+//   BACKEND_CONFIG.enabled = true;
+//   switchToMode("backend");
+//   updateStatusBar("● Local view is using C++ backend engine", "connected");
+// };
+
+// document.getElementById("backend-mode").onclick = () => {
+//   BACKEND_CONFIG.enabled = true;
+//   switchToMode("backend");
+//   updateStatusBar("● Backend mode connected", "connected");
+// };
+
+// ── Stats Modal ───────────────────────────────────────────
+>>>>>>> Stashed changes
 
 // Stats modal:
 document.getElementById("btn-stats").onclick = () =>
