@@ -10,7 +10,6 @@ LIB_SRC = src/CustomerType.cpp \
            src/ServerType.cpp \
            src/ServerListType.cpp \
            src/WaitingCustomerQueue.cpp \
-		   src/WebSimulation.cpp
 
 # Web simulation entry point (Node.js spawned)
 WEB_SRC = src/WebSimulation.cpp
@@ -29,8 +28,15 @@ DEP     = $(LIB_OBJ:.o=.d) $(WEB_OBJ:.o=.d) $(CLI_OBJ:.o=.d)
 # ──────────────────────────────────────────────────────────────────────────────
 # Output binaries:
 # ────────────────
-WEB_TARGET = build/bin/simulation.exe
-CLI_TARGET = build/bin/simulation_cli.exe
+# Output binaries:
+# ────────────────
+ifeq ($(OS),Windows_NT)
+  WEB_TARGET = build/bin/simulation.exe
+  CLI_TARGET = build/bin/simulation_cli.exe
+else
+  WEB_TARGET = build/bin/simulation
+  CLI_TARGET = build/bin/simulation_cli
+endif
 
 .PHONY: all cli build build-cli build-web run run-cli debug lint format clean install
 

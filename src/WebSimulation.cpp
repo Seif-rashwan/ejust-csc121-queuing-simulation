@@ -7,6 +7,7 @@
 using std::cin;
 using std::cout;
 using std::ostringstream;
+constexpr int MAX_FIFO_SLOTS_PREVIEW = 20;
 
 // ────────────────────────────────────────────────────────────────────────────────
 // Web Sim. Entry Point:
@@ -237,23 +238,44 @@ void WebSimulation::outputState() const {
 
     // clang-format off
     output << R"(STATE:{)"
-           << R"("tick":)" << current_clock_ << ","
-           << R"("queueSize":)" << queue_size_ << ","
-           << R"("served":)" << customers_served_ << ","
-           << R"("turnedAway":)" << customers_turned_away_ << ","
-           << R"("peakQueue":)" << peak_queue_length_ << ","
-           << R"("avgWait":)"
-           << (customers_served_ > 0 ? static_cast<double>(total_wait_time_) / customers_served_
+        << R"("tick":)" << current_clock_ << ","
+        << R"("queueSize":)" << queue_size_ << ","
+        << R"("served":)" << customers_served_ << ","
+        << R"("turnedAway":)" << customers_turned_away_ << ","
+        << R"("peakQueue":)" << peak_queue_length_ << ","
+        << R"("avgWait":)"
+        << (customers_served_ > 0 ? static_cast<double>(total_wait_time_) / customers_served_
                                      : 0.0)
-           << ","
-           << R"("nextArrival":)"
-           << (time_between_arrivals_ - (current_clock_ % time_between_arrivals_)) << ","
-           << R"("running":)" << (running_ && !isFinished() ? "true" : "false") << ","
-           << R"("totalCustomers":)" << total_arrivals_target_ << ","
-           << R"("arrived":)" << customers_arrived_ << ","
-           << R"("lastEvent":")" << last_event_type_ << "\","
-           << R"("lastEventCustomer":)" << last_event_customer_id_ << ","
-           << R"("servers":[)";
+        << ","
+        << R"("nextArrival":)"
+        << (time_between_arrivals_ - (current_clock_ % time_between_arrivals_)) << ","
+        << R"("running":)" << (running_ && !isFinished() ? "true" : "false") << ","
+        << R"("totalCustomers":)" << total_arrivals_target_ << ","
+        << R"("arrived":)" << customers_arrived_ << ","
+        << R"("lastEvent":")" << last_event_type_ << "\","
+        << R"("lastEventCustomer":)" << last_event_customer_id_ << ","
+        << R"("throughput":)"
+        << (current_clock_ > 0 ? static_cast<double>(customers_served_) / current_clock_ : 0.0)
+        << ","
+        << R"("_front":)" << queue_front_ << ","
+        << R"("_rear":)" << queue_rear_ << ","
+        << R"("_fifoSlots":[)";
+
+        int limit = std::min(queue_size_, MAX_FIFO_SLOTS_PREVIEW);
+        for (int i = 0; i < limit; i++) {
+            if (i > 0) {
+                output << ",";
+            }
+
+            int idx = (queue_front_ + i) % total_arrivals_target_;
+            output << R"({"id":)" << customer_array_[idx].getCustomerNumber()
+                << R"(,"pos":)" << i
+                << "}";
+        }
+
+        output << "],";
+
+        output << R"("servers":[)";
 
     for (int i = 0; i < number_of_servers_; i++) {
         if (i > 0) {

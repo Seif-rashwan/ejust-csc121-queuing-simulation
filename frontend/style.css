@@ -23,7 +23,9 @@
   --text-dim: #4a5568;
   --text-ring-cap: #4a5568;
 
-  --shadow-app: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(123, 156, 255, 0.1);
+  --shadow-app:
+    0 20px 40px rgba(0, 0, 0, 0.4),
+    0 0 20px rgba(123, 156, 255, 0.1);
   --border-app: rgba(123, 156, 255, 0.1);
 
   --slider-track: #2e3340;
@@ -53,7 +55,9 @@ body.light {
   --text-dim: #8898bb;
   --text-ring-cap: #8898bb;
 
-  --shadow-app: 0 20px 40px rgba(100, 130, 200, 0.15), 0 0 20px rgba(61, 95, 196, 0.08);
+  --shadow-app:
+    0 20px 40px rgba(100, 130, 200, 0.15),
+    0 0 20px rgba(61, 95, 196, 0.08);
   --border-app: rgba(61, 95, 196, 0.15);
 
   --slider-track: #c8d3e8;
@@ -70,6 +74,7 @@ body {
   min-height: 100vh;
   color: var(--text-primary);
 }
+
 
 #app {
   background: var(--bg-app);
@@ -320,6 +325,7 @@ body {
 }
 
 @keyframes bounce {
+
   0%,
   100% {
     transform: translateY(0);
@@ -338,6 +344,7 @@ body {
 }
 
 @keyframes pulse {
+
   0%,
   100% {
     opacity: 1;
@@ -366,17 +373,6 @@ body {
   animation: fadeIn 0.5s ease;
   min-width: 72px;
   position: relative;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.8);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
 }
 
 .server-label {
@@ -438,6 +434,7 @@ body {
 }
 
 @keyframes serverBusy {
+
   0%,
   100% {
     transform: scale(1);
@@ -588,6 +585,7 @@ body {
 
 /* Enhanced 3D Animations */
 @keyframes bounce {
+
   0%,
   100% {
     transform: translateY(0) translateZ(0);
@@ -599,6 +597,7 @@ body {
 }
 
 @keyframes pulse {
+
   0%,
   100% {
     opacity: 1;
