@@ -12,6 +12,7 @@
 #include <algorithm>
 #include <chrono>
 #include <exception>
+#include <format>
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
