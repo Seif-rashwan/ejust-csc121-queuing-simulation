@@ -15,10 +15,12 @@
  *   argv[5] arrivalIntervalMin   : minimum gap between customer arrivals
  *   argv[6] arrivalIntervalMax   : maximum gap between customer arrivals
  *   argv[7] totalCustomers       : total customers to generate
+ *   argv[8] maxQueueSize         : waiting-queue capacity
  *
  * Argument modes:
- * - argc >= 8: all values above are read from CLI.
- * - argc >= 7: reads argv[1..6], keeps totalCustomers default.
+ * - argc >= 9: all values above are read from CLI.
+ * - argc >= 8: reads argv[1..7], keeps maxQueueSize default.
+ * - argc >= 7: reads argv[1..6], keeps totalCustomers and maxQueueSize default.
  * - otherwise: all values remain at built-in defaults.
  *
  * After parsing, min/max ranges are clamped by swapping if inverted.
