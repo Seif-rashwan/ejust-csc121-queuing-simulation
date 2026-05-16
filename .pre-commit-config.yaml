@@ -15,5 +15,5 @@ repos:
         args:
           - "--extra-arg=-std=c++23"
           - "--extra-arg=-Iinclude"
-          - "--header-filter=^(src|include)/"
         additional_dependencies: ["clang-tidy"]
+        
