@@ -119,7 +119,7 @@ lint:
 	cpplint --recursive src/ include/
 	@echo ""
 	@echo "Running cppcheck..."
-	cppcheck --enable=all --inconclusive --std=c++23 --language=c++ --suppress=missingIncludeSystem --inline-suppr src/ include/
+	cppcheck --enable=all --inconclusive --std=c++23 --language=c++ --suppress=missingIncludeSystem -Iinclude --inline-suppr src/ include/
 	@echo ""
 	@echo "Running clang-format..."
 	clang-format --dry-run --Werror \
