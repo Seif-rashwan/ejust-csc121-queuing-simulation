@@ -5,6 +5,7 @@
  * Note: This file contains its own main() function and is built into a separate
  * executable (simulation_cli). It is NOT linked with web_simulation.cpp.
  */
+
 #include <algorithm>
 #include <iostream>
 #include <stdexcept>
@@ -15,7 +16,7 @@
 using std::cin;
 using std::cout;
 
-// دالة لأخذ معطيات المحاكاة من المستخدم
+// Reads simulation settings from the user
 static void SetSimulationParameters(int& s_time, int& num_of_servers, int& trans_time,
                                     int& t_between_arrivals) {
     cout << "Enter simulation time: ";
@@ -55,75 +56,81 @@ int main() {
     int time_between_arrivals;
     int peak_queue_length = 0;
 
-    // 1. استقبال الإعدادات
+    // Read simulation settings from user
     SetSimulationParameters(simulation_time, number_of_servers, transaction_time,
                             time_between_arrivals);
 
-    // 2. تهيئة السيرفرات والطابور
+    // Create servers and waiting queue
     ServerListType servers(number_of_servers);
     WaitingCustomerQueue<CustomerType> customer_queue;
 
-    // متغيرات للإحصائيات النهائية
+    // Variables used for final statistics
     int total_wait_time       = 0;
     int customers_served      = 0;
     int customers_arrived     = 0;
     int customers_turned_away = 0;
 
-    // 3. بداية المحاكاة (اللوب الأساسية)
+    // Start simulation loop
     for (int clock = 1; clock <= simulation_time; clock++) {
-        // أ. تحديث حالة السيرفرات (تقليل وقت الناس اللي بتخدم حالياً)
+        // Update all servers
+        // Decrease remaining service time for busy servers
         servers.updateServers();
 
-        // ب. وصول العملاء الجدد
+        // Handle new customer arrivals
         if (clock % time_between_arrivals == 0) {
-            customers_arrived++;  // always count the arrival regardless of queue state
+            customers_arrived++;
+
             if (!customer_queue.isFull()) {
                 CustomerType new_customer(customers_arrived, clock, 0, transaction_time);
                 customer_queue.enqueue(new_customer);
+
                 cout << "--> Customer " << customers_arrived << " arrived at tick " << clock
                      << '\n';
             } else {
                 customers_turned_away++;
+
                 cout << "--> Customer " << customers_arrived << " turned away (queue full) at tick "
                      << clock << '\n';
             }
         }
 
-        // ج. نقل العملاء من الطابور للسيرفرات الفاضية
+        // Assign waiting customers to free servers
         int free_server_id = servers.getFreeServerID();
+
         while (free_server_id != -1 && !customer_queue.isEmpty()) {
-            // سحب أول عميل
+            // Remove first customer from queue
             CustomerType front_customer = customer_queue.front();
             customer_queue.dequeue();
 
-            // تجميع الإحصائيات
+            // Update statistics
             total_wait_time += front_customer.getWaitingTime();
             customers_served++;
 
-            // تسليم العميل للسيرفر الفاضي
+            // Assign customer to free server
             servers.setServerBusy(free_server_id, front_customer);
 
-            // تدوير على سيرفر فاضي تاني لو لسه في ناس في الطابور
+            // Look for another free server
             free_server_id = servers.getFreeServerID();
         }
 
-        // د. تسجيل الطول الأقصى للطابور
+        // Track maximum queue size reached
         peak_queue_length = std::max(customer_queue.size(), peak_queue_length);
 
-        // ه. تحديث وقت الانتظار للناس اللي لسه في الطابور بعد كل محاولات التعيين
+        // Increase waiting time for customers still in queue
         if (!customer_queue.isEmpty()) {
             customer_queue.incrementWaitingTimes();
         }
     }
 
-    // احتساب وقت انتظار العملاء المتبقين في الطابور في نهاية المحاكاة
+    // Calculate waiting time for customers left in queue after simulation ends
     int customers_in_queue = customer_queue.size();
+
     while (!customer_queue.isEmpty()) {
         total_wait_time += customer_queue.front().getWaitingTime();
         customer_queue.dequeue();
     }
 
-    // 4. طباعة التقرير النهائي (الإحصائيات)
+    // Print final simulation statistics
     cout << "\n===================================\n";
     cout << "        SIMULATION RESULTS         \n";
     cout << "===================================\n";
@@ -135,6 +142,7 @@ int main() {
     cout << "Peak queue length:            " << peak_queue_length << '\n';
 
     int total_customers_counted = customers_served + customers_in_queue;
+
     if (total_customers_counted > 0) {
         cout << "Average waiting time:         "
              << static_cast<double>(total_wait_time) / total_customers_counted << '\n';

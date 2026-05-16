@@ -659,10 +659,6 @@ body {
 }
 
 .server-remaining {
-  /* position: absolute;
-  bottom: -8px;
-  left: 50%;
-  transform: translateX(-50%); */
   background: rgba(255, 165, 0, 0.9);
   color: rgb(233, 233, 233);
   font-size: 10px;

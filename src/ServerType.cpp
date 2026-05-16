@@ -1,21 +1,21 @@
 #include "ServerType.h"
 
-// التحقق لو السيرفر فاضي
+// Checks if the server is free
 bool ServerType::isFree() const {
     return (status_ == "free");
 }
 
-// تغيير حالة السيرفر لمشغول
+// Sets the server status to busy
 void ServerType::setBusy() {
     status_ = "busy";
 }
 
-// تغيير حالة السيرفر لفاضي
+// Sets the server status to free
 void ServerType::setFree() {
     status_ = "free";
 }
 
-// ضبط وقت الخدمة بقيمة معينة
+// Sets the transaction/service time manually
 void ServerType::setTransactionTime(int time) {
     if (time >= 0) {
         transaction_time_ = time;
@@ -24,47 +24,47 @@ void ServerType::setTransactionTime(int time) {
     }
 }
 
-// ضبط وقت الخدمة بناءً على وقت العميل الحالي
+// Sets service time based on current customer transaction time
 void ServerType::setTransactionTime() {
     transaction_time_ = current_customer_.getTransactionTime();
 }
 
-// إرجاع الوقت المتبقي لانتهاء الخدمة
+// Returns remaining service time
 int ServerType::getRemainingTransactionTime() const {
     return transaction_time_;
 }
 
-// تقليل وقت الخدمة بمقدار 1 (مع كل لفة في الـ Simulation)
+// Decreases remaining service time by 1 tick
 void ServerType::decreaseTransactionTime() {
     if (transaction_time_ > 0) {
         transaction_time_--;
     }
 }
 
-// تعيين العميل اللي السيرفر بيخدمه حالياً
+// Assigns a customer to the server
 void ServerType::setCurrentCustomer(const CustomerType& c_customer) {
     current_customer_ = c_customer;
 }
 
-// إرجاع رقم العميل الحالي
+// Returns current customer ID
 int ServerType::getCurrentCustomerNumber() const {
     return current_customer_.getCustomerNumber();
 }
 
-// إرجاع وقت وصول العميل الحالي
+// Returns arrival time of current customer
 int ServerType::getCurrentCustomerArrivalTime() const {
     return current_customer_.getArrivalTime();
 }
 
-// إرجاع وقت انتظار العميل الحالي
+// Returns waiting time of current customer
 int ServerType::getCurrentCustomerWaitingTime() const {
     return current_customer_.getWaitingTime();
 }
 
-// إرجاع وقت خدمة العميل الحالي
+// Returns transaction time of current customer
 int ServerType::getCurrentCustomerTransactionTime() const {
     return current_customer_.getTransactionTime();
 }
 
-// Constructor
+// Constructor initializes server as free
 ServerType::ServerType() : status_("free"), transaction_time_(0) {}

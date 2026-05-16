@@ -13,9 +13,8 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "..", "frontend")));
 
-// ────────────────────────────────────────────────────────────────────────────────
-// Runtime State:
-// ──────────────
+// ── Runtime State: ───────────────────────────────────────
+
 let simulationProcess = null;
 let stateQueue = [];
 let paused = false;
@@ -62,9 +61,9 @@ function _blankServers() {
   }));
 }
 
-// ────────────────────────────────────────────────────────────────────────────────
-// Routes:
-// ───────
+
+// ── Routes: ───────────────────────────────────────
+
 app.get("/api/state", (_, res) => {
   if (!paused && stateQueue.length > 0) {
     simulationState = { ...simulationState, ...stateQueue.shift() };
@@ -208,9 +207,8 @@ function parseLine(line) {
   }
 }
 
-// ────────────────────────────────────────────────────────────────────────────────
-// Start
-// ──────
+// ── Start ───────────────────────────────────────
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });

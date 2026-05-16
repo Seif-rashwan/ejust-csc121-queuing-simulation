@@ -1,212 +1,105 @@
-/**
- * Self-contained local simulation. Runs entirely in the browser with no backend.
- * Exposes reset(), tick_fn(), getState(), rebuildServers(), resizeQueue().
- */
+const API_BASE = "/api";
+
+async function request(path, options = {}) {
+  const res = await fetch(`${API_BASE}${path}`, {
+    headers: { "Content-Type": "application/json" },
+    ...options,
+  });
+
+  if (!res.ok) throw new Error(`Backend error: ${res.status}`);
+  return await res.json();
+}
 
 export const local = {
-  tick: 0,
-  served: 0,
-  totalWait: 0,
-  peakQueueLength: 0,
-  totalArrived: 0,
-  turnedAway: 0,
-
-  maxCustomers: 100,
-  circularArray: new Array(100).fill(null),
-  front: 0,
-  rear: 0,
-  queueSize: 0,
-
-  servers: [],
-  nextId: 1,
   running: false,
 
   numServers: 4,
-  arrivalMin: 2,
-  arrivalMax: 6,
-  serviceMin: 4,
-  serviceMax: 10,
-  nextArrivalTick: 0,
-  nextServerHint: 0,
+  arrivalMin: 1,
+  arrivalMax: 3,
+  serviceMin: 8,
+  serviceMax: 15,
+  maxCustomers: 100,
 
-  // ── Queue primitives ────────────────────────────────────────
-
-  enqueue(customer) {
-    if (this.queueSize >= this.maxCustomers) return false;
-    this.circularArray[this.rear] = customer;
-    this.rear = (this.rear + 1) % this.maxCustomers;
-    this.queueSize++;
-    return true;
+  async reset() {
+    await request("/reset", { method: "POST" });
+    return await this.getState();
   },
 
-  dequeue() {
-    if (this.queueSize === 0) return null;
-    const c = this.circularArray[this.front];
-    this.circularArray[this.front] = null;
-    this.front = (this.front + 1) % this.maxCustomers;
-    this.queueSize--;
-    return c;
+  async start() {
+    await request("/config", {
+      method: "POST",
+      body: JSON.stringify({
+        servers: this.numServers,
+        arrivalMin: this.arrivalMin,
+        arrivalMax: this.arrivalMax,
+        serviceMin: this.serviceMin,
+        serviceMax: this.serviceMax,
+        maxCustomers: this.maxCustomers,
+      }),
+    });
+
+    await request("/start", { method: "POST" });
+
+    this.running = true;
+    return await this.getState();
   },
 
-  resizeQueue(newMax) {
-    const existing = [];
-    for (let i = 0; i < this.queueSize; i++) {
-      existing.push(this.circularArray[(this.front + i) % this.maxCustomers]);
-    }
-    this.maxCustomers = newMax;
-    this.circularArray = new Array(newMax).fill(null);
-    this.front = 0;
-    this.queueSize = 0;
-    this.rear = 0;
-    for (const c of existing) this.enqueue(c);
+  async pause() {
+    const state = await request("/pause", { method: "POST" });
+    this.running = state.running;
+    return await this.getState();
   },
 
-  // ── Lifecycle ───────────────────────────────────────────────
-
-  reset() {
-    this.tick = 0;
-    this.served = 0;
-    this.totalWait = 0;
-    this.peakQueueLength = 0;
-    this.totalArrived = 0;
-    this.turnedAway = 0;
-    this.nextId = 1;
-
-    this.circularArray = new Array(this.maxCustomers).fill(null);
-    this.front = 0;
-    this.rear = 0;
-    this.queueSize = 0;
-
-    this.nextArrivalTick = randomBetween(this.arrivalMin, this.arrivalMax);
-    this.nextServerHint = 0;
-    this._buildServers();
+  async tick_fn() {
+    return await this.getState();
   },
 
-  rebuildServers() {
-    this.nextServerHint = 0;
-    this._buildServers();
+  async getState() {
+    const state = await request("/state");
+    const normalized = normalizeState(state);
+    this.running = normalized.running;
+    return normalized;
   },
 
-  _buildServers() {
-    this.servers = Array.from({ length: this.numServers }, (_, i) => ({
-      id: i,
-      busy: false,
-      remaining: 0,
-      customerId: null,
-      assignLabel: this._serverLabel(i, this.numServers),
-    }));
+  async rebuildServers() {
+    return await this.reset();
   },
 
-  _serverLabel(idx, total) {
-    if (total === 1) return "All: 1,2,3…";
-    if (total === 2) return idx === 0 ? "Odd: 1,3,5…" : "Even: 2,4,6…";
-    const a = idx + 1,
-      b = a + total,
-      c = b + total;
-    return `${a}, ${b}, ${c}…`;
-  },
-
-  _nextFreeServer() {
-    const n = this.servers.length;
-    for (let offset = 0; offset < n; offset++) {
-      const idx = (this.nextServerHint + offset) % n;
-      if (!this.servers[idx].busy) {
-        this.nextServerHint = (idx + 1) % n;
-        return this.servers[idx];
-      }
-    }
-    return null;
-  },
-
-  // ── Tick ────────────────────────────────────────────────────
-
-  tick_fn() {
-    if (!this.running) return;
-    this.tick++;
-
-    // 1. Customer arrival
-    if (this.tick >= this.nextArrivalTick && this.totalArrived < this.maxCustomers) {
-      this.totalArrived++;
-      const customer = { id: this.nextId++, arrived: this.tick };
-      if (!this.enqueue(customer)) this.turnedAway++;
-      this.nextArrivalTick = this.tick + randomBetween(this.arrivalMin, this.arrivalMax);
-    }
-
-    // 2. Decrement busy servers
-    for (const s of this.servers) {
-      if (s.busy) {
-        s.remaining--;
-        if (s.remaining <= 0) {
-          s.busy = false;
-          s.customerId = null;
-          this.served++;
-        }
-      }
-    }
-
-    // 3. Assign free servers (round-robin)
-    let next = this._nextFreeServer();
-    while (next !== null && this.queueSize > 0) {
-      const person = this.dequeue();
-      this.totalWait += this.tick - person.arrived;
-      next.busy = true;
-      next.remaining = randomBetween(this.serviceMin, this.serviceMax);
-      next.customerId = person.id;
-      next = this._nextFreeServer();
-    }
-
-    // 4. Auto-stop when all customers fully served
-    if (
-      this.totalArrived >= this.maxCustomers &&
-      this.queueSize === 0 &&
-      this.servers.every((s) => !s.busy)
-    ) {
-      this.running = false;
-    }
-
-    // 5. Peak tracking
-    this.peakQueueLength = Math.max(this.peakQueueLength, this.queueSize);
-  },
-
-  // ── State snapshot ───────────────────────────────────────────
-
-  getState() {
-    return {
-      tick: this.tick,
-      queueSize: this.queueSize,
-      served: this.served,
-      avgWait: this.served > 0 ? this.totalWait / this.served : 0,
-      nextArrival: Math.max(0, this.nextArrivalTick - this.tick),
-      running: this.running,
-      peakQueueLength: this.peakQueueLength,
-      totalArrived: this.totalArrived,
-      turnedAway: this.turnedAway,
-      throughput: this.tick > 0 ? this.served / this.tick : 0,
-      maxCustomers: this.maxCustomers,
-      totalCustomers: this.maxCustomers,
-      arrived: this.totalArrived,
-      _front: this.front,
-      _rear: this.rear,
-      _fifoSlots: this._getFifoSnapshot(20),
-      servers: this.servers.map((s) => ({
-        busy: s.busy,
-        remaining: s.remaining,
-        customerId: s.customerId,
-        assignLabel: s.assignLabel,
-      })),
-    };
-  },
-
-  _getFifoSnapshot(n) {
-    const out = [];
-    for (let i = 0; i < Math.min(n, this.queueSize); i++) {
-      out.push({ ...this.circularArray[(this.front + i) % this.maxCustomers], pos: i });
-    }
-    return out;
+  async resizeQueue(newMax) {
+    this.maxCustomers = Number(newMax);
+    return await this.reset();
   },
 };
 
-// ── Utility ───────────────────────────────────────────────
-function randomBetween(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+function normalizeState(state) {
+  return {
+    tick: state.tick ?? 0,
+    queueSize: state.queueSize ?? 0,
+    served: state.served ?? 0,
+    avgWait: state.avgWait ?? 0,
+    nextArrival: state.nextArrival ?? 0,
+    running: state.running ?? false,
+
+    peakQueueLength: state.peakQueueLength ?? state.peakQueue ?? 0,
+    totalArrived: state.totalArrived ?? state.arrived ?? 0,
+    turnedAway: state.turnedAway ?? 0,
+    throughput:
+      state.tick > 0
+        ? (state.served ?? 0) / state.tick
+        : 0,
+    maxCustomers: state.maxCustomers ?? state.totalCustomers ?? 100,
+    totalCustomers: state.totalCustomers ?? state.maxCustomers ?? 100,
+    arrived: state.arrived ?? state.totalArrived ?? 0,
+
+    _front: state._front ?? 0,
+    _rear: state._rear ?? 0,
+    _fifoSlots: state._fifoSlots ?? [],
+
+    servers: (state.servers ?? []).map((s, index) => ({
+      busy: s.busy ?? false,
+      remaining: s.remaining ?? 0,
+      customerId: s.customerId ?? -1,
+      assignLabel: s.assignLabel ?? `Server ${index + 1}`,
+    })),
+  };
 }
