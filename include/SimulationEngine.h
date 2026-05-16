@@ -1,30 +1,31 @@
 /**
- * @file WebSimulation.h
- * @brief Web-based queuing simulation with server management and statistics tracking.
- * @version 2.0
+ * @file SimulationEngine.h
+ * @brief Queuing simulation engine with server management and statistics tracking.
+ * @version 2.1
  */
 
-#ifndef INCLUDE_WEBSIMULATION_H_
-#define INCLUDE_WEBSIMULATION_H_
+#ifndef INCLUDE_SIMULATIONENGINE_H_
+#define INCLUDE_SIMULATIONENGINE_H_
 
 #include <string>
 #include <vector>
 
 #include "CustomerType.h"
 #include "ServerListType.h"
+#include "WaitingCustomerQueue.h"
 
 /**
- * @class WebSimulation
+ * @class SimulationEngine
  * @brief Manages a discrete-event queuing simulation with multiple servers.
  *
  * @details
  * - Uses round-robin server assignment for load balancing
- * - Maintains a circular array for customer queue storage
+ * - Maintains a WaitingCustomerQueue for customer storage
  * - Supports randomised arrival intervals and service times for realism
  * - Outputs state after each tick and final statistics at completion
  * - Runs until all customers are served or simulation time cap is reached
  */
-class WebSimulation {
+class SimulationEngine {
    private:
     /// @name Simulation Configuration
     /// @{
@@ -35,15 +36,13 @@ class WebSimulation {
     int arrival_interval_min_;   ///< Minimum ticks between arrivals
     int arrival_interval_max_;   ///< Maximum ticks between arrivals
     int total_arrivals_target_;  ///< Total customers expected to arrive
+    int max_queue_size_;         ///< Maximum capacity of the waiting queue
     int next_arrival_tick_;      ///< Pre-scheduled clock tick for next arrival
     /// @}
 
     /// @name Queue Management
     /// @{
-    CustomerType* customer_array_;  ///< Circular array for waiting customers
-    int queue_front_;               ///< Front index of circular queue
-    int queue_rear_;                ///< Rear index of circular queue
-    int queue_size_;                ///< Current number of customers in queue
+    WaitingCustomerQueue<CustomerType> waiting_queue_;  ///< FIFO queue for waiting customers
     /// @}
 
     /// @name Server Management
@@ -57,15 +56,15 @@ class WebSimulation {
     int peak_queue_length_;      ///< Maximum queue length observed
     int total_wait_time_;        ///< Cumulative waiting time for all customers
     int customers_served_;       ///< Number of customers who completed service
-    int customers_arrived_;      ///< Number of customers who have arrived
-    int customers_turned_away_;  ///< Number of customers denied entry
+    int customers_arrived_;      ///< Number of customers who have arrived (attempts)
+    int customers_turned_away_;  ///< Number of customers denied entry (queue full)
     int current_clock_;          ///< Current simulation time unit
     bool running_;               ///< Whether simulation is currently running
     /// @}
 
     /// @name Event Tracking
     /// @{
-    std::string last_event_type_;  ///< Type of last event ("arrived" | "serving" | "")
+    std::string last_event_type_;  ///< Type of last event ("arrived" | "serving" | "rejected" | "")
     int last_event_customer_id_;   ///< Customer ID associated with last event
     /// @}
 
@@ -74,43 +73,19 @@ class WebSimulation {
      * @brief Shadow state for a single server, source of truth for UI and termination logic.
      */
     struct ServerState {
-        bool busy;                 ///< Whether server is currently busy
-        int remaining;             ///< Time units remaining for current service
-        int assigned_customer_id;  ///< ID of customer being served (-1 if idle)
+        bool busy;
+        int remaining;
+        int assigned_customer_id;
     };
 
     std::vector<ServerState> server_states_;  ///< Shadow state vector for all servers
 
     // ── Private helpers ───────────────────────────────────────────────────────
     /**
-     * @brief Checks if the queue buffer is at capacity.
-     * @return true if queue is full, false otherwise.
-     */
-    bool isQueueFull() const;
-
-    /**
-     * @brief Checks if the queue is empty.
-     * @return true if queue contains no customers, false otherwise.
-     */
-    bool isQueueEmpty() const;
-
-    /**
      * @brief Finds the next free server using round-robin selection.
      * @return Index of free server, or -1 if all servers are busy.
      */
     int getFreeServerRoundRobin();
-
-    /**
-     * @brief Adds a customer to the rear of the circular queue.
-     * @param customer The customer to enqueue.
-     */
-    void enqueueCustomer(const CustomerType& customer);
-
-    /**
-     * @brief Removes and returns the customer at the front of the queue.
-     * @return The front customer, or a default-constructed CustomerType if empty.
-     */
-    CustomerType dequeueCustomer();
 
     /**
      * @brief Checks if all servers are currently idle.
@@ -120,6 +95,7 @@ class WebSimulation {
 
    public:
     static constexpr int DEFAULT_TOT_CUSTOMERS       = 100;
+    static constexpr int DEFAULT_MAX_QUEUE           = 50;  ///< Default capacity
     static constexpr int SIMULATION_TIME_CAP_DEFAULT = 99999;
     static constexpr int DEFAULT_TRANS_MIN           = 4;
     static constexpr int DEFAULT_TRANS_MAX           = 8;
@@ -127,26 +103,27 @@ class WebSimulation {
     static constexpr int DEFAULT_ARRIVAL_MAX         = 5;
 
     /**
-     * @brief Constructs a WebSimulation with randomised timing ranges.
-     * @param sim_time          Safety cap for total simulation duration (ticks).
+     * @brief Constructs a SimulationEngine with randomised timing ranges.
+     * @param sim_time          Safety cap for duration (ticks).
      * @param num_servers       Number of parallel servers.
      * @param trans_min         Minimum service time per customer (ticks).
      * @param trans_max         Maximum service time per customer (ticks).
      * @param arrival_min       Minimum interval between arrivals (ticks).
      * @param arrival_max       Maximum interval between arrivals (ticks).
      * @param total_cust        Total number of customers to simulate.
+     * @param max_queue         Total number of customers to simulate (queue capacity).
      */
-    explicit WebSimulation(int sim_time, int num_servers, int trans_min, int trans_max,
-                           int arrival_min, int arrival_max,
-                           int total_cust = DEFAULT_TOT_CUSTOMERS);
+    explicit SimulationEngine(int sim_time, int num_servers, int trans_min, int trans_max,
+                              int arrival_min, int arrival_max,
+                              int total_cust = DEFAULT_TOT_CUSTOMERS,
+                              int max_queue  = DEFAULT_MAX_QUEUE);
 
     /**
      * @brief Destructor - releases dynamically allocated resources.
      */
-    ~WebSimulation();
-
-    WebSimulation(const WebSimulation&)            = delete;
-    WebSimulation& operator=(const WebSimulation&) = delete;
+    ~SimulationEngine();
+    SimulationEngine(const SimulationEngine&)            = delete;
+    SimulationEngine& operator=(const SimulationEngine&) = delete;
 
     /**
      * @brief Returns a random integer in [min, max] (inclusive).
@@ -170,11 +147,6 @@ class WebSimulation {
      */
     void start();
 
-    /**
-     * @brief Pauses the simulation.
-     */
-    void pause();
-
     // ── Simulation Execution ──────────────────────────────────────────────────
     /**
      * @brief Advances the simulation by exactly one time unit.
@@ -190,11 +162,6 @@ class WebSimulation {
     void tick();
 
     /**
-     * @brief Runs the simulation to completion in a single blocking call.
-     */
-    void runFullSimulation();
-
-    /**
      * @brief Checks whether the simulation has completed.
      *
      * Returns true when all customers have arrived, the queue is empty, and all
@@ -206,7 +173,7 @@ class WebSimulation {
 
     // ── Output ────────────────────────────────────────────────────────────────
     int getQueueSize() const {
-        return queue_size_;
+        return waiting_queue_.size();
     }
 
     int getCustomersServed() const {
@@ -250,4 +217,4 @@ class WebSimulation {
     void outputFinalStats() const;
 };
 
-#endif  // INCLUDE_WEBSIMULATION_H_
+#endif  // INCLUDE_SIMULATIONENGINE_H_
