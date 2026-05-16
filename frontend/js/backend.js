@@ -48,16 +48,9 @@ export async function sendReset() {
 }
 
 export async function sendStart() {
-  await fetch(url("start"), {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      simulationTime:       1000,
-      servers:              local.numServers,
-      transactionTime:      Math.floor((local.serviceMin + local.serviceMax) / 2),
-      timeBetweenArrivals:  Math.floor((local.arrivalMin + local.arrivalMax) / 2),
-    }),
-  });
+  const res = await fetch(url("start"), { method: "POST" });
+  if (!res.ok) throw new Error("Start failed");
+  return res.json();
 }
 
 // ── Loop & UI State ───────────────────────────────────────

@@ -69,13 +69,20 @@ document.getElementById("btn-reset").onclick = async () => {
 
 document.getElementById("btn-start").onclick = async () => {
   if (BACKEND_CONFIG.enabled) {
+    await sendConfig({
+      servers:      local.numServers,
+      arrivalMin:   local.arrivalMin,
+      arrivalMax:   local.arrivalMax,
+      serviceMin:   local.serviceMin,
+      serviceMax:   local.serviceMax,
+      maxCustomers: local.maxCustomers,
+    });
     await sendStart();
   } else {
     local.running = true;
     updatePauseButton(false);
   }
 };
-
 // ── Mode Switching ────────────────────────────────────────
 document.getElementById("local-mode").onclick   = () => switchToMode("local");
 document.getElementById("backend-mode").onclick = () => switchToMode("backend");

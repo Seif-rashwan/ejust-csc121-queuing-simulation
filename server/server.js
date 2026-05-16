@@ -23,7 +23,7 @@ let starting = false;
 
 const MAX_QUEUE_SIZE = 5000;
 const exeName = process.platform === "win32" ? "simulation.exe" : "simulation";
-const cppExecutable = path.join(__dirname, "..", "build", exeName);
+const cppExecutable = path.join(__dirname, "..", "build", "bin", exeName);
 
 let config = {
   servers: 4,
@@ -79,6 +79,9 @@ app.post("/api/config", (req, res) => {
 });
 
 app.post("/api/start", (_, res) => {
+
+  console.log("Looking for executable at:", cppExecutable); // add this
+
   if (starting) {
     res.status(429).json({ success: false, message: "Already starting." });
     return;
