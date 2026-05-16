@@ -16,8 +16,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install clang-format-17
-        run: sudo apt-get update && sudo apt-get install -y clang-format-17
+      - name: Install clang-format-22
+        run: |
+          wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key \
+            | sudo tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc
+          sudo add-apt-repository \
+            "deb http://apt.llvm.org/noble/ llvm-toolchain-noble-22 main"
+          sudo apt-get update
+          sudo apt-get install -y clang-format-22
 
       - name: Check formatting
         id: format
@@ -27,7 +33,7 @@ jobs:
             echo "No C++ files found. Skipping."
             exit 0
           fi
-          clang-format-17 --dry-run --Werror "${files[@]}"
+          clang-format-22 --dry-run --Werror "${files[@]}"
 
       - name: Comment on PR
         if: always() && github.event_name == 'pull_request'
@@ -119,7 +125,13 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install tools
-        run: sudo apt-get update && sudo apt-get install -y cppcheck clang-tidy-17
+        run: |
+          wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key \
+            | sudo tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc
+          sudo add-apt-repository \
+            "deb http://apt.llvm.org/noble/ llvm-toolchain-noble-22 main"
+          sudo apt-get update
+          sudo apt-get install -y cppcheck clang-tidy-22
 
       - name: Run cppcheck
         run: |
@@ -136,6 +148,6 @@ jobs:
       - name: Run clang-tidy
         run: |
           find src -name "*.cpp" | \
-            xargs -r clang-tidy-17 \
+            xargs -r clang-tidy-22 \
               --extra-arg=-std=c++23 \
               --extra-arg=-Iinclude
