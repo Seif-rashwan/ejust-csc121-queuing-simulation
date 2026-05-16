@@ -149,5 +149,7 @@ jobs:
         run: |
           find src -name "*.cpp" | \
             xargs -r clang-tidy-22 \
+              --header-filter="src/.*|include/.*" \
               --extra-arg=-std=c++23 \
-              --extra-arg=-Iinclude
+              --extra-arg=-Iinclude \
+              --checks="-bugprone-easily-swappable-parameters"

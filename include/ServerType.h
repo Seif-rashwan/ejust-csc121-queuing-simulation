@@ -9,9 +9,9 @@ using std::string;
 
 class ServerType {
    private:
-    CustomerType current_customer_;
     string status_;
-    int transaction_time_;
+    CustomerType current_customer_;
+    int transaction_time_ = 0;
 
    public:
     bool isFree() const;

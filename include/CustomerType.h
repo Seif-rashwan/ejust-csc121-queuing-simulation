@@ -3,10 +3,10 @@
 
 class CustomerType {
    private:
-    int customer_number_;
-    int arrival_time_;
-    int waiting_time_;
-    int transaction_time_;
+    int customer_number_  = 0;
+    int arrival_time_     = 0;
+    int waiting_time_     = 0;
+    int transaction_time_ = 0;
 
    public:
     void setCustomerInfo(int customer_n = 0, int arr_time = 0, int w_time = 0, int time_spent = 0);
