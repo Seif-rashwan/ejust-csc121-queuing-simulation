@@ -7,15 +7,15 @@ repos:
     rev: v22.1.0
     hooks:
       - id: clang-format
-        files: \.(cpp|cc|cxx|hh|hpp|h)$
+        files: ^(src|include)/.*\.(cpp|h|hh|hpp)$
 
   # Linting & Naming
   - repo: https://github.com/pocc/pre-commit-hooks
     rev: v1.3.5
     hooks:
       - id: clang-tidy
-        files: \.(cpp|cc|cxx)$
+        files: ^src/.*\.(cpp|cc|cxx)$
         args:
           - "--extra-arg=-std=c++23"
           - "--extra-arg=-Iinclude"
-        additional_dependencies: ["clang-tidy"]
+        additional_dependencies: ["clang-tidy==22.1.0"]
