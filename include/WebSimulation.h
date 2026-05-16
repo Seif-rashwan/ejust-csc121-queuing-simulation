@@ -1,7 +1,7 @@
 /**
  * @file WebSimulation.h
  * @brief Web-based queuing simulation with server management and statistics tracking.
- * @version 1.0
+ * @version 2.0
  */
 
 #ifndef INCLUDE_WEBSIMULATION_H_
@@ -20,6 +20,7 @@
  * @details
  * - Uses round-robin server assignment for load balancing
  * - Maintains a circular array for customer queue storage
+ * - Supports randomised arrival intervals and service times for realism
  * - Outputs state after each tick and final statistics at completion
  * - Runs until all customers are served or simulation time cap is reached
  */
@@ -29,14 +30,17 @@ class WebSimulation {
     /// @{
     int simulation_time_;        ///< Safety cap for simulation duration
     int number_of_servers_;      ///< Number of service points
-    int transaction_time_;       ///< Time units per service
-    int time_between_arrivals_;  ///< Interval between customer arrivals
+    int transaction_time_min_;   ///< Minimum service time per customer (ticks)
+    int transaction_time_max_;   ///< Maximum service time per customer (ticks)
+    int arrival_interval_min_;   ///< Minimum ticks between arrivals
+    int arrival_interval_max_;   ///< Maximum ticks between arrivals
     int total_arrivals_target_;  ///< Total customers expected to arrive
+    int next_arrival_tick_;      ///< Pre-scheduled clock tick for next arrival
     /// @}
 
     /// @name Queue Management
     /// @{
-    CustomerType* customer_array_;  ///< Circular array buffer for waiting customers
+    CustomerType* customer_array_;  ///< Circular array for waiting customers
     int queue_front_;               ///< Front index of circular queue
     int queue_rear_;                ///< Rear index of circular queue
     int queue_size_;                ///< Current number of customers in queue
@@ -61,13 +65,13 @@ class WebSimulation {
 
     /// @name Event Tracking
     /// @{
-    std::string last_event_type_;  ///< Type of last event (e.g., "arrived", "serving")
+    std::string last_event_type_;  ///< Type of last event ("arrived" | "serving" | "")
     int last_event_customer_id_;   ///< Customer ID associated with last event
     /// @}
 
     /**
      * @struct ServerState
-     * @brief Tracks the state of a single server.
+     * @brief Shadow state for a single server, source of truth for UI and termination logic.
      */
     struct ServerState {
         bool busy;                 ///< Whether server is currently busy
@@ -75,81 +79,89 @@ class WebSimulation {
         int assigned_customer_id;  ///< ID of customer being served (-1 if idle)
     };
 
-    std::vector<ServerState> server_states_;  ///< State vector for all servers
+    std::vector<ServerState> server_states_;  ///< Shadow state vector for all servers
 
-    //--------------------------------------------------------------------------------
-    // Helpers:
+    // ── Private helpers ───────────────────────────────────────────────────────
     /**
      * @brief Checks if the queue buffer is at capacity.
-     * @return true if queue is full, false otherwise
+     * @return true if queue is full, false otherwise.
      */
     bool isQueueFull() const;
 
     /**
      * @brief Checks if the queue is empty.
-     * @return true if queue contains no customers, false otherwise
+     * @return true if queue contains no customers, false otherwise.
      */
     bool isQueueEmpty() const;
 
     /**
      * @brief Finds the next free server using round-robin selection.
-     * @return Index of free server, or -1 if all servers are busy
+     * @return Index of free server, or -1 if all servers are busy.
      */
     int getFreeServerRoundRobin();
 
     /**
-     * @brief Adds a customer to the rear of the queue.
-     * @param customer The customer to enqueue
+     * @brief Adds a customer to the rear of the circular queue.
+     * @param customer The customer to enqueue.
      */
     void enqueueCustomer(const CustomerType& customer);
 
     /**
-     * @brief Removes and returns the customer from the front of the queue.
-     * @return The customer from the front, or default-constructed CustomerType if empty
+     * @brief Removes and returns the customer at the front of the queue.
+     * @return The front customer, or a default-constructed CustomerType if empty.
      */
     CustomerType dequeueCustomer();
 
     /**
-     * @brief Returns the customer at the front without removing.
-     * @return The customer at front, or default-constructed CustomerType if empty
-     */
-    CustomerType peekCustomer() const;
-
-    /**
      * @brief Checks if all servers are currently idle.
-     * @return true if all servers are free, false otherwise
+     * @return true if all servers are free, false otherwise.
      */
     bool allServersFree() const;
 
    public:
-    static const int DEFAULT_TOT_CUSTOMERS       = 100;
-    static const int SIMULATION_TIME_CAP_DEFAULT = 99999;
+    static constexpr int DEFAULT_TOT_CUSTOMERS       = 100;
+    static constexpr int SIMULATION_TIME_CAP_DEFAULT = 99999;
+    static constexpr int DEFAULT_TRANS_MIN           = 4;
+    static constexpr int DEFAULT_TRANS_MAX           = 8;
+    static constexpr int DEFAULT_ARRIVAL_MIN         = 2;
+    static constexpr int DEFAULT_ARRIVAL_MAX         = 5;
 
     /**
-     * @brief Constructs a WebSimulation with specified parameters.
-     * @param sim_time Safety cap for simulation duration (time units)
-     * @param num_servers Number of parallel servers
-     * @param trans_time Transaction/service time per customer
-     * @param t_between_arrivals Time interval between customer arrivals
-     * @param total_cust Total number of customers expected (default: 100)
+     * @brief Constructs a WebSimulation with randomised timing ranges.
+     * @param sim_time          Safety cap for total simulation duration (ticks).
+     * @param num_servers       Number of parallel servers.
+     * @param trans_min         Minimum service time per customer (ticks).
+     * @param trans_max         Maximum service time per customer (ticks).
+     * @param arrival_min       Minimum interval between arrivals (ticks).
+     * @param arrival_max       Maximum interval between arrivals (ticks).
+     * @param total_cust        Total number of customers to simulate.
      */
-    explicit WebSimulation(int sim_time, int num_servers, int trans_time, int t_between_arrivals,
+    explicit WebSimulation(int sim_time, int num_servers, int trans_min, int trans_max,
+                           int arrival_min, int arrival_max,
                            int total_cust = DEFAULT_TOT_CUSTOMERS);
 
     /**
-     * @brief Destructor; cleans up dynamically allocated resources.
+     * @brief Destructor - releases dynamically allocated resources.
      */
     ~WebSimulation();
 
-    explicit WebSimulation(const ServerListType&)   = delete;
-    WebSimulation& operator=(const ServerListType&) = delete;
+    WebSimulation(const WebSimulation&)            = delete;
+    WebSimulation& operator=(const WebSimulation&) = delete;
 
-    //--------------------------------------------------------------------------------
-    // Lifecycle:
     /**
-     * @brief Resets the simulation to initial state.
+     * @brief Returns a random integer in [min, max] (inclusive).
+     * @param min Lower bound.
+     * @param max Upper bound.
+     * @return Random integer between min and max.
+     */
+    static int randomBetween(int min, int max);
+
+    // ── Lifecycle ─────────────────────────────────────────────────────────────
+    /**
+     * @brief Resets the simulation to its initial state.
      *
-     * Clears all queues, resets statistics, reinitializes servers, and sets clock to 0.
+     * Clears the queue, resets all statistics, reinitialises servers, resets the
+     * clock to 0, and schedules the first arrival.
      */
     void reset();
 
@@ -163,54 +175,77 @@ class WebSimulation {
      */
     void pause();
 
-    //--------------------------------------------------------------------------------
-    // Simulation Execution:
+    // ── Simulation Execution ──────────────────────────────────────────────────
     /**
-     * @brief Executes one simulation time unit.
+     * @brief Advances the simulation by exactly one time unit.
      *
-     * Performs:
-     * - Server state updates and completion tracking
-     * - Customer arrivals
-     * - Round-robin server assignment
-     * - Queue wait time increments
-     * - Peak queue tracking
+     * Execution order per tick:
+     * 1. Decrement shadow server states; count served on completion.
+     * 2. Update real ServerListType objects in parallel.
+     * 3. Process customer arrivals (if scheduled and target not reached).
+     * 4. Assign free servers via round-robin until queue is empty.
+     * 5. Increment waiting times for customers still in queue.
+     * 6. Update peak queue length.
      */
     void tick();
 
     /**
-     * @brief Runs the complete simulation from start to finish.
-     *
-     * Resets state, starts simulation, and runs ticks until completion,
-     * outputting state after each tick and final statistics.
+     * @brief Runs the simulation to completion in a single blocking call.
      */
     void runFullSimulation();
 
     /**
-     * @brief Checks if the simulation has completed.
+     * @brief Checks whether the simulation has completed.
      *
-     * Completes when all customers have arrived, queue is empty, and all servers
-     * are idle, or when the simulation time cap is reached.
+     * Returns true when all customers have arrived, the queue is empty, and all
+     * servers are idle, or when the safety time cap is reached.
      *
-     * @return true if simulation should end, false otherwise
+     * @return true if simulation should end, false otherwise.
      */
     bool isFinished() const;
 
-    //--------------------------------------------------------------------------------
-    // Output Methods:
+    // ── Output ────────────────────────────────────────────────────────────────
+    int getQueueSize() const {
+        return queue_size_;
+    }
+
+    int getCustomersServed() const {
+        return customers_served_;
+    }
+
+    int getCustomersArrived() const {
+        return customers_arrived_;
+    }
+
+    int getCustomersTurnedAway() const {
+        return customers_turned_away_;
+    }
+
+    int getPeakQueueLength() const {
+        return peak_queue_length_;
+    }
+
+    int getTotalWaitTime() const {
+        return total_wait_time_;
+    }
+
+    double getAverageWaitingTime() const {
+        return customers_served_ > 0 ? static_cast<double>(total_wait_time_) / customers_served_
+                                     : 0.0;
+    }
+
     /**
-     * @brief Outputs current simulation state as a JSON object to stdout.
+     * @brief Emits current simulation state as a single JSON line to stdout.
      *
-     * Emits a single line prefixed with "STATE:" containing JSON with current
-     * tick, queue size, customers served, peak queue, average wait time, and
-     * detailed server states.
+     * Format: `STATE:{…JSON…}\n`
+     * No other content is ever written to stdout by this program.
      */
     void outputState() const;
 
     /**
-     * @brief Outputs final simulation statistics as a JSON object to stdout.
+     * @brief Emits final simulation statistics as a single JSON line to stdout.
      *
-     * Emits a single line prefixed with "FINAL:" containing JSON with
-     * comprehensive final statistics.
+     * Format: `FINAL:{…JSON…}\n`
      */
     void outputFinalStats() const;
 };
