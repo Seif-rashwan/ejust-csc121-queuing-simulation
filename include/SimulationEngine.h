@@ -24,7 +24,7 @@
  * - Supports randomised arrival intervals and service times for realism
  * - Outputs state after each tick and final statistics at completion
  * - Runs until all arrival attempts are processed (served or turned away) or the safety cap is
- * reached
+ *   reached
  */
 class SimulationEngine {
    private:

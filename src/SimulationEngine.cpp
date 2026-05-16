@@ -83,6 +83,8 @@ void SimulationEngine::reset() {
     next_server_hint_       = 0;
     running_                = false;
 
+    waiting_queue_.clear();
+
     // Schedule the first arrival using a random interval
     next_arrival_tick_ = randomBetween(arrival_interval_min_, arrival_interval_max_);
 

@@ -32,6 +32,9 @@ class WaitingCustomerQueue : public QueueADT<Type> {
 
     void enqueue(const Type& queue_elem) override;
     void dequeue() override;
+    void clear() {
+        initialize();
+    }
 
     Type front() const override;
     Type back() const override;
