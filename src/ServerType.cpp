@@ -38,22 +38,18 @@ void ServerType::setCurrentCustomer(const CustomerType& c_customer) {
     current_customer_ = c_customer;
 }
 
-// cppcheck-suppress unusedFunction
 int ServerType::getCurrentCustomerNumber() const {
     return current_customer_.getCustomerNumber();
 }
 
-// cppcheck-suppress unusedFunction
 int ServerType::getCurrentCustomerArrivalTime() const {
     return current_customer_.getArrivalTime();
 }
 
-// cppcheck-suppress unusedFunction
 int ServerType::getCurrentCustomerWaitingTime() const {
     return current_customer_.getWaitingTime();
 }
 
-// cppcheck-suppress unusedFunction
 int ServerType::getCurrentCustomerTransactionTime() const {
     return current_customer_.getTransactionTime();
 }
