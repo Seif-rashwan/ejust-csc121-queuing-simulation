@@ -47,6 +47,10 @@ document.getElementById("btn-start").onclick = async () => {
   }
 };
 
+// Mode Switching:
+document.getElementById("local-mode").onclick = () => switchToMode("local");
+document.getElementById("backend-mode").onclick = () => switchToMode("backend");
+
 // Stats modal:
 document.getElementById("btn-stats").onclick = () =>
   document.getElementById("stats-modal").classList.add("show");
