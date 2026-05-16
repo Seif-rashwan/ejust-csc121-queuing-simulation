@@ -4,10 +4,9 @@
  *
  * Usage:
  * Without arguments, the simulation prompts for parameters interactively.
-
  * $ simulation_cli
  * $ simulation_cli <servers> <transMin> <transMax> <arrivalMin> <arrivalMax>
- *                  <totalCustomers> <delayMs>
+ *                  <totalCustomers> <delayMs> <maxQueueSize>
  */
 
 #include <algorithm>
@@ -20,7 +19,7 @@
 #include <thread>
 #include <utility>
 
-#include "WebSimulation.h"
+#include "SimulationEngine.h"
 
 using std::cerr;
 using std::cin;
@@ -55,14 +54,15 @@ class CursorHide {
 
 class CLIApplication {
    private:
-    int sim_cap_    = WebSimulation::SIMULATION_TIME_CAP_DEFAULT;
+    int sim_cap_    = SimulationEngine::SIMULATION_TIME_CAP_DEFAULT;
     int servers_    = 4;
-    int trans_min_  = WebSimulation::DEFAULT_TRANS_MIN;
-    int trans_max_  = WebSimulation::DEFAULT_TRANS_MAX;
-    int arr_min_    = WebSimulation::DEFAULT_ARRIVAL_MIN;
-    int arr_max_    = WebSimulation::DEFAULT_ARRIVAL_MAX;
-    int total_cust_ = WebSimulation::DEFAULT_TOT_CUSTOMERS;
+    int trans_min_  = SimulationEngine::DEFAULT_TRANS_MIN;
+    int trans_max_  = SimulationEngine::DEFAULT_TRANS_MAX;
+    int arr_min_    = SimulationEngine::DEFAULT_ARRIVAL_MIN;
+    int arr_max_    = SimulationEngine::DEFAULT_ARRIVAL_MAX;
+    int total_cust_ = SimulationEngine::DEFAULT_TOT_CUSTOMERS;
     int delay_ms_   = 50;
+    int max_queue_  = SimulationEngine::DEFAULT_MAX_QUEUE;
     std::ofstream log_file_;
 
     void readCLIParameters() {
@@ -84,6 +84,7 @@ class CLIApplication {
         read_positive("Max arrival interval     : ", arr_max_);
         read_positive("Total customers          : ", total_cust_);
         read_positive("Tick delay (ms)          : ", delay_ms_);
+        read_positive("Max Queue Size           : ", max_queue_);
 
         if (trans_min_ > trans_max_) {
             std::swap(trans_min_, trans_max_);
@@ -96,10 +97,10 @@ class CLIApplication {
 
     static void printCLIUsage() {
         cerr << "Usage: ./simulation_cli [servers transMin transMax arrivalMin arrivalMax "
-                "totalCustomers delayMs]\n";
+             << "totalCustomers delayMs maxQueueSize]\n";
     }
 
-    static void printDashboard(int clock, const WebSimulation& sim) {
+    static void printDashboard(int clock, const SimulationEngine& engine) {
         constexpr int INNER = 66;  // width between ║ and ║
 
         auto row = [INNER](const std::string& text) { return format("║{:<{}}║\n", text, INNER); };
@@ -115,32 +116,33 @@ class CLIApplication {
 
         cout << "╔" << repeat("═", INNER) << "╗" << "\n"
              << row(center("Queuing System Simulation")) << "╠" << repeat("═", INNER) << "╣" << "\n"
-             << row(format(" Tick: {: 22} | Queue Size: {: 22}", clock, sim.getQueueSize()))
-             << row(format(" Customers Arrived: {: 46}", sim.getCustomersArrived()))
-             << row(format(" Customers Served:  {: 46}", sim.getCustomersServed()))
-             << row(format(" Peak Queue Length: {: 46}", sim.getPeakQueueLength()))
-             << row(format(" Avg Waiting Time:  {: 40} ticks", sim.getAverageWaitingTime())) << "╚"
-             << repeat("═", INNER) << "╝" << "\n";
+             << row(format(" Tick: {: 22} | Queue Size: {: 22}", clock, engine.getQueueSize()))
+             << row(format(" Customers Arrived:         {: 38}", engine.getCustomersArrived()))
+             << row(format(" Customers Served:          {: 38}", engine.getCustomersServed()))
+             << row(format(" Customers Turned Away:     {: 38}", engine.getCustomersTurnedAway()))
+             << row(format(" Peak Queue Length:         {: 38}", engine.getPeakQueueLength()))
+             << row(format(" Avg Waiting Time:          {: 32} ticks",
+                           engine.getAverageWaitingTime()))
+             << row(format(" Total Wait Time:           {: 32} ticks", engine.getTotalWaitTime()))
+             << "╚" << repeat("═", INNER) << "╝" << "\n";
     }
 
-    void logTick(int clock, const WebSimulation& sim) {
+    void logTick(int clock, const SimulationEngine& engine) {
         if (log_file_.is_open()) {
             log_file_ << "[Tick " << clock << "] "
-                      << "Queue: " << sim.getQueueSize() << "  "
-                      << "Served: " << sim.getCustomersServed() << "  "
-                      << "Arrived: " << sim.getCustomersArrived() << "  "
-                      << "AvgWait: " << sim.getAverageWaitingTime() << "  "
-                      << "Peak: " << sim.getPeakQueueLength() << "\n";
+                      << "Queue: " << engine.getQueueSize() << "  "
+                      << "Served: " << engine.getCustomersServed() << "  "
+                      << "Arrived: " << engine.getCustomersArrived() << "  "
+                      << "Avg. Wait: " << engine.getAverageWaitingTime() << "  "
+                      << "Peak: " << engine.getPeakQueueLength() << "\n";
         }
     }
 
    public:
-    int run(int argc,
-            const char* argv[]) {  // NOLINT
-
+    int run(int argc, const char* argv[]) {  // NOLINT
         if (argc == 1) {
             readCLIParameters();
-        } else if (argc == 8) {
+        } else if (argc >= 8) {
             servers_    = ParsePositiveInt(argv[1], "Number of servers");
             trans_min_  = ParsePositiveInt(argv[2], "Min service time");
             trans_max_  = ParsePositiveInt(argv[3], "Max service time");
@@ -148,6 +150,10 @@ class CLIApplication {
             arr_max_    = ParsePositiveInt(argv[5], "Max arrival interval");
             total_cust_ = ParsePositiveInt(argv[6], "Total customers");
             delay_ms_   = ParsePositiveInt(argv[7], "Tick delay");
+
+            if (argc >= 9) {
+                max_queue_ = ParsePositiveInt(argv[8], "Max Queue Size");
+            }
 
             if (trans_min_ > trans_max_) {
                 std::swap(trans_min_, trans_max_);
@@ -168,32 +174,30 @@ class CLIApplication {
             log_file_ << "--- Simulation Started ---\n";
             log_file_ << "Servers: " << servers_ << ", Total Cust: " << total_cust_
                       << ", Trans: " << trans_min_ << "-" << trans_max_ << ", Arrival: " << arr_min_
-                      << "-" << arr_max_ << "\n\n";
+                      << "-" << arr_max_ << ", Max Queue: " << max_queue_ << "\n\n";
         }
 
-        WebSimulation sim(sim_cap_, servers_, trans_min_, trans_max_, arr_min_, arr_max_,
-                          total_cust_);
         CursorHide hide_cursor;
+        SimulationEngine engine(sim_cap_, servers_, trans_min_, trans_max_, arr_min_, arr_max_,
+                                total_cust_, max_queue_);
 
-        cout << "\nStarting simulation: " << servers_ << " servers, " << total_cust_
-             << " customers, arrival every " << arr_min_ << "-" << arr_max_ << " ticks, service "
-             << trans_min_ << "-" << trans_max_ << " ticks.\n\n";
+        cout << "\nSimulation: " << servers_ << " servers | " << total_cust_ << " customers | "
+             << "Service: " << trans_min_ << "-" << trans_max_ << " ticks | Arrival: " << arr_min_
+             << "-" << arr_max_ << " | Queue cap: " << max_queue_ << "\n\n";
 
-        sim.start();
+        engine.start();
         int clock = 0;
-        printDashboard(clock, sim);
+        printDashboard(clock, engine);
 
-        while (!sim.isFinished()) {
+        while (!engine.isFinished()) {
             std::this_thread::sleep_for(std::chrono::milliseconds(delay_ms_));
-
-            sim.tick();
+            engine.tick();
             clock++;
+            logTick(clock, engine);
 
-            logTick(clock, sim);
-
-            // Move cursor up 9 lines to overwrite the dashboard
-            cout << "\033[9A";
-            printDashboard(clock, sim);
+            // Move cursor up 11 lines to overwrite the dashboard
+            cout << "\033[11A";
+            printDashboard(clock, engine);
         }
 
         if (log_file_.is_open()) {

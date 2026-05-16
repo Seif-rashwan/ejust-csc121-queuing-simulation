@@ -38,6 +38,7 @@ let config = {
   serviceMin: 4,
   serviceMax: 8,
   maxCustomers: 100,
+  maxQueueSize: 50,
 };
 
 let simulationState = blankState();
@@ -82,7 +83,8 @@ app.get("/api/state", (req, res) => {
 });
 
 app.post("/api/config", (req, res) => {
-  const { servers, arrivalMin, arrivalMax, serviceMin, serviceMax, maxCustomers } = req.body;
+  const { servers, arrivalMin, arrivalMax, serviceMin, serviceMax, maxCustomers, maxQueueSize } =
+    req.body;
 
   if (
     typeof servers !== "number" ||
@@ -96,13 +98,22 @@ app.post("/api/config", (req, res) => {
     typeof serviceMax !== "number" ||
     serviceMax < serviceMin ||
     typeof maxCustomers !== "number" ||
-    maxCustomers < 1
+    maxCustomers < 1 ||
+    (maxQueueSize !== undefined && (typeof maxQueueSize !== "number" || maxQueueSize < 1))
   ) {
     res.status(400).json({ success: false, message: "Invalid config parameters." });
     return;
   }
 
-  config = { servers, arrivalMin, arrivalMax, serviceMin, serviceMax, maxCustomers };
+  config = {
+    servers,
+    arrivalMin,
+    arrivalMax,
+    serviceMin,
+    serviceMax,
+    maxCustomers,
+    maxQueueSize: maxQueueSize ?? config.maxQueueSize,
+  };
   console.log("Config updated:", config);
   res.json({ success: true });
 });
@@ -128,11 +139,11 @@ app.post("/api/start", (_, res) => {
 
   const safetyTime = config.maxCustomers * Math.max(config.arrivalMax, config.serviceMax) * 10;
 
-  // argv layout: matches Main.cpp web mode:
+  // argv layout: matches SimulationEngine web mode:
   // [1] safetyTimeCap  [2] servers
   // [3] transMin       [4] transMax
   // [5] arrivalMin     [6] arrivalMax
-  // [7] totalCustomers
+  // [7] totalCustomers [8] maxQueueSize
   const args = [
     safetyTime.toString(),
     config.servers.toString(),
@@ -141,6 +152,7 @@ app.post("/api/start", (_, res) => {
     config.arrivalMin.toString(),
     config.arrivalMax.toString(),
     config.maxCustomers.toString(),
+    config.maxQueueSize.toString(),
   ];
 
   stateQueue = [];

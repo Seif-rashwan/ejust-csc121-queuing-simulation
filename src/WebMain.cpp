@@ -2,7 +2,7 @@
 #include <iostream>
 #include <utility>
 
-#include "WebSimulation.h"
+#include "SimulationEngine.h"
 
 /**
  * @brief Runs the web-queue simulation from command-line parameters.
@@ -28,15 +28,25 @@
 int main(int argc, const char* argv[]) {
     try {
         // Defaults are used when arguments are omitted.
-        int sim_cap    = WebSimulation::SIMULATION_TIME_CAP_DEFAULT;
+        int sim_cap    = SimulationEngine::SIMULATION_TIME_CAP_DEFAULT;
         int servers    = 4;
-        int trans_min  = WebSimulation::DEFAULT_TRANS_MIN;
-        int trans_max  = WebSimulation::DEFAULT_TRANS_MAX;
-        int arr_min    = WebSimulation::DEFAULT_ARRIVAL_MIN;
-        int arr_max    = WebSimulation::DEFAULT_ARRIVAL_MAX;
-        int total_cust = WebSimulation::DEFAULT_TOT_CUSTOMERS;
+        int trans_min  = SimulationEngine::DEFAULT_TRANS_MIN;
+        int trans_max  = SimulationEngine::DEFAULT_TRANS_MAX;
+        int arr_min    = SimulationEngine::DEFAULT_ARRIVAL_MIN;
+        int arr_max    = SimulationEngine::DEFAULT_ARRIVAL_MAX;
+        int total_cust = SimulationEngine::DEFAULT_TOT_CUSTOMERS;
+        int max_queue  = SimulationEngine::DEFAULT_MAX_QUEUE;
 
-        if (argc >= 8) {
+        if (argc >= 9) {
+            sim_cap    = std::stoi(argv[1]);
+            servers    = std::stoi(argv[2]);
+            trans_min  = std::stoi(argv[3]);
+            trans_max  = std::stoi(argv[4]);
+            arr_min    = std::stoi(argv[5]);
+            arr_max    = std::stoi(argv[6]);
+            total_cust = std::stoi(argv[7]);
+            max_queue  = std::stoi(argv[8]);
+        } else if (argc >= 8) {
             sim_cap    = std::stoi(argv[1]);
             servers    = std::stoi(argv[2]);
             trans_min  = std::stoi(argv[3]);
@@ -62,18 +72,18 @@ int main(int argc, const char* argv[]) {
             std::swap(arr_min, arr_max);
         }
 
-        WebSimulation sim(sim_cap, servers, trans_min, trans_max, arr_min, arr_max, total_cust);
+        SimulationEngine engine(sim_cap, servers, trans_min, trans_max, arr_min, arr_max,
+                                total_cust, max_queue);
 
-        // emit tick-0 snapshot before anything happens
-        sim.outputState();
-        sim.start();
+        engine.outputState();
+        engine.start();
 
-        while (!sim.isFinished()) {
-            sim.tick();
-            sim.outputState();
+        while (!engine.isFinished()) {
+            engine.tick();
+            engine.outputState();
         }
 
-        sim.outputFinalStats();
+        engine.outputFinalStats();
 
     } catch (const std::exception& e) {
         // Errors go to stderr, never corrupt the stdout JSON stream
