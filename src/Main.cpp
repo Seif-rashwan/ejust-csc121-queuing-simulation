@@ -1,6 +1,5 @@
 #include <algorithm>
 #include <iostream>
-#include <stdexcept>
 
 #include "ServerListType.h"
 #include "WaitingCustomerQueue.h"
