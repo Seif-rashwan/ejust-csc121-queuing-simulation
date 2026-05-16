@@ -47,7 +47,7 @@ document.getElementById("btn-start").onclick = async () => {
   }
 };
 
-// Mode switching"
+// Mode Switching:
 document.getElementById("local-mode").onclick = () => switchToMode("local");
 document.getElementById("backend-mode").onclick = () => switchToMode("backend");
 
@@ -134,4 +134,22 @@ function updateArrivalLabel() {
 
 function updateServiceLabel() {
   setText("v-service", local.serviceMin + "-" + local.serviceMax);
+}
+
+// ── THEME TOGGLE ──────────────────────────────────────────
+const themeBtn = document.getElementById("theme-toggle");
+if (themeBtn) {
+  const themeIcon = themeBtn.querySelector("i");
+
+  const savedTheme = localStorage.getItem("theme");
+  if (savedTheme === "light") {
+    document.body.classList.add("light");
+    if (themeIcon) themeIcon.className = "fas fa-moon";
+  }
+
+  themeBtn.addEventListener("click", () => {
+    const isLight = document.body.classList.toggle("light");
+    if (themeIcon) themeIcon.className = isLight ? "fas fa-moon" : "fas fa-sun";
+    localStorage.setItem("theme", isLight ? "light" : "dark");
+  });
 }
