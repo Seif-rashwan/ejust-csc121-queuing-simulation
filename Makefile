@@ -91,13 +91,11 @@ build/bin:
 # ────────────────────────
 install:
 	@echo "Installing dependencies..."
-	@echo "1. Installing cppcheck..."
-	choco install cppcheck -y || winget install cppcheck -e || brew install cppcheck
-	@echo "2. Installing pre-commit framework..."
+	@echo "1. Installing pre-commit framework..."
 	python -m pip install pre-commit
-	@echo "3. Installing Node.js dependencies..."
+	@echo "2. Installing Node.js dependencies..."
 	cd server && npm install
-	@echo "4. Setting up git hooks..."
+	@echo "3. Setting up git hooks..."
 	python -m pre_commit install
 	@echo "[+] Installation complete; start by running 'make run' or 'make run-cli'!"
 
