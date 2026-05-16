@@ -1,0 +1,3 @@
+# Ignore Makefile language for linguist
+Makefile linguist-language=ignore
+* text=auto
