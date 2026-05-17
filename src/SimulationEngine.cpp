@@ -1,3 +1,8 @@
+/**
+ * @file SimulationEngine.cpp
+ * @brief Implements the simulation loop, statistics, and JSON output.
+ */
+
 #include "SimulationEngine.h"
 
 #include <algorithm>

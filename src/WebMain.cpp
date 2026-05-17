@@ -1,3 +1,8 @@
+/**
+ * @file WebMain.cpp
+ * @brief Entry point for the JSON-streaming simulation used by the web server.
+ */
+
 #include <algorithm>
 #include <iostream>
 #include <utility>

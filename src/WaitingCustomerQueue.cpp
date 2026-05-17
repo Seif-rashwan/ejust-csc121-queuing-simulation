@@ -1,3 +1,8 @@
+/**
+ * @file WaitingCustomerQueue.cpp
+ * @brief Implements the circular-array waiting queue template.
+ */
+
 #include <stdexcept>
 
 #include "CustomerType.h"
@@ -81,5 +86,5 @@ void WaitingCustomerQueue<Type>::incrementWaitingTimes() {
     }
 }
 
-// Explicit instantiation for the types used in the simulation
+// Explicit instantiation for the type used by the simulation.
 template class WaitingCustomerQueue<CustomerType>;

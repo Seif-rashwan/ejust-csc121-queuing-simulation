@@ -2,6 +2,12 @@
 #define INCLUDE_QUEUEADT_H_
 
 /**
+ * @file QueueADT.h
+ * @brief Declares the generic queue interface used by queue
+ * implementations.
+ */
+
+/**
  * @class QueueADT
  * @brief Abstract base class for a queue.
  *
@@ -62,7 +68,10 @@ class QueueADT {
      */
     virtual int size() const = 0;
 
-    virtual ~QueueADT()      = default;
+    /**
+     * @brief Allows derived queues to clean up through base-class pointers.
+     */
+    virtual ~QueueADT() = default;
 };
 
 #endif  // INCLUDE_QUEUEADT_H_
