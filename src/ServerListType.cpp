@@ -1,3 +1,8 @@
+/**
+ * @file ServerListType.cpp
+ * @brief Implements the dynamic list of service servers.
+ */
+
 #include "ServerListType.h"
 
 ServerListType::ServerListType(int num) {

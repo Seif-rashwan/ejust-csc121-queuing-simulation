@@ -1,6 +1,7 @@
-// server.js
-// Node.js orchestration layer, spawns the C++ simulation binary,
-// buffers STATE output, and serves it to the browser via REST.
+/**
+ * @file server.js
+ * @brief Node.js orchestration layer for the C++ simulation and browser REST API.
+ */
 
 import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
@@ -44,6 +45,11 @@ let config = {
 };
 
 let simulationState = blankState();
+
+/**
+ * Builds an empty simulation state using the active server/customer config.
+ * @returns {Object} Initial simulation state.
+ */
 function blankState() {
   return {
     tick: 0,
@@ -57,6 +63,7 @@ function blankState() {
     lastEvent: "",
     lastEventCustomer: -1,
     totalCustomers: config.maxCustomers,
+    maxQueueSize: config.maxQueueSize,
     arrived: 0,
     throughput: 0,
     _front: 0,
@@ -66,6 +73,10 @@ function blankState() {
   };
 }
 
+/**
+ * Builds idle server records for the active server count.
+ * @returns {Object[]} Server state objects.
+ */
 function blankServers() {
   return Array.from({ length: config.servers }, () => ({
     busy: false,
@@ -77,6 +88,9 @@ function blankServers() {
 // ────────────────────────────────────────────────────────────────────────────
 // Routes:
 // ───────
+/**
+ * Returns the latest simulation state, advancing the buffered frame queue when unpaused.
+ */
 app.get("/api/state", (req, res) => {
   if (!paused && stateQueue.length > 0) {
     simulationState = { ...simulationState, ...stateQueue.shift() };
@@ -84,6 +98,9 @@ app.get("/api/state", (req, res) => {
   res.json(simulationState);
 });
 
+/**
+ * Validates and stores a new simulation configuration.
+ */
 app.post("/api/config", (req, res) => {
   const { servers, arrivalMin, arrivalMax, serviceMin, serviceMax, maxCustomers, maxQueueSize } =
     req.body;
@@ -120,6 +137,9 @@ app.post("/api/config", (req, res) => {
   res.json({ success: true });
 });
 
+/**
+ * Spawns a fresh C++ simulation process and begins buffering stdout state frames.
+ */
 app.post("/api/start", (_, res) => {
   if (starting) {
     res.status(429).json({ success: false, message: "Already starting." });
@@ -243,12 +263,18 @@ app.post("/api/start", (_, res) => {
   res.json({ success: true });
 });
 
+/**
+ * Toggles whether buffered state frames are consumed by /api/state.
+ */
 app.post("/api/pause", (_, res) => {
   paused = !paused;
   simulationState.running = !paused;
   res.json({ success: true, running: !paused });
 });
 
+/**
+ * Stops any active simulation process and restores blank state.
+ */
 app.post("/api/reset", (_, res) => {
   if (simulationProcess && !simulationProcess.killed) {
     simulationProcess.kill();
@@ -306,6 +332,9 @@ app.listen(PORT, () => {
   console.log(`C++ binary: ${cppExecutable}`);
 });
 
+/**
+ * Stops the child simulation process before the Node.js process exits.
+ */
 const gracefulShutdown = () => {
   console.log("\nShutting down Node.js server...");
   if (simulationProcess && !simulationProcess.killed) {

@@ -28,6 +28,15 @@ using std::cout;
 using std::format;
 using std::string;
 
+/**
+ * @brief Parses a positive integer command-line argument.
+ *
+ * @param value Raw argument text.
+ * @param name Human-readable parameter name for error messages.
+ * @return Parsed positive integer.
+ * @throws std::invalid_argument if the parsed value is not positive.
+ * @throws std::exception if conversion fails.
+ */
 int ParsePositiveInt(const string& value, const string& name) {
     int parsed = std::stoi(value);
     if (parsed <= 0) {
@@ -53,6 +62,11 @@ class CursorHide {
     CursorHide& operator=(const CursorHide&) = delete;
 };
 
+/**
+ * @class CLIApplication
+ * @brief Owns CLI parameter parsing, dashboard rendering,
+ *        logging, and simulation execution.
+ */
 class CLIApplication {
    private:
     int sim_cap_    = SimulationEngine::SIMULATION_TIME_CAP_DEFAULT;
@@ -66,6 +80,10 @@ class CLIApplication {
     int max_queue_  = SimulationEngine::DEFAULT_MAX_QUEUE;
     std::ofstream log_file_;
 
+    /**
+     * @brief Reads simulation parameters interactively from stdin.
+     * @throws std::invalid_argument if any value is not positive.
+     */
     void readCLIParameters() {
         cout << "======================================\n";
         cout << "   Queuing System Simulation - CLI\n";
@@ -96,11 +114,19 @@ class CLIApplication {
         }
     }
 
+    /**
+     * @brief Prints positional command-line usage to stderr.
+     */
     static void printCLIUsage() {
         cerr << "Usage: ./simulation_cli [servers transMin transMax arrivalMin arrivalMax "
              << "totalCustomers delayMs maxQueueSize]\n";
     }
 
+    /**
+     * @brief Renders one dashboard frame from the current simulation state.
+     * @param clock Current display tick.
+     * @param engine Simulation engine providing metrics.
+     */
     static void printDashboard(int clock, const SimulationEngine& engine) {
         constexpr int INNER = 66;  // width between ║ and ║
 
@@ -128,6 +154,12 @@ class CLIApplication {
              << "╚" << repeat("═", INNER) << "╝" << "\n";
     }
 
+    /**
+     * @brief Writes one simulation tick summary to the log file when open.
+     * @param
+     * clock Current display tick.
+     * @param engine Simulation engine providing metrics.
+     */
     void logTick(int clock, const SimulationEngine& engine) {
         if (log_file_.is_open()) {
             log_file_ << "[Tick " << clock << "] "  // NOLINT
@@ -140,6 +172,12 @@ class CLIApplication {
     }
 
    public:
+    /**
+     * @brief Runs the CLI simulation from interactive input or command-line arguments.
+     * @param argc Argument count from main.
+     * @param argv Argument vector from main.
+     * @return Process exit code.
+     */
     int run(int argc, const char* argv[]) {  // NOLINT
         if (argc == 1) {
             readCLIParameters();
@@ -211,6 +249,12 @@ class CLIApplication {
     }
 };
 
+/**
+ * @brief Starts the CLI application and reports fatal errors.
+ * @param argc Argument count.
+ * @param argv Argument vector.
+ * @return Process exit code.
+ */
 int main(int argc, const char* argv[]) {
     try {
         CLIApplication app;

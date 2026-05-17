@@ -95,24 +95,24 @@ class SimulationEngine {
     bool allServersFree() const;
 
    public:
-    static constexpr int DEFAULT_TOT_CUSTOMERS       = 100;
-    static constexpr int DEFAULT_MAX_QUEUE           = 50;  ///< Default capacity
-    static constexpr int SIMULATION_TIME_CAP_DEFAULT = 99999;
-    static constexpr int DEFAULT_TRANS_MIN           = 4;
-    static constexpr int DEFAULT_TRANS_MAX           = 8;
-    static constexpr int DEFAULT_ARRIVAL_MIN         = 2;
-    static constexpr int DEFAULT_ARRIVAL_MAX         = 5;
+    static constexpr int DEFAULT_TOT_CUSTOMERS       = 100;    ///< Default customer count.
+    static constexpr int DEFAULT_MAX_QUEUE           = 50;     ///< Default capacity
+    static constexpr int SIMULATION_TIME_CAP_DEFAULT = 99999;  ///< Default safety tick cap.
+    static constexpr int DEFAULT_TRANS_MIN           = 4;      ///< Default minimum service time.
+    static constexpr int DEFAULT_TRANS_MAX           = 8;      ///< Default maximum service time.
+    static constexpr int DEFAULT_ARRIVAL_MIN         = 2;      ///< Default minimum arrival gap.
+    static constexpr int DEFAULT_ARRIVAL_MAX         = 5;      ///< Default maximum arrival gap.
 
     /**
      * @brief Constructs a SimulationEngine with randomised timing ranges.
-     * @param sim_time          Safety cap for duration (ticks).
-     * @param num_servers       Number of parallel servers.
-     * @param trans_min         Minimum service time per customer (ticks).
-     * @param trans_max         Maximum service time per customer (ticks).
-     * @param arrival_min       Minimum interval between arrivals (ticks).
-     * @param arrival_max       Maximum interval between arrivals (ticks).
-     * @param total_cust        Total number of customers to simulate.
-     * @param max_queue         Maximum capacity of the waiting queue per server (number of
+     * @param sim_time     - Safety cap for duration (ticks).
+     * @param num_servers  - Number of parallel servers.
+     * @param trans_min    - Minimum service time per customer (ticks).
+     * @param trans_max    - Maximum service time per customer (ticks).
+     * @param arrival_min  - Minimum interval between arrivals (ticks).
+     * @param arrival_max  - Maximum interval between arrivals (ticks).
+     * @param total_cust   - Total number of customers to simulate.
+     * @param max_queue    - Maximum capacity of the waiting queue per server (number of
      *                          customers).
      */
     explicit SimulationEngine(int sim_time, int num_servers, int trans_min, int trans_max,
@@ -174,30 +174,64 @@ class SimulationEngine {
     bool isFinished() const;
 
     // ── Output ────────────────────────────────────────────────────────────────
+    /**
+     * @brief Gets the current waiting queue size.
+     * @return Number of customers
+     * waiting.
+     */
     int getQueueSize() const {
         return waiting_queue_.size();
     }
 
+    /**
+     * @brief Gets the number of customers who completed service.
+     * @return Served
+     * customer count.
+     */
     int getCustomersServed() const {
         return customers_served_;
     }
 
+    /**
+     * @brief Gets the number of customer arrival attempts.
+     * @return Arrived customer
+     * count.
+     */
     int getCustomersArrived() const {
         return customers_arrived_;
     }
 
+    /**
+     * @brief Gets the number of customers rejected because the queue was full.
+     *
+     * @return Turned-away customer count.
+     */
     int getCustomersTurnedAway() const {
         return customers_turned_away_;
     }
 
+    /**
+     * @brief Gets the largest queue length observed.
+     * @return Peak queue length.
+     */
     int getPeakQueueLength() const {
         return peak_queue_length_;
     }
 
+    /**
+     * @brief Gets cumulative waiting time for served customers.
+     * @return Total
+     * waiting time in ticks.
+     */
     int getTotalWaitTime() const {
         return total_wait_time_;
     }
 
+    /**
+     * @brief Computes average waiting time for served customers.
+     * @return Average
+     * wait in ticks, or 0.0 if no customers were served.
+     */
     double getAverageWaitingTime() const {
         return customers_served_ > 0 ? static_cast<double>(total_wait_time_) / customers_served_
                                      : 0.0;

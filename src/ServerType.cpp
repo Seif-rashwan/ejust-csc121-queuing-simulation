@@ -1,3 +1,8 @@
+/**
+ * @file ServerType.cpp
+ * @brief Implements one simulation server's status and customer state.
+ */
+
 #include "ServerType.h"
 
 bool ServerType::isFree() const {
