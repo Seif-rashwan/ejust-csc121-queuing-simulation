@@ -1,3 +1,48 @@
-# Ignore Makefile language for linguist
+# Normalize text files and keep the repository LF-only.
+* text=auto eol=lf
+
+# Core C++ sources and headers.
+*.c text eol=lf
+*.cc text eol=lf
+*.cpp text eol=lf
+*.cxx text eol=lf
+*.h text eol=lf
+*.hh text eol=lf
+*.hpp text eol=lf
+*.hxx text eol=lf
+*.inl text eol=lf
+*.ipp text eol=lf
+*.ixx text eol=lf
+*.mpp text eol=lf
+*.cppm text eol=lf
+*.tpp text eol=lf
+
+# Common project and tooling files.
+*.cmake text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.sh text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+Makefile text eol=lf
+
+# Keep Windows-only executables and native libraries binary-safe.
+*.exe binary
+*.dll binary
+*.lib binary
+*.o binary
+*.obj binary
+*.a binary
+*.so binary
+*.dylib binary
+
+# Generated build and documentation output.
+build/** -text linguist-generated=true export-ignore
+bin/** -text linguist-generated=true export-ignore
+dist/** -text linguist-generated=true export-ignore
+html/** -text linguist-generated=true export-ignore
+latex/** -text linguist-generated=true export-ignore
+server/node_modules/** -text linguist-generated=true export-ignore
+
+# Ignore Makefile language for linguist.
 Makefile linguist-language=ignore
-* text=auto
