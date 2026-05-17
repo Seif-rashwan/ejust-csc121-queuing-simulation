@@ -69,10 +69,11 @@ The system operates as a standalone educational tool. It has two independent run
 │                   Run Mode                           │
 │                                                      │
 │  ┌─────────────────┐      ┌────────────────────────┐ │
-│  │  Local (JS)     │      │  Backend (C++ + Node)  │ │
+│  │  Local (backend-│      │  Backend (C++ + Node)  │ │
+│  │  backed UI)     │      │                        │ │
 │  │                 │      │                        │ │
-│  │ Browser-only    │      │ C++ engine → Node.js   │ │
-│  │ No server needed│      │ REST API → Browser     │ │
+│  │ Browser UI      │      │ C++ engine → Node.js   │ │
+│  │ uses backend API│      │ REST API → Browser     │ │
 │  └─────────────────┘      └────────────────────────┘ │
 └──────────────────────────────────────────────────────┘
 ```
@@ -168,7 +169,7 @@ The system operates as a standalone educational tool. It has two independent run
 | FR-7.4 | The frontend SHALL display a **FIFO strip** of the next 20 customers                                       |
 | FR-7.5 | The frontend SHALL display animated **server cards** per server                                            |
 | FR-7.6 | The frontend SHALL display stat cards including **Turned Away** and **Throughput**                         |
-| FR-7.7 | The frontend SHALL support two modes: **Local** (JS simulation) and **Backend** (C++ via Node.js)          |
+| FR-7.7 | The frontend SHALL support two modes: **Local** (backend-backed UI) and **Backend** (C++ via Node.js)          |
 
 ---
 
@@ -275,7 +276,7 @@ The system operates as a standalone educational tool. It has two independent run
 
 ### 7.3 STATE JSON Snapshot
 
-Emitted once per tick. Fields: `tick`, `queueSize`, `served`, `turnedAway`, `peakQueue`, `avgWait`, `nextArrival`, `running`, `totalCustomers`, `arrived`, `lastEvent`, `lastEventCustomer`, `servers[]`.
+Emitted once per tick. Fields: `tick`, `queueSize`, `served`, `turnedAway`, `peakQueue`, `avgWait`, `nextArrival`, `running`, `totalCustomers`, `arrived`, `lastEvent`, `lastEventCustomer`, `throughput`, `_fifoSlots`, `servers[]`.
 
 ### 7.4 FINAL JSON Summary
 

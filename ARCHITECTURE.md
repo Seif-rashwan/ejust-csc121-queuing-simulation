@@ -36,7 +36,7 @@ The tiers communicate over **two distinct channels**:
 Browser
 │
 │  ┌───────────────────────────────────────────────────────────┐
-│  │                  frontend/js/modules                      │
+│  │                  frontend/js/                             │
 │  │                                                           │
 │  │  ┌──────────────────────┐  ┌──────────────────────────┐   │
 │  │  │   LocalSimulation    │  │    BackendClient         │   │

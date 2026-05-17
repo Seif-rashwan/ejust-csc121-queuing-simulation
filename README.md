@@ -151,7 +151,7 @@ ejust-csc121-queuing-simulation/
 | **Server lane cards**      | Explicit assignment pattern per server (e.g. S1: C1, C4, C7…)                   |
 | **Live server cards**      | Animated busy/idle state with remaining service time countdown                  |
 | **Stat cards**             | Tick · Queue size · Served · Avg wait · Next arrival · Throughput               |
-| **Dual mode**              | **Local** (pure JS, no server needed) · **Backend** (C++ engine via Node.js)    |
+| **Dual mode**              | **Local** (frontend controller backed by Node.js/C++) · **Backend** (C++ engine via Node.js)    |
 | **Live parameter sliders** | Servers · Arrival rate · Service rate · Total customers — all hot-reload        |
 | **Auto-stop UI**           | Detects `running: false` and shows completion banner                            |
 
@@ -168,16 +168,17 @@ ejust-csc121-queuing-simulation/
 | `npm`     | ≥ 9          | Install JS dependencies     |
 | `python`  | ≥ 3.7        | Pre-commit hooks (optional) |
 
-### Option A — Local Mode (No server required)
+### Option A — Frontend-Controlled Mode
 
 ```bash
-# Just open the HTML file directly
-start frontend/index.html        # Windows
-open  frontend/index.html        # macOS
-xdg-open frontend/index.html     # Linux
+# Start the backend, then open the app in your browser
+make run
+open http://localhost:8081      # macOS
+start http://localhost:8081     # Windows
+xdg-open http://localhost:8081  # Linux
 ```
 
-Click **Local** (default) → **Start**. The pure-JavaScript simulation runs entirely in the browser.
+Click **Local** (default) → **Start**. The frontend uses its local controller, but the simulation state still comes from the Node.js/C++ backend.
 
 ### Option B — Backend Mode (C++ engine)
 
@@ -267,7 +268,7 @@ All parameters are adjustable at runtime via the web UI sliders and pushed to th
 | Total Customers    | `r-customers`   |   100   | 10–500 | Exact number of customers who will arrive |
 | Servers            | `r-servers`     |    4    |  1–10  | Number of parallel service windows        |
 | Arrival Rate (min) | `r-arrival-min` |    2    |  1–20  | Min ticks between successive arrivals     |
-| Arrival Rate (max) | `r-arrival-max` |    5    |  1–30  | Max ticks between successive arrivals     |
+| Arrival Rate (max) | `r-arrival-max` |    6    |  1–30  | Max ticks between successive arrivals     |
 | Service Time (min) | `r-service-min` |    4    |  1–20  | Min ticks a server spends per customer    |
 | Service Time (max) | `r-service-max` |   10    |  1–30  | Max ticks a server spends per customer    |
 
@@ -318,6 +319,10 @@ Base URL: `http://localhost:8081`
   "arrived":         59,       // customers who have arrived so far
   "lastEvent":       "serving",// "arrived" | "serving" | ""
   "lastEventCustomer": 59,     // customer ID of last event
+  "throughput":      0.12,     // served per tick
+  "_fifoSlots": [              // preview of queued customer IDs
+    { "id": 60, "pos": 0 }
+  ],
   "servers": [                 // one entry per server
     { "busy": true,  "remaining": 3, "customerId": 52 },
     { "busy": false, "remaining": 0, "customerId": -1 }
