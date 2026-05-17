@@ -206,6 +206,7 @@ void SimulationEngine::outputState() const {
         << ","
         << R"("running":)"           << (running_ && !isFinished() ? "true" : "false") << ","
         << R"("totalCustomers":)"    << total_arrivals_target_  << ","
+        << R"("maxQueueSize":)"      << max_queue_size_         << ","
         << R"("arrived":)"           << customers_arrived_      << ","
         << R"("lastEvent":")"        << last_event_type_        << "\","
         << R"("lastEventCustomer":)" << last_event_customer_id_ << ","
