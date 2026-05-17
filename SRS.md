@@ -101,32 +101,32 @@ The system operates as a standalone educational tool. It has two independent run
 
 ### FR-1: Simulation Parameters
 
-| ID     | Requirement                                                                                                  |
-| :----- | :----------------------------------------------------------------------------------------------------------- |
-| FR-1.1 | The system SHALL accept **Total Customers** (N): the count of customer attempts (range: 1–500)               |
-| FR-1.2 | The system SHALL accept **Number of Servers** (range: 1–10)                                                  |
-| FR-1.3 | The system SHALL accept **Arrival Interval** in ticks (min and max for randomised mode)                      |
-| FR-1.4 | The system SHALL accept **Service Time** in ticks (min and max)                                              |
-| FR-1.5 | The system SHALL accept **Max Queue Size** (range: 1–500)                                                    |
-| FR-1.6 | Parameters SHALL be adjustable at any time via the web UI without restarting the application                 |
+| ID     | Requirement                                                                                    |
+| :----- | :--------------------------------------------------------------------------------------------- |
+| FR-1.1 | The system SHALL accept **Total Customers** (N): the count of customer attempts (range: 1–500) |
+| FR-1.2 | The system SHALL accept **Number of Servers** (range: 1–10)                                    |
+| FR-1.3 | The system SHALL accept **Arrival Interval** in ticks (min and max for randomised mode)        |
+| FR-1.4 | The system SHALL accept **Service Time** in ticks (min and max)                                |
+| FR-1.5 | The system SHALL accept **Max Queue Size** (range: 1–500)                                      |
+| FR-1.6 | Parameters SHALL be adjustable at any time via the web UI without restarting the application   |
 
 ### FR-2: Customer Arrivals
 
-| ID     | Requirement                                                                                        |
-| :----- | :------------------------------------------------------------------------------------------------- |
-| FR-2.1 | A new customer SHALL attempt to arrive at a random interval until exactly `N` attempts occur       |
-| FR-2.2 | If the queue is at capacity, the customer SHALL be recorded as **Turned Away** and leave the system|
-| FR-2.3 | Each customer SHALL be assigned a unique sequential ID                                             |
-| FR-2.4 | Each customer entering the queue SHALL record its arrival tick for waiting-time calculation        |
+| ID     | Requirement                                                                                         |
+| :----- | :-------------------------------------------------------------------------------------------------- |
+| FR-2.1 | A new customer SHALL attempt to arrive at a random interval until exactly `N` attempts occur        |
+| FR-2.2 | If the queue is at capacity, the customer SHALL be recorded as **Turned Away** and leave the system |
+| FR-2.3 | Each customer SHALL be assigned a unique sequential ID                                              |
+| FR-2.4 | Each customer entering the queue SHALL record its arrival tick for waiting-time calculation         |
 
 ### FR-3: Queue Management
 
-| ID     | Requirement                                                                                        |
-| :----- | :------------------------------------------------------------------------------------------------- |
-| FR-3.1 | The waiting queue SHALL be implemented using a **FIFO** ordering principle                         |
-| FR-3.2 | Queue capacity SHALL be configurable via the `maxQueueSize` parameter                              |
-| FR-3.3 | The queue SHALL correctly maintain state even when at full capacity                                |
-| FR-3.4 | Every customer remaining in queue SHALL have their waiting time incremented once per tick          |
+| ID     | Requirement                                                                               |
+| :----- | :---------------------------------------------------------------------------------------- |
+| FR-3.1 | The waiting queue SHALL be implemented using a **FIFO** ordering principle                |
+| FR-3.2 | Queue capacity SHALL be configurable via the `maxQueueSize` parameter                     |
+| FR-3.3 | The queue SHALL correctly maintain state even when at full capacity                       |
+| FR-3.4 | Every customer remaining in queue SHALL have their waiting time incremented once per tick |
 
 ### FR-4: Server Management
 
@@ -137,39 +137,39 @@ The system operates as a standalone educational tool. It has two independent run
 | FR-4.3 | Server assignment SHALL use **round-robin** — a `next_server_hint` pointer advances after each assignment, distributing customers evenly across all servers |
 | FR-4.4 | A busy server SHALL decrement its remaining service time by 1 each tick                                                                                     |
 | FR-4.5 | When remaining service time reaches 0, the server SHALL transition to **Free**                                                                              |
-| FR-4.6 | The system SHALL track two parallel server state representations: real `ServerType` objects and a shadow state array. Both MUST agree.                       |
+| FR-4.6 | The system SHALL track two parallel server state representations: real `ServerType` objects and a shadow state array. Both MUST agree.                      |
 
 ### FR-5: Simulation Termination
 
-| ID     | Requirement                                                                                                                                      |
-| :----- | :----------------------------------------------------------------------------------------------------------------------------------------------- |
-| FR-5.1 | The simulation SHALL stop when ALL attempts are processed AND queue is empty AND all servers are free                                            |
-| FR-5.2 | A **safety cap** SHALL prevent infinite loops in degenerate configurations                                                                      |
-| FR-5.3 | The final tick SHALL emit `running: false` in its state snapshot                                                                                 |
+| ID     | Requirement                                                                                           |
+| :----- | :---------------------------------------------------------------------------------------------------- |
+| FR-5.1 | The simulation SHALL stop when ALL attempts are processed AND queue is empty AND all servers are free |
+| FR-5.2 | A **safety cap** SHALL prevent infinite loops in degenerate configurations                            |
+| FR-5.3 | The final tick SHALL emit `running: false` in its state snapshot                                      |
 
 ### FR-6: Statistics & Output
 
-| ID     | Requirement                                                                                              |
-| :----- | :------------------------------------------------------------------------------------------------------- |
-| FR-6.1 | The system SHALL report **total customers arrived** (attempts)                                           |
-| FR-6.2 | The system SHALL report **total customers served**                                                       |
-| FR-6.3 | The system SHALL report **total customers turned away**                                                  |
-| FR-6.4 | The system SHALL report **peak queue length**                                                            |
-| FR-6.5 | The system SHALL report **average waiting time** per served customer                                     |
-| FR-6.6 | The C++ engine SHALL emit one `STATE:{JSON}` line per tick to stdout                                     |
-| FR-6.7 | The C++ engine SHALL emit one `FINAL:{JSON}` line on completion                                          |
+| ID     | Requirement                                                          |
+| :----- | :------------------------------------------------------------------- |
+| FR-6.1 | The system SHALL report **total customers arrived** (attempts)       |
+| FR-6.2 | The system SHALL report **total customers served**                   |
+| FR-6.3 | The system SHALL report **total customers turned away**              |
+| FR-6.4 | The system SHALL report **peak queue length**                        |
+| FR-6.5 | The system SHALL report **average waiting time** per served customer |
+| FR-6.6 | The C++ engine SHALL emit one `STATE:{JSON}` line per tick to stdout |
+| FR-6.7 | The C++ engine SHALL emit one `FINAL:{JSON}` line on completion      |
 
 ### FR-7: Frontend Visualisation
 
-| ID     | Requirement                                                                                                |
-| :----- | :--------------------------------------------------------------------------------------------------------- |
-| FR-7.1 | The frontend SHALL display a **circular ring canvas** showing occupied/empty slots                         |
-| FR-7.2 | The ring SHALL dynamically scale to the configured capacity                                                |
-| FR-7.3 | The frontend SHALL display an **arrival progress bar** showing `arrived / totalCustomers %`                |
-| FR-7.4 | The frontend SHALL display a **FIFO strip** of the next 20 customers                                       |
-| FR-7.5 | The frontend SHALL display animated **server cards** per server                                            |
-| FR-7.6 | The frontend SHALL display stat cards including **Turned Away** and **Throughput**                         |
-| FR-7.7 | The frontend SHALL support two modes: **Local** (backend-backed UI) and **Backend** (C++ via Node.js)          |
+| ID     | Requirement                                                                                           |
+| :----- | :---------------------------------------------------------------------------------------------------- |
+| FR-7.1 | The frontend SHALL display a **circular ring canvas** showing occupied/empty slots                    |
+| FR-7.2 | The ring SHALL dynamically scale to the configured capacity                                           |
+| FR-7.3 | The frontend SHALL display an **arrival progress bar** showing `arrived / totalCustomers %`           |
+| FR-7.4 | The frontend SHALL display a **FIFO strip** of the next 20 customers                                  |
+| FR-7.5 | The frontend SHALL display animated **server cards** per server                                       |
+| FR-7.6 | The frontend SHALL display stat cards including **Turned Away** and **Throughput**                    |
+| FR-7.7 | The frontend SHALL support two modes: **Local** (backend-backed UI) and **Backend** (C++ via Node.js) |
 
 ---
 
@@ -194,11 +194,11 @@ The system operates as a standalone educational tool. It has two independent run
 
 ### NFR-3: Reliability
 
-| ID      | Requirement                                                                                    |
-| :------ | :--------------------------------------------------------------------------------------------- |
-| NFR-3.1 | The C++ engine MUST NOT write anything other than `STATE:{…}` or `FINAL:{…}` to stdout         |
-| NFR-3.2 | Debug `std::cout` statements are PROHIBITED in `SimulationEngine.cpp`                         |
-| NFR-3.3 | The Node.js server MUST handle fragmented stdout chunks without crashing                       |
+| ID      | Requirement                                                                            |
+| :------ | :------------------------------------------------------------------------------------- |
+| NFR-3.1 | The C++ engine MUST NOT write anything other than `STATE:{…}` or `FINAL:{…}` to stdout |
+| NFR-3.2 | Debug `std::cout` statements are PROHIBITED in `SimulationEngine.cpp`                  |
+| NFR-3.3 | The Node.js server MUST handle fragmented stdout chunks without crashing               |
 
 ### NFR-4: Maintainability
 
@@ -288,8 +288,8 @@ Emitted once on simulation exit. Fields: `totalSimulationTime`, `totalCustomersA
 
 | ID   | Constraint / Assumption                                                                                              |
 | :--- | :------------------------------------------------------------------------------------------------------------------- |
-| C-1  | The simulation uses **stochastic randomness in the C++ backend** (random intervals and service times per run) |
-| C-2  | Both Local (JS) and Backend (C++) modes use identical stochastic logic for consistency |
+| C-1  | The simulation uses **stochastic randomness in the C++ backend** (random intervals and service times per run)        |
+| C-2  | Both Local (JS) and Backend (C++) modes use identical stochastic logic for consistency                               |
 | C-3  | The system does NOT support priority queuing in this version                                                         |
 | C-4  | All customers are identical in priority — pure FIFO ordering                                                         |
 | C-5  | The web server runs on `localhost` only; no authentication is provided                                               |

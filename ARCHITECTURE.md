@@ -225,7 +225,7 @@ This ensures `customersServed == totalCustomers` on every normal exit.
 │ + getFreeServerID│  │ - transaction_time_ : int│
 │ + setServerBusy │  │──────────────────────────│
 │ + updateServers │  │ + incrementWaitingTime() │
-│ + getNumberOfBusy│  │ + getTransactionTime()   │
+│ + getNumberOfBusy│ │ + getTransactionTime()  │
 └────────┬────────┘  └──────────────────────────┘
          │ contains 1..*
          ▼

@@ -124,13 +124,13 @@ ejust-csc121-queuing-simulation/
 | Feature                   | Details                                                                                              |
 | :------------------------ | :--------------------------------------------------------------------------------------------------- |
 | **Tick-based clock**      | Deterministic discrete-time loop; each tick = one time unit                                          |
-| **Circular array queue**  | Fixed-capacity FIFO; configurable `maxQueueSize` (turns away customers if full)    |
+| **Circular array queue**  | Fixed-capacity FIFO; configurable `maxQueueSize` (turns away customers if full)                      |
 | **Total-arrivals target** | `totalCustomers` = exact number of customers who will arrive; simulation ends when all are served    |
 | **Round-robin dispatch**  | `next_server_hint` pointer rotates after every assignment — no server starves                        |
 | **Shadow server states**  | Separate `server_states[]` array mirrors real `ServerListType` for consistent UI + termination logic |
 | **Auto termination**      | Stops exactly when: `allArrived ∧ queueEmpty ∧ allServersFree` — no wasted ticks                     |
 | **JSON stdout stream**    | Every tick emits `STATE:{…}` on stdout; final `FINAL:{…}` on completion                              |
-| **Safety cap**            | `safetyTime = totalCustomers × max(arrivalMax, serviceMax) × 10` prevents infinite loops |
+| **Safety cap**            | `safetyTime = totalCustomers × max(arrivalMax, serviceMax) × 10` prevents infinite loops             |
 
 ### Node.js Server
 
@@ -143,17 +143,17 @@ ejust-csc121-queuing-simulation/
 
 ### Frontend Visualisation
 
-| Feature                    | Details                                                                         |
-| :------------------------- | :------------------------------------------------------------------------------ |
-| **Circular ring canvas**   | Animated arc shows occupied/empty/front/rear slots; scales dot size to capacity |
-| **Arrival progress bar**   | Green→blue gradient bar: `Arrived X / N customers (%)`                          |
-| **FIFO strip**             | Next 20 customers colour-coded by assigned server                               |
-| **Server lane cards**      | Explicit assignment pattern per server (e.g. S1: C1, C4, C7…)                   |
-| **Live server cards**      | Animated busy/idle state with remaining service time countdown                  |
-| **Stat cards**             | Tick · Queue size · Served · Avg wait · Next arrival · Throughput               |
-| **Dual mode**              | **Local** (frontend controller backed by Node.js/C++) · **Backend** (C++ engine via Node.js)    |
-| **Live parameter sliders** | Servers · Arrival rate · Service rate · Total customers — all hot-reload        |
-| **Auto-stop UI**           | Detects `running: false` and shows completion banner                            |
+| Feature                    | Details                                                                                      |
+| :------------------------- | :------------------------------------------------------------------------------------------- |
+| **Circular ring canvas**   | Animated arc shows occupied/empty/front/rear slots; scales dot size to capacity              |
+| **Arrival progress bar**   | Green→blue gradient bar: `Arrived X / N customers (%)`                                       |
+| **FIFO strip**             | Next 20 customers colour-coded by assigned server                                            |
+| **Server lane cards**      | Explicit assignment pattern per server (e.g. S1: C1, C4, C7…)                                |
+| **Live server cards**      | Animated busy/idle state with remaining service time countdown                               |
+| **Stat cards**             | Tick · Queue size · Served · Avg wait · Next arrival · Throughput                            |
+| **Dual mode**              | **Local** (frontend controller backed by Node.js/C++) · **Backend** (C++ engine via Node.js) |
+| **Live parameter sliders** | Servers · Arrival rate · Service rate · Total customers — all hot-reload                     |
+| **Auto-stop UI**           | Detects `running: false` and shows completion banner                                         |
 
 ---
 
@@ -216,10 +216,10 @@ The project uses GNU Make for building. The build system is organized with separ
 
 ```mathematica
 build/
-├── bin/           # Final executables
+├── bin/                      # Final executables
 │   ├── simulation.exe        # Web server mode (Node.js spawns this)
 │   └── simulation_cli.exe    # Standalone CLI mode
-└── obj/           # Intermediate object files (.o) and dependencies (.d)
+└── obj/                      # Intermediate object files (.o) and dependencies (.d)
     ├── CustomerType.o
     ├── ServerType.o
     ├── ServerListType.o
