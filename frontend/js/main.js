@@ -1,4 +1,7 @@
-/** Front-end entry point. Wires all event handlers, sliders, and initialization. */
+/**
+ * @file main.js
+ * @brief Front-end entry point that wires controls, sliders, theme, and initialization.
+ */
 
 import { RING } from "./ring.js";
 import { local } from "./simulation.js";
@@ -11,13 +14,20 @@ import {
   updateStatusBar,
 } from "./backend.js";
 
+// ──────────────────────────────────────────────────────────
 // ── Utility ───────────────────────────────────────────────
 
+/**
+ * Writes text into an element when it exists.
+ * @param {string} id Element id.
+ * @param {*} val Value to render.
+ */
 function setText(id, val) {
   const el = document.getElementById(id);
   if (el) el.textContent = val;
 }
 
+// ──────────────────────────────────────────────────────────
 // ── Initialization ────────────────────────────────────────
 
 RING.init();
@@ -31,6 +41,7 @@ updateServiceLabel();
 
 BACKEND_CONFIG.enabled = true;
 
+// ──────────────────────────────────────────────────────────
 // ── Control Buttons ───────────────────────────────────────
 
 document.getElementById("btn-pause").onclick = async () => {
@@ -75,6 +86,7 @@ document.getElementById("btn-start").onclick = async () => {
   startLoop();
 };
 
+// ──────────────────────────────────────────────────────────
 // ── Mode Switching ────────────────────────────────────────
 
 document.getElementById("local-mode").onclick = () => {
@@ -89,6 +101,7 @@ document.getElementById("backend-mode").onclick = () => {
   updateStatusBar("● Backend mode connected", "connected");
 };
 
+// ──────────────────────────────────────────────────────────
 // ── Stats Modal ───────────────────────────────────────────
 
 document.getElementById("btn-stats").onclick = () =>
@@ -103,8 +116,14 @@ document.getElementById("stats-modal").onclick = (e) => {
   }
 };
 
+// ──────────────────────────────────────────────────────────
 // ── Sliders ───────────────────────────────────────────────
 
+/**
+ * Resets the backend and resumes it when it was running before a control change.
+ * @param {string} message Status message shown after reset.
+ * @returns {Promise<void>}
+ */
 async function resetAndResumeIfNeeded(message) {
   const wasRunning = local.running;
 
@@ -194,16 +213,24 @@ document.getElementById("r-speed").oninput = () => {
   startLoop();
 };
 
+// ──────────────────────────────────────────────────────────
 // ── Label Helpers ─────────────────────────────────────────
 
+/**
+ * Refreshes the displayed arrival interval label.
+ */
 function updateArrivalLabel() {
-  setText("v-arrival", local.arrivalMin + "-" + local.arrivalMax);
+  setText("v-arrival", `${local.arrivalMin}-${local.arrivalMax}`);
 }
 
+/**
+ * Refreshes the displayed service-time label.
+ */
 function updateServiceLabel() {
-  setText("v-service", local.serviceMin + "-" + local.serviceMax);
+  setText("v-service", `${local.serviceMin}-${local.serviceMax}`);
 }
 
+// ──────────────────────────────────────────────────────────
 // ── Theme Toggle ──────────────────────────────────────────
 
 const themeBtn = document.getElementById("theme-toggle");

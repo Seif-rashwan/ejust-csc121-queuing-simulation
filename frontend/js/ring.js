@@ -1,8 +1,17 @@
+/**
+ * @file ring.js
+ * @brief Canvas renderer for the circular-array queue visualization.
+ */
+
+/** Circular queue canvas controller. */
 export const RING = {
   MAX_SLOTS: 100,
   canvas: null,
   ctx: null,
 
+  /**
+   * Initializes the canvas and drawing context.
+   */
   init() {
     this.canvas = document.getElementById("ring-canvas");
     this.ctx = this.canvas.getContext("2d");

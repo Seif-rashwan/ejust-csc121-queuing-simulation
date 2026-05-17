@@ -1,3 +1,8 @@
+/*
+ * Queuing simulation UI stylesheet.
+ * Defines theme variables, responsive layout, controls, and visualization styling.
+ */
+
 /* THEME VARIABLES: */
 :root {
   --bg-body: linear-gradient(135deg, #0f0f1e 0%, #1a1d23 100%);

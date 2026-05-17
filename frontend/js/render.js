@@ -1,15 +1,22 @@
 /**
+ * @file render.js
  * All DOM rendering. Reads state objects and updates the UI.
  * Never calls fetch. Never runs simulation logic.
  */
 
 import { RING } from "./ring.js";
 
+/**
+ * Writes text into an element when it exists.
+ * @param {string} id Element id.
+ * @param {*} val Value to render.
+ */
 function setText(id, val) {
   const el = document.getElementById(id);
   if (el) el.textContent = val;
 }
 
+/** Stable palette used to associate queue positions with servers. */
 const SERVER_COLORS = [
   "#6c8aff",
   "#f7b731",

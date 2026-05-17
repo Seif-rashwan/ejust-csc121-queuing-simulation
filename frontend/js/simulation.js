@@ -1,5 +1,16 @@
+/**
+ * @file simulation.js
+ * @brief Browser-side wrapper around the REST simulation API.
+ */
+
 const API_BASE = "/api";
 
+/**
+ * Sends a JSON request to the simulation API.
+ * @param {string} path API path after /api.
+ * @param {RequestInit} [options={}] Fetch options.
+ * @returns {Promise<Object>} Parsed JSON response.
+ */
 async function request(path, options = {}) {
   const res = await fetch(`${API_BASE}${path}`, {
     headers: { "Content-Type": "application/json" },
@@ -10,6 +21,7 @@ async function request(path, options = {}) {
   return await res.json();
 }
 
+/** Local simulation facade backed by the C++ REST service. */
 export const local = {
   running: false,
 
@@ -20,11 +32,19 @@ export const local = {
   serviceMax: 15,
   maxCustomers: 100,
 
+  /**
+   * Resets the backend simulation and returns normalized state.
+   * @returns {Promise<Object>} Current normalized state.
+   */
   async reset() {
     await request("/reset", { method: "POST" });
     return await this.getState();
   },
 
+  /**
+   * Applies configuration and starts the simulation.
+   * @returns {Promise<Object>} Current normalized state.
+   */
   async start() {
     await request("/config", {
       method: "POST",
@@ -44,16 +64,28 @@ export const local = {
     return await this.getState();
   },
 
+  /**
+   * Toggles pause/resume and returns the latest state.
+   * @returns {Promise<Object>} Current normalized state.
+   */
   async pause() {
     const state = await request("/pause", { method: "POST" });
     this.running = state.running;
     return await this.getState();
   },
 
+  /**
+   * Gets one state frame for compatibility with older tick callers.
+   * @returns {Promise<Object>} Current normalized state.
+   */
   async tick_fn() {
     return await this.getState();
   },
 
+  /**
+   * Fetches and normalizes backend state.
+   * @returns {Promise<Object>} Normalized state for renderers.
+   */
   async getState() {
     const state = await request("/state");
     const normalized = normalizeState(state);
@@ -61,16 +93,30 @@ export const local = {
     return normalized;
   },
 
+  /**
+   * Rebuilds server state by resetting the backend simulation.
+   * @returns {Promise<Object>} Current normalized state.
+   */
   async rebuildServers() {
     return await this.reset();
   },
 
+  /**
+   * Updates the customer cap and resets the simulation.
+   * @param {number|string} newMax New customer count.
+   * @returns {Promise<Object>} Current normalized state.
+   */
   async resizeQueue(newMax) {
     this.maxCustomers = Number(newMax);
     return await this.reset();
   },
 };
 
+/**
+ * Converts backend state variants into the shape expected by renderers.
+ * @param {Object} state Raw backend state.
+ * @returns {Object} Normalized UI state.
+ */
 function normalizeState(state) {
   return {
     tick: state.tick ?? 0,
