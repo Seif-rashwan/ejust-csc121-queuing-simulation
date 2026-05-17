@@ -77,14 +77,15 @@ ejust-csc121-queuing-simulation/
 │   ├── ServerListType.h
 │   ├── ServerType.h
 │   ├── WaitingCustomerQueue.h
-│   └── WebSimulation.h
+│   └── SimulationEngine.h
 ├── src/
 │   ├── CustomerType.cpp            ← customer data model
 │   ├── ServerType.cpp              ← single-server FSM
 │   ├── ServerListType.cpp          ← server pool (round-robin dispatch)
 │   ├── WaitingCustomerQueue.cpp    ← circular-array FIFO queue
-│   ├── Main.cpp                    ← original console entry point
-│   └── WebSimulation.cpp           ← web-facing engine (JSON stdout)
+│   ├── CliMain.cpp                 ← standalone CLI interactive entry point
+│   ├── WebMain.cpp                 ← web-facing entry point (JSON stdout)
+│   └── SimulationEngine.cpp           ← pure C++ simulation engine
 ├── server/
 │   ├── node_modules/
 │   ├── package.json
@@ -123,13 +124,13 @@ ejust-csc121-queuing-simulation/
 | Feature                   | Details                                                                                              |
 | :------------------------ | :--------------------------------------------------------------------------------------------------- |
 | **Tick-based clock**      | Deterministic discrete-time loop; each tick = one time unit                                          |
-| **Circular array queue**  | Fixed-capacity FIFO; size = `totalCustomers` (auto-sized, never turns anyone away)                   |
+| **Circular array queue**  | Fixed-capacity FIFO; configurable `maxQueueSize` (turns away customers if full)    |
 | **Total-arrivals target** | `totalCustomers` = exact number of customers who will arrive; simulation ends when all are served    |
 | **Round-robin dispatch**  | `next_server_hint` pointer rotates after every assignment — no server starves                        |
 | **Shadow server states**  | Separate `server_states[]` array mirrors real `ServerListType` for consistent UI + termination logic |
 | **Auto termination**      | Stops exactly when: `allArrived ∧ queueEmpty ∧ allServersFree` — no wasted ticks                     |
 | **JSON stdout stream**    | Every tick emits `STATE:{…}` on stdout; final `FINAL:{…}` on completion                              |
-| **Safety cap**            | `simulation_time = totalCustomers × arrivalInterval × 20` prevents infinite loops                    |
+| **Safety cap**            | `safetyTime = totalCustomers × max(arrivalMax, serviceMax) × 10` prevents infinite loops |
 
 ### Node.js Server
 
@@ -222,7 +223,7 @@ build/
     ├── ServerType.o
     ├── ServerListType.o
     ├── WaitingCustomerQueue.o
-    ├── WebSimulation.o
+    ├── SimulationEngine.o
     └── Main.o
 ```
 
@@ -266,10 +267,11 @@ All parameters are adjustable at runtime via the web UI sliders and pushed to th
 | Total Customers    | `r-customers`   |   100   | 10–500 | Exact number of customers who will arrive |
 | Servers            | `r-servers`     |    4    |  1–10  | Number of parallel service windows        |
 | Arrival Rate (min) | `r-arrival-min` |    2    |  1–20  | Min ticks between successive arrivals     |
+| Arrival Rate (max) | `r-arrival-max` |    5    |  1–30  | Max ticks between successive arrivals     |
 | Service Time (min) | `r-service-min` |    4    |  1–20  | Min ticks a server spends per customer    |
 | Service Time (max) | `r-service-max` |   10    |  1–30  | Max ticks a server spends per customer    |
 
-> **Note:** "Total Customers" is the *simulation workload*; how many people walk through the door. The queue buffer is auto-sized to this number so no customer is ever turned away due to capacity.
+> **Note:** "Total Customers" is the *simulation workload*; how many people walk through the door. If the queue hits its `maxQueueSize` capacity, newly arriving customers are turned away and recorded as such.
 
 ---
 
@@ -307,7 +309,7 @@ Base URL: `http://localhost:8081`
   "tick":            559,      // current clock tick
   "queueSize":       12,       // customers waiting in queue
   "served":          47,       // total customers fully served
-  "turnedAway":      0,        // customers rejected (always 0 with auto-sized queue)
+  "turnedAway":      0,        // customers rejected due to full queue capacity
   "peakQueue":       18,       // maximum queue size ever recorded
   "avgWait":         6.4,      // average waiting time (ticks) per served customer
   "nextArrival":     2,        // ticks until next customer arrives

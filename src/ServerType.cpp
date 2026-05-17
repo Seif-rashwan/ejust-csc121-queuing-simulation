@@ -54,4 +54,4 @@ int ServerType::getCurrentCustomerTransactionTime() const {
     return current_customer_.getTransactionTime();
 }
 
-ServerType::ServerType() : status_("free"), transaction_time_(0) {}
+ServerType::ServerType() : status_("free") {}
