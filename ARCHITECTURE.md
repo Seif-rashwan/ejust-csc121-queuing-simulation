@@ -64,53 +64,55 @@ Node.js (server.js)
 │  ┌───────────────────────────────────────────────────────────┐
 │  │  Express App                                              │
 │  │                                                           │
-│  │  GET  /api/state   ──► pop stateQueue[0] → return JSON   │
-│  │  POST /api/config  ──► update config{}                   │
-│  │  POST /api/start   ──► kill old process                  │
-│  │                        spawn simulation.exe              │
-│  │                        stateQueue = []                   │
-│  │  POST /api/pause   ──► kill process                      │
-│  │  POST /api/reset   ──► kill + clear state                │
+│  │  GET  /api/state   ──► pop stateQueue[0] → return JSON    │
+│  │  POST /api/config  ──► update config{}                    │
+│  │  POST /api/start   ──► kill old process                   │
+│  │                        spawn simulation.exe               │
+│  │                        stateQueue = []                    │
+│  │  POST /api/pause   ──► kill process                       │
+│  │  POST /api/reset   ──► kill + clear state                 │
 │  │                                                           │
 │  │  stdout reader:                                           │
 │  │  lineBuffer += chunk                                      │
-│  │  split('\n') → parseLine(line)                           │
-│  │    "STATE:{…}" → stateQueue.push(JSON.parse(...))        │
-│  │    "FINAL:{…}" → log finalStats                          │
+│  │  split('\n') → parseLine(line)                            │
+│  │    "STATE:{…}" → stateQueue.push(JSON.parse(...))         │
+│  │    "FINAL:{…}" → log finalStats                           │
 │  └───────────────────────────────────────────────────────────┘
 │
 │  child_process.spawn() stdout pipe
 │
 C++ simulation.exe
 │
-│  ┌───────────────────────────────────────────────────────────┐
-│  │  main()                                                   │
-│  │  ├─ parse argv[1..5]                                      │
-│  │  │   argv[1] safetyTimeCap                                │
-│  │  │   argv[2] numServers                                   │
-│  │  │   argv[3] serviceTime                                  │
-│  │  │   argv[4] arrivalInterval                              │
-│  │  │   argv[5] totalCustomers                               │
-│  │  │   │   ├── Main.cpp       ← original console entry point
-│  │  │   └── WebSimulation.cpp  ← web-facing engine (JSON stdout)
-│  │  │                                                        │
-│  │  ├─ WebSimulation sim(...)                                │
-│  │  │   ├─ ServerListType* servers      (real server pool)   │
-│  │  │   ├─ CustomerType* customer_array (circular array)     │
-│  │  │   ├─ server_states[]              (shadow state)       │
-│  │  │   └─ next_server_hint             (round-robin ptr)    │
-│  │  │                                                        │
-│  │  ├─ sim.outputState()  ← tick 0                           │
-│  │  │                                                        │
-│  │  └─ while (!sim.isFinished())                             │
-│  │       sim.tick()                                          │
-│  │       │ 1. decrement shadow states; free + count_served   │
-│  │       │ 2. updateServers() on real ServerListType         │
-│  │       │ 3. enqueue new arrivals (≤ totalCustomers)        │
-│  │       │ 4. round-robin assign free servers                │
-│  │       sim.outputState()  → "STATE:{…}\n" to stdout        │
-│  │                                                           │
-│  └─ sim.outputFinalStats() → "FINAL:{…}\n" to stdout         │
+│  ┌────────────────────────────────────────────────────────────┐
+│  │  main()                                                    │
+│  │  ├─ parse argv[1..7]                                       │
+│  │  │   argv[1] safetyTimeCap                                 │
+│  │  │   argv[2] numServers                                    │
+│  │  │   argv[3] transactionTimeMin                            │
+│  │  │   argv[4] transactionTimeMax                            │
+│  │  │   argv[5] arrivalIntervalMin                            │
+│  │  │   argv[6] arrivalIntervalMax                            │
+│  │  │   argv[7] totalCustomers                                │
+│  │  │   │   ├── CliMain.cpp    ← CLI interactive entry point  │
+│  │  │   └── WebMain.cpp        ← Web-facing entry point (JSON)│
+│  │  │                                                         │
+│  │  ├─ SimulationEngine sim(...)                              │
+│  │  │   ├─ ServerListType* servers      (real server pool)    │
+│  │  │   ├─ CustomerType* customer_array (circular array)      │
+│  │  │   ├─ server_states[]              (shadow state)        │
+│  │  │   └─ next_server_hint             (round-robin ptr)     │
+│  │  │                                                         │
+│  │  ├─ sim.outputState()  ← tick 0                            │
+│  │  │                                                         │
+│  │  └─ while (!sim.isFinished())                              │
+│  │       sim.tick()                                           │
+│  │       │ 1. decrement shadow states; free + count_served    │
+│  │       │ 2. updateServers() on real ServerListType          │
+│  │       │ 3. enqueue new arrivals (≤ totalCustomers)         │
+│  │       │ 4. round-robin assign free servers                 │
+│  │       sim.outputState()  → "STATE:{…}\n" to stdout         │
+│  │                                                            │
+│  └─ sim.outputFinalStats() → "FINAL:{…}\n" to stdout          │
 └───────────────────────────────────────────────────────────────┘
 ```
 
@@ -157,15 +159,12 @@ Tick 12: C4 arrives → hint=0 → assign S0 → hint=1  (S0 is free again)
 
 This guarantees uniform load distribution regardless of traffic intensity.
 
-### 3.4 Total Customers = Queue Capacity
+### 3.4 Configurable Queue Capacity (maxQueueSize)
 
-**Problem:** Previously `maxCustomers` meant "queue buffer size". Users setting 170 expected 170 to arrive, but it just meant the queue could hold 170 at once — arrivals continued indefinitely.
-
-**Solution:**
-- `totalCustomers` = exact number of customers who will ever arrive (simulation workload)
-- Queue buffer = `totalCustomers` (always large enough; no one turned away)
-- Simulation stops when all N have arrived **and** been served
-- "Turned away" is always 0 by construction
+- `totalCustomers` = exact number of customers who will attempt to arrive.
+- `maxQueueSize` = physical buffer capacity.
+- If queue is full, `customers_turned_away` increments; the simulation continues with the next arrival event.
+- Simulation stops when all N attempts have been processed (served or turned away).
 
 ### 3.5 Auto-Stop Condition
 
@@ -188,20 +187,20 @@ This ensures `customersServed == totalCustomers` on every normal exit.
 
 ```cpp
 ┌──────────────────────────────────────────────────────────┐
-│                   WebSimulation                          │
+│                   SimulationEngine                       │
 │──────────────────────────────────────────────────────────│
 │ - simulation_time    : int                               │
 │ - number_of_servers  : int                               │
-│ - transaction_time   : int                               │
-│ - time_between_arrivals : int                            │
+│ - transaction_time_min : int                             │
+│ - transaction_time_max : int                             │
+│ - arrival_interval_min : int                             │
+│ - arrival_interval_max : int                             │
 │ - total_arrivals_target : int                            │
+│ - max_queue_size      : int                              │
 │ - peak_queue_length  : int                               │
 │ - next_server_hint   : int        ← round-robin ptr      │
 │ - servers            : ServerListType*                   │
-│ - customer_array     : CustomerType*  ← circular array   │
-│ - queue_front        : int                               │
-│ - queue_rear         : int                               │
-│ - queue_size         : int                               │
+│ - waiting_queue      : WaitingCustomerQueue<CustomerType>│
 │ - server_states      : vector<ServerState>  ← shadow     │
 │ - customers_arrived  : int                               │
 │ - customers_served   : int                               │
@@ -256,7 +255,7 @@ Browser          Node.js           C++ Process
    │                │                   │
    │  POST /start   │                   │
    │───────────────►│                   │
-   │                │  spawn(exe, args)  │
+   │                │  spawn(exe, args) │
    │                │──────────────────►│
    │                │                   │ tick() × N (fast)
    │                │◄──────────────────│ "STATE:{…}\n" × N
@@ -308,9 +307,10 @@ tick N
 │         if transactionTime == 0: setFree()
 │
 ├─ 3. CUSTOMER ARRIVALS
-│     if (clock % arrivalInterval == 0) AND (arrived < totalCustomers):
+│     if (clock >= next_arrival_tick) AND (arrived < totalCustomers):
 │       arrived++
-│       enqueue(new CustomerType(...))
+│       enqueue(new CustomerType(..., txnTime=random(transMin, transMax)))
+│       next_arrival_tick = clock + random(arrivalMin, arrivalMax)
 │
 ├─ 4. ROUND-ROBIN SERVER ASSIGNMENT
 │     rr_id = getFreeServerRoundRobin()   ← checks shadow state

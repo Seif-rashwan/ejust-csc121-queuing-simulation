@@ -1,323 +1,263 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Queuing System Simulation</title>
-    <link rel="stylesheet" href="style.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    />
-  </head>
 
-  <body>
-    <div id="app">
-      <header class="header">
-        <div class="title">
-          <i class="fas fa-users"></i>
-          Queuing System Simulation
-        </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Queuing System Simulation</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
 
-        <div class="mode-toggle">
-          <button class="mode-btn active" id="local-mode" data-mode="local">
-            <i class="fas fa-laptop"></i> Local
-          </button>
-          <button class="mode-btn" id="backend-mode" data-mode="backend">
-            <i class="fas fa-server"></i> Backend
-          </button>
-        </div>
-      </header>
+<body>
+  <div id="app">
+    <header class="header">
+      <div class="title">
+        <i class="fas fa-users"></i>
+        Queuing System Simulation
+      </div>
 
-      <!-- ── STAT CARDS ─────────────────────────────────────────── -->
-      <div class="stats-grid">
-        <div class="stat-card primary">
-          <div class="stat-icon"><i class="fas fa-clock"></i></div>
-          <div class="stat-content">
-            <div class="stat-label">TICK</div>
-            <div class="stat-val" id="s-tick">0</div>
-          </div>
-        </div>
+      <div class="mode-toggle">
+        <button class="theme-btn" id="theme-toggle" title="Toggle light/dark mode">
+          <i class="fas fa-sun"></i>
+        </button>
+        <button class="mode-btn active" id="local-mode" data-mode="local">
+          <i class="fas fa-laptop"></i> Local
+        </button>
+        <button class="mode-btn" id="backend-mode" data-mode="backend">
+          <i class="fas fa-server"></i> Backend
+        </button>
+      </div>
+    </header>
 
-        <div class="stat-card secondary">
-          <div class="stat-icon"><i class="fas fa-users-line"></i></div>
-          <div class="stat-content">
-            <div class="stat-label">QUEUE</div>
-            <div class="stat-val" id="s-queue">0</div>
-          </div>
-        </div>
-
-        <div class="stat-card success">
-          <div class="stat-icon"><i class="fas fa-user-check"></i></div>
-          <div class="stat-content">
-            <div class="stat-label">LEFT BANK</div>
-            <div class="stat-val" id="s-served">0</div>
-          </div>
-        </div>
-
-        <div class="stat-card warning">
-          <div class="stat-icon"><i class="fas fa-hourglass-half"></i></div>
-          <div class="stat-content">
-            <div class="stat-label">AVG WAIT</div>
-            <div class="stat-val" id="s-wait">0.0</div>
-          </div>
-        </div>
-
-        <div class="stat-card info">
-          <div class="stat-icon"><i class="fas fa-person-walking"></i></div>
-          <div class="stat-content">
-            <div class="stat-label">NEXT ARRIVAL</div>
-            <div class="stat-val" id="s-next-arrival">0</div>
-          </div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
-          <div class="stat-content">
-            <div class="stat-label">THROUGHPUT</div>
-            <div class="stat-val" id="s-throughput">0.0</div>
-          </div>
+    <!-- ── STAT CARDS ─────────────────────────────────────────── -->
+    <div class="stats-grid">
+      <div class="stat-card primary">
+        <div class="stat-icon"><i class="fas fa-clock"></i></div>
+        <div class="stat-content">
+          <div class="stat-label">TICK</div>
+          <div class="stat-val" id="s-tick">0</div>
         </div>
       </div>
 
-      <!-- ── CIRCULAR ARRAY VISUALIZATION ──────────────────────── -->
-      <div class="canvas-area">
-        <div class="viz-header">
-          <span class="viz-title">
-            <i class="fas fa-circle-notch"></i>
-            Circular Array Queue
-          </span>
-
-          <span class="viz-legend">
-            <span class="legend-dot occupied"></span> Occupied
-            <span class="legend-dot empty"></span> Empty
-            <span class="legend-dot front"></span> Front (next out)
-            <span class="legend-dot rear"></span> Rear (last in)
-          </span>
-        </div>
-
-        <!-- Circular ring canvas -->
-        <div class="circular-wrap">
-          <canvas id="ring-canvas" width="520" height="520"></canvas>
-          <div class="ring-center-info">
-            <div id="ring-label-queue" class="ring-big">0</div>
-            <div class="ring-sub">in queue</div>
-            <div id="ring-label-cap" class="ring-cap">/ 100</div>
-          </div>
-        </div>
-
-        <!-- Arrival progress bar -->
-        <div class="arrival-progress-wrap">
-          <div class="arrival-progress-track">
-            <div id="arrival-progress-bar" class="arrival-progress-fill" style="width: 0%"></div>
-          </div>
-          <div id="arrival-progress-label" class="arrival-progress-label">
-            Arrived: 0 / 100 customers (0%)
-          </div>
-        </div>
-
-        <!-- FIFO flow strip -->
-        <div class="fifo-strip">
-          <div class="fifo-label">FIFO ORDER <i class="fas fa-arrow-right"></i></div>
-          <div class="fifo-slots" id="fifo-slots"></div>
-          <div class="fifo-arrow-area" id="fifo-arrows"></div>
-        </div>
-
-        <!-- Server assignment lanes -->
-        <div class="lanes-wrap" id="lanes-wrap"></div>
-
-        <!-- Server cards -->
-        <div class="service-label">SERVICE AREA</div>
-        <div class="servers-row" id="servers-row"></div>
-      </div>
-
-      <!-- ── CONTROLS ───────────────────────────────────────────── -->
-      <div class="controls-section">
-        <h3 class="section-title">
-          <i class="fas fa-sliders"></i>
-          Simulation Parameters
-        </h3>
-
-        <div class="controls-grid">
-          <div class="control-card">
-            <div class="control-header">
-              <i class="fas fa-server"></i><span class="ctrl-name">Servers</span>
-            </div>
-            <div class="control-content">
-              <input
-                type="range"
-                id="r-servers"
-                min="1"
-                max="10"
-                step="1"
-                value="4"
-                class="slider"
-              />
-              <div class="ctrl-val" id="v-servers">4</div>
-            </div>
-          </div>
-
-          <div class="control-card">
-            <div class="control-header">
-              <i class="fas fa-clock"></i><span class="ctrl-name">Arrival Interval</span>
-            </div>
-            <div class="control-content">
-              <div class="range-group">
-                <input
-                  type="range"
-                  id="r-arrival-min"
-                  min="1"
-                  max="15"
-                  step="1"
-                  value="2"
-                  class="slider small"
-                />
-                <input
-                  type="range"
-                  id="r-arrival-max"
-                  min="2"
-                  max="20"
-                  step="1"
-                  value="6"
-                  class="slider small"
-                />
-              </div>
-              <div class="ctrl-val" id="v-arrival">2-6</div>
-            </div>
-          </div>
-
-          <div class="control-card">
-            <div class="control-header">
-              <i class="fas fa-gear"></i><span class="ctrl-name">Service Time</span>
-            </div>
-            <div class="control-content">
-              <div class="range-group">
-                <input
-                  type="range"
-                  id="r-service-min"
-                  min="1"
-                  max="15"
-                  step="1"
-                  value="4"
-                  class="slider small"
-                />
-                <input
-                  type="range"
-                  id="r-service-max"
-                  min="2"
-                  max="30"
-                  step="1"
-                  value="10"
-                  class="slider small"
-                />
-              </div>
-              <div class="ctrl-val" id="v-service">4-10</div>
-            </div>
-          </div>
-
-          <div class="control-card">
-            <div class="control-header">
-              <i class="fas fa-users"></i><span class="ctrl-name">Customer Count</span>
-            </div>
-            <div class="control-content">
-              <input
-                type="range"
-                id="r-customers"
-                min="10"
-                max="500"
-                step="10"
-                value="100"
-                class="slider"
-              />
-              <div class="ctrl-val" id="v-customers">100</div>
-            </div>
-          </div>
-
-          <div class="control-card">
-            <div class="control-header">
-              <i class="fas fa-stopwatch"></i><span class="ctrl-name">Simulation Speed</span>
-            </div>
-            <div class="control-content">
-              <input
-                type="range"
-                id="r-speed"
-                min="50"
-                max="1000"
-                step="50"
-                value="350"
-                class="slider"
-              />
-              <div class="ctrl-val" id="v-speed">350ms</div>
-            </div>
-          </div>
+      <div class="stat-card secondary">
+        <div class="stat-icon"><i class="fas fa-users"></i></div>
+        <div class="stat-content">
+          <div class="stat-label">QUEUE</div>
+          <div class="stat-val" id="s-queue">0</div>
         </div>
       </div>
 
-      <!-- ── ACTION BUTTONS ─────────────────────────────────────── -->
-      <div class="action-section">
-        <div class="btns-group">
-          <button class="btn btn-primary active" id="btn-pause">
-            <i class="fas fa-pause"></i><span>Pause</span>
-          </button>
-          <button class="btn btn-secondary" id="btn-reset">
-            <i class="fas fa-redo"></i><span>Reset</span>
-          </button>
-          <button class="btn btn-success" id="btn-start">
-            <i class="fas fa-play"></i><span>Start</span>
-          </button>
-          <button class="btn btn-info" id="btn-stats">
-            <i class="fas fa-chart-bar"></i><span>Statistics</span>
-          </button>
+      <div class="stat-card success">
+        <div class="stat-icon"><i class="fas fa-user-check"></i></div>
+        <div class="stat-content">
+          <div class="stat-label">LEFT BANK</div>
+          <div class="stat-val" id="s-served">0</div>
         </div>
       </div>
 
-      <div class="status-section">
-        <div id="status-bar" class="status-bar">
-          <i class="fas fa-info-circle"></i>
-          <span>Running in standalone mode (real-time local simulation)</span>
+      <div class="stat-card warning">
+        <div class="stat-icon"><i class="fas fa-hourglass-half"></i></div>
+        <div class="stat-content">
+          <div class="stat-label">AVG WAIT</div>
+          <div class="stat-val" id="s-wait">0.0</div>
         </div>
       </div>
 
-      <!-- Statistics Modal -->
-      <div id="stats-modal" class="modal">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h3><i class="fas fa-chart-bar"></i> Detailed Statistics</h3>
-            <button class="modal-close" id="close-stats"><i class="fas fa-times"></i></button>
+      <div class="stat-card info">
+        <div class="stat-icon"><i class="fas fa-person-walking"></i></div>
+        <div class="stat-content">
+          <div class="stat-label">NEXT ARRIVAL</div>
+          <div class="stat-val" id="s-next-arrival">0</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+        <div class="stat-content">
+          <div class="stat-label">THROUGHPUT</div>
+          <div class="stat-val" id="s-throughput">0.0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CIRCULAR ARRAY VISUALIZATION ──────────────────────── -->
+    <div class="canvas-area">
+      <div class="viz-header">
+        <span class="viz-title">
+          <i class="fas fa-circle-notch"></i>
+          Circular Array Queue
+        </span>
+
+        <span class="viz-legend">
+          <span class="legend-dot occupied"></span> Occupied
+          <span class="legend-dot empty"></span> Empty
+          <span class="legend-dot front"></span> Front (next out)
+          <span class="legend-dot rear"></span> Rear (last in)
+        </span>
+      </div>
+
+      <!-- Circular ring canvas -->
+      <div class="circular-wrap">
+        <canvas id="ring-canvas" width="520" height="520"></canvas>
+        <div class="ring-center-info">
+          <div id="ring-label-queue" class="ring-big">0</div>
+          <div class="ring-sub">in queue</div>
+          <div id="ring-label-cap" class="ring-cap">/ 100</div>
+        </div>
+      </div>
+
+      <!-- Arrival progress bar -->
+      <div class="arrival-progress-wrap">
+        <div class="arrival-progress-track">
+          <div id="arrival-progress-bar" class="arrival-progress-fill" style="width: 0%"></div>
+        </div>
+        <div id="arrival-progress-label" class="arrival-progress-label">
+          Arrived: 0 / 100 customers (0%)
+        </div>
+      </div>
+
+      <!-- FIFO flow strip -->
+      <div class="fifo-strip">
+        <div class="fifo-label">FIFO ORDER <i class="fas fa-arrow-right"></i></div>
+        <div class="fifo-slots" id="fifo-slots"></div>
+        <div class="fifo-arrow-area" id="fifo-arrows"></div>
+      </div>
+
+      <!-- Server assignment lanes -->
+      <div class="lanes-wrap" id="lanes-wrap"></div>
+
+      <!-- Server cards -->
+      <div class="service-label">SERVICE AREA</div>
+      <div class="servers-row" id="servers-row"></div>
+    </div>
+
+    <!-- ── CONTROLS ───────────────────────────────────────────── -->
+    <div class="controls-section">
+      <h3 class="section-title">
+        <i class="fas fa-sliders"></i>
+        Simulation Parameters
+      </h3>
+
+      <div class="controls-grid">
+        <div class="control-card">
+          <div class="control-header">
+            <i class="fas fa-server"></i><span class="ctrl-name">Servers</span>
           </div>
+          <div class="control-content">
+            <input type="range" id="r-servers" min="1" max="10" step="1" value="4" class="slider" />
+            <div class="ctrl-val" id="v-servers">4</div>
+          </div>
+        </div>
 
-          <div class="modal-body">
-            <div class="stats-grid-detailed">
-              <div class="stat-item">
-                <label for="stat-peak-queue">Peak Queue Length:</label
-                ><span id="stat-peak-queue">0</span>
-              </div>
-              <div class="stat-item">
-                <label for="stat-utilization">Server Utilization:</label
-                ><span id="stat-utilization">0%</span>
-              </div>
-              <div class="stat-item">
-                <label for="stat-total-arrived">Total Customers Arrived:</label
-                ><span id="stat-total-arrived">0</span>
-              </div>
-              <div class="stat-item">
-                <label for="stat-turned-away">Customers Turned Away:</label
-                ><span id="stat-turned-away">0</span>
-              </div>
-              <div class="stat-item">
-                <label for="stat-avg-service">Customers Currently in Bank:</label
-                ><span id="stat-avg-service">0</span>
-              </div>
-              <div class="stat-item">
-                <label for="stat-efficiency">Customers Who Left Bank:</label
-                ><span id="stat-efficiency">0</span>
-              </div>
+        <div class="control-card">
+          <div class="control-header">
+            <i class="fas fa-clock"></i><span class="ctrl-name">Arrival Interval</span>
+          </div>
+          <div class="control-content">
+            <div class="range-group">
+              <input type="range" id="r-arrival-min" min="1" max="15" step="1" value="2" class="slider small" />
+              <input type="range" id="r-arrival-max" min="2" max="20" step="1" value="6" class="slider small" />
             </div>
+            <div class="ctrl-val" id="v-arrival">2-6</div>
+          </div>
+        </div>
+
+        <div class="control-card">
+          <div class="control-header">
+            <i class="fas fa-gear"></i><span class="ctrl-name">Service Time</span>
+          </div>
+          <div class="control-content">
+            <div class="range-group">
+              <input type="range" id="r-service-min" min="1" max="15" step="1" value="4" class="slider small" />
+              <input type="range" id="r-service-max" min="2" max="30" step="1" value="10" class="slider small" />
+            </div>
+            <div class="ctrl-val" id="v-service">4-10</div>
+          </div>
+        </div>
+
+        <div class="control-card">
+          <div class="control-header">
+            <i class="fas fa-users"></i><span class="ctrl-name">Customer Count</span>
+          </div>
+          <div class="control-content">
+            <input type="range" id="r-customers" min="10" max="500" step="10" value="100" class="slider" />
+            <div class="ctrl-val" id="v-customers">100</div>
+          </div>
+        </div>
+
+        <div class="control-card">
+          <div class="control-header">
+            <i class="fas fa-stopwatch"></i><span class="ctrl-name">Simulation Speed</span>
+          </div>
+          <div class="control-content">
+            <input type="range" id="r-speed" min="50" max="1000" step="50" value="350" class="slider" />
+            <div class="ctrl-val" id="v-speed">350ms</div>
           </div>
         </div>
       </div>
     </div>
 
-    <script type="module" src="js/main.js"></script>
-  </body>
+    <!-- ── ACTION BUTTONS ─────────────────────────────────────── -->
+    <div class="action-section">
+      <div class="btns-group">
+        <button class="btn btn-primary active" id="btn-pause">
+          <i class="fas fa-pause"></i><span>Pause</span>
+        </button>
+        <button class="btn btn-secondary" id="btn-reset">
+          <i class="fas fa-redo"></i><span>Reset</span>
+        </button>
+        <button class="btn btn-success" id="btn-start">
+          <i class="fas fa-play"></i><span>Start</span>
+        </button>
+        <button class="btn btn-info" id="btn-stats">
+          <i class="fas fa-chart-bar"></i><span>Statistics</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="status-section">
+      <div id="status-bar" class="status-bar">
+        <i class="fas fa-info-circle"></i>
+        <span>Running in standalone mode (real-time local simulation)</span>
+      </div>
+    </div>
+
+    <!-- Statistics Modal -->
+    <div id="stats-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3><i class="fas fa-chart-bar"></i> Detailed Statistics</h3>
+          <button class="modal-close" id="close-stats"><i class="fas fa-times"></i></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="stats-grid-detailed">
+            <div class="stat-item">
+              <label for="stat-peak-queue">Peak Queue Length:</label><span id="stat-peak-queue">0</span>
+            </div>
+            <div class="stat-item">
+              <label for="stat-utilization">Server Utilization:</label><span id="stat-utilization">0%</span>
+            </div>
+            <div class="stat-item">
+              <label for="stat-total-arrived">Total Customers Arrived:</label><span id="stat-total-arrived">0</span>
+            </div>
+            <div class="stat-item">
+              <label for="stat-turned-away">Customers Turned Away:</label><span id="stat-turned-away">0</span>
+            </div>
+            <div class="stat-item">
+              <label for="stat-avg-service">Customers Currently in Bank:</label><span id="stat-avg-service">0</span>
+            </div>
+            <div class="stat-item">
+              <label for="stat-efficiency">Customers Who Left Bank:</label><span id="stat-efficiency">0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+
 </html>

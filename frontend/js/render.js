@@ -4,7 +4,11 @@
  */
 
 import { RING } from "./ring.js";
-import { setText } from "./helpers.js";
+
+function setText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
 
 const SERVER_COLORS = [
   "#6c8aff",
@@ -172,11 +176,8 @@ export function renderServers(servers) {
            style="${s.busy ? `box-shadow:0 0 18px ${color}88;` : ""}">
         ${s.busy ? "🧑‍💼" : "🪑"}
       </div>
-      <div class="server-customer-id" style="color:${color}">
-        ${s.busy ? `C${s.customerId}` : "—"}
-      </div>
       <div class="server-remaining">
-        ${s.busy ? `${s.remaining} ticks` : "Free"}
+        ${s.busy ? `C${s.customerId} · ${s.remaining}t` : "Free"}
       </div>
       ${s.assignLabel ? `<div class="server-assign">${s.assignLabel}</div>` : ""}
     `;
@@ -206,3 +207,4 @@ export function updateDetailedStats(state) {
   setText("stat-avg-service", inBank + " in bank");
   setText("stat-efficiency", (state.served ?? 0) + " left bank");
 }
+
