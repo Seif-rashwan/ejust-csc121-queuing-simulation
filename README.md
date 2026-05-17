@@ -22,7 +22,7 @@
 7. [Simulation Parameters](#simulation-parameters)
 8. [API Reference](#api-reference)
 9. [Documentation & Standards](#documentation--standards)
-10. [Team](#team)
+10. [The Team](#the-team)
 
 ---
 
