@@ -332,7 +332,7 @@ Base URL: `http://localhost:8081`
 
 ---
 
-## Team
+## The Team
 
 | Name                   | Student ID |
 | :--------------------- | :--------: |
@@ -340,4 +340,4 @@ Base URL: `http://localhost:8081`
 | Hana Aly ElMaghraby    | 320240126  |
 | Nour Ibrahim           | 320250325  |
 | Androw Shonoda Tawfeek | 320210333  |
-| @EgizianoEG            |     —      |
+| Abdulrahman Salem      | 320240133  |
