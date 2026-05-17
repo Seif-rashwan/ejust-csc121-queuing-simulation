@@ -26,11 +26,31 @@ export const local = {
   running: false,
 
   numServers: 4,
-  arrivalMin: 1,
-  arrivalMax: 3,
-  serviceMin: 8,
-  serviceMax: 15,
+  arrivalMin: 2,
+  arrivalMax: 6,
+  serviceMin: 4,
+  serviceMax: 10,
   maxCustomers: 100,
+  maxQueueSize: 50,
+
+  /**
+   * Applies the current simulation configuration without starting the engine.
+   * @returns {Promise<Object>} Backend response.
+   */
+  async configure() {
+    return await request("/config", {
+      method: "POST",
+      body: JSON.stringify({
+        servers: this.numServers,
+        arrivalMin: this.arrivalMin,
+        arrivalMax: this.arrivalMax,
+        serviceMin: this.serviceMin,
+        serviceMax: this.serviceMax,
+        maxCustomers: this.maxCustomers,
+        maxQueueSize: this.maxQueueSize,
+      }),
+    });
+  },
 
   /**
    * Resets the backend simulation and returns normalized state.
@@ -46,17 +66,7 @@ export const local = {
    * @returns {Promise<Object>} Current normalized state.
    */
   async start() {
-    await request("/config", {
-      method: "POST",
-      body: JSON.stringify({
-        servers: this.numServers,
-        arrivalMin: this.arrivalMin,
-        arrivalMax: this.arrivalMax,
-        serviceMin: this.serviceMin,
-        serviceMax: this.serviceMax,
-        maxCustomers: this.maxCustomers,
-      }),
-    });
+    await this.configure();
 
     await request("/start", { method: "POST" });
 
@@ -102,12 +112,12 @@ export const local = {
   },
 
   /**
-   * Updates the customer cap and resets the simulation.
-   * @param {number|string} newMax New customer count.
+   * Updates the queue capacity and resets the simulation.
+   * @param {number|string} newMax New queue capacity.
    * @returns {Promise<Object>} Current normalized state.
    */
   async resizeQueue(newMax) {
-    this.maxCustomers = Number(newMax);
+    this.maxQueueSize = Number(newMax);
     return await this.reset();
   },
 };
@@ -134,6 +144,7 @@ function normalizeState(state) {
         ? (state.served ?? 0) / state.tick
         : 0,
     maxCustomers: state.maxCustomers ?? state.totalCustomers ?? 100,
+    maxQueueSize: state.maxQueueSize ?? state.queueCapacity ?? 50,
     totalCustomers: state.totalCustomers ?? state.maxCustomers ?? 100,
     arrived: state.arrived ?? state.totalArrived ?? 0,
 

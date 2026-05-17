@@ -63,6 +63,7 @@ function blankState() {
     lastEvent: "",
     lastEventCustomer: -1,
     totalCustomers: config.maxCustomers,
+    maxQueueSize: config.maxQueueSize,
     arrived: 0,
     throughput: 0,
     _front: 0,

@@ -1,12 +1,13 @@
 /**
  * @file backend.js
- * @brief Backend configuration, API calls, and polling loop for the browser UI.
+ * Backend configuration, API calls, polling, and shared UI runtime state.
  */
 
 import { local } from "./simulation.js";
 import { refreshVisuals } from "./render.js";
 
 const PORT = 8081;
+const MIN_POLL_INTERVAL = 150;
 
 /** Runtime backend connection settings and endpoint paths. */
 export const BACKEND_CONFIG = {
@@ -24,8 +25,6 @@ export const BACKEND_CONFIG = {
 
 const url = (endpoint) => BACKEND_CONFIG.baseUrl + BACKEND_CONFIG.endpoints[endpoint];
 
-// ────────────────────────────────────────────────────────────────────────────────
-// ── API Calls ───────────────────────────────────────────────────────────────────
 /**
  * Fetches the latest simulation state from the backend.
  * @returns {Promise<Object>} Current simulation state.
@@ -76,26 +75,101 @@ export async function sendStart() {
   return res.json();
 }
 
-// ────────────────────────────────────────────────────────────────────────────────
-// ── Loop & UI State ─────────────────────────────────────────────────────────────
 const statusBar = document.getElementById("status-bar");
+const modeButtons = [...document.querySelectorAll(".mode-btn")];
+
 export let paused = false;
 export let loopInterval = null;
+export let activeMode = "local";
+export let sessionActive = false;
+
+let pollInFlight = false;
+
+/**
+ * Returns whether a state snapshot represents natural completion.
+ * @param {Object} state Normalized state snapshot.
+ * @returns {boolean} True when all customers are out of the system.
+ */
+function isSimulationComplete(state) {
+  const total = state.totalCustomers ?? state.maxCustomers ?? 0;
+  const arrived = state.arrived ?? state.totalArrived ?? 0;
+  const servedOrLeft = (state.served ?? 0) + (state.turnedAway ?? 0);
+  const busyServers = (state.servers ?? []).some((server) => server.busy);
+
+  return (
+    total > 0 &&
+    arrived >= total &&
+    servedOrLeft >= total &&
+    !busyServers &&
+    (state.queueSize ?? 0) === 0
+  );
+}
+
+/**
+ * Updates whether mode controls are locked by an active simulation session.
+ * @param {boolean} value True while a started simulation should lock mode changes.
+ */
+export function setSessionActive(value) {
+  sessionActive = value;
+
+  modeButtons.forEach((button) => {
+    button.disabled = value;
+    button.classList.toggle("locked", value);
+    button.title = value
+      ? "Reset or finish the active simulation before switching modes"
+      : "";
+  });
+}
+
+/**
+ * Applies mode styling and records the selected adapter path.
+ * @param {string} mode Mode name from a mode button.
+ */
+export function switchToMode(mode) {
+  activeMode = mode === "backend" ? "backend" : "local";
+  BACKEND_CONFIG.enabled = activeMode === "backend";
+
+  modeButtons.forEach((button) => {
+    button.classList.toggle("active", button.dataset.mode === activeMode);
+  });
+
+  updateStatusBar(
+    activeMode === "backend"
+      ? "Backend mode connected to the C++ service"
+      : "Local mode selected",
+    activeMode === "backend" ? "connected" : "",
+  );
+}
 
 /**
  * Polls state, renders the UI, and updates connection status.
  * @returns {Promise<void>}
  */
 export async function loop() {
+  if (pollInFlight) return;
+
+  pollInFlight = true;
   try {
     const state = await local.getState();
     refreshVisuals(state);
 
     paused = !state.running;
     updatePauseButton(paused);
-    updateStatusBar("● Connected to backend (real-time)", "connected");
+
+    if (sessionActive && isSimulationComplete(state)) {
+      setSessionActive(false);
+      updateStatusBar("Simulation complete. Mode switching is available again.", "connected");
+    } else if (sessionActive) {
+      const runState = state.running ? "running" : "paused";
+      updateStatusBar(
+        activeMode === "backend"
+          ? `Backend simulation ${runState}`
+          : `Local simulation ${runState}`,
+        activeMode === "backend" ? "connected" : "",
+      );
+    }
   } catch (e) {
-    updateStatusBar("● Backend unreachable — " + e.message, "error");
+    updateStatusBar("Backend unreachable - " + e.message, "error");
     refreshVisuals({
       tick: 0,
       queueSize: 0,
@@ -108,6 +182,8 @@ export async function loop() {
       totalArrived: 0,
       turnedAway: 0,
     });
+  } finally {
+    pollInFlight = false;
   }
 }
 
@@ -116,23 +192,8 @@ export async function loop() {
  */
 export function startLoop() {
   if (loopInterval) clearInterval(loopInterval);
+  BACKEND_CONFIG.pollInterval = Math.max(MIN_POLL_INTERVAL, BACKEND_CONFIG.pollInterval);
   loopInterval = setInterval(loop, BACKEND_CONFIG.pollInterval);
-}
-
-/**
- * Switches the active UI mode indicator.
- * @param {string} mode Mode name from a mode button.
- */
-export function switchToMode(mode) {
-  BACKEND_CONFIG.enabled = mode === "backend";
-  document
-    .querySelectorAll(".mode-btn")
-    .forEach((b) => b.classList.toggle("active", b.dataset.mode === mode));
-  updateStatusBar(
-    mode === "backend"
-      ? "● Backend mode — Connecting to C++ simulation…"
-      : "● Running in standalone mode",
-  );
 }
 
 /**
@@ -149,10 +210,17 @@ export function updatePauseButton(isPaused) {
 
 /**
  * Writes a status message into the status bar.
- * @param {string} msg Message HTML/text to display.
+ * @param {string} msg Message to display.
  * @param {string} [cls=""] Additional status class.
  */
 export function updateStatusBar(msg, cls = "") {
-  statusBar.innerHTML = `<i class="fas fa-info-circle"></i><span>${msg}</span>`;
+  statusBar.replaceChildren();
+
+  const icon = document.createElement("i");
+  const text = document.createElement("span");
+  icon.className = "fas fa-info-circle";
+  text.textContent = msg;
+
+  statusBar.append(icon, text);
   statusBar.className = "status-bar " + cls;
 }
