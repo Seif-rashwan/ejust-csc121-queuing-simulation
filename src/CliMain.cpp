@@ -20,7 +20,39 @@
 #include <thread>
 #include <utility>
 
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#endif
+
 #include "SimulationEngine.h"
+
+#ifdef _WIN32
+/**
+ * @class WindowsConsoleSetup
+ * @brief Automatically configures the console to UTF-8 code page on construction
+ *        and restores the original code page on destruction.
+ */
+class WindowsConsoleSetup {
+   private:
+    UINT old_output_cp_;
+    UINT old_input_cp_;
+
+   public:
+    WindowsConsoleSetup() : old_output_cp_(GetConsoleOutputCP()), old_input_cp_(GetConsoleCP()) {
+        SetConsoleOutputCP(CP_UTF8);
+        SetConsoleCP(CP_UTF8);
+    }
+
+    ~WindowsConsoleSetup() {
+        SetConsoleOutputCP(old_output_cp_);
+        SetConsoleCP(old_input_cp_);
+    }
+
+    WindowsConsoleSetup(const WindowsConsoleSetup&)            = delete;
+    WindowsConsoleSetup& operator=(const WindowsConsoleSetup&) = delete;
+};
+#endif
 
 using std::cerr;
 using std::cin;
@@ -256,6 +288,9 @@ class CLIApplication {
  * @return Process exit code.
  */
 int main(int argc, const char* argv[]) {
+#ifdef _WIN32
+    WindowsConsoleSetup win_console_setup;
+#endif
     try {
         CLIApplication app;
         return app.run(argc, argv);
